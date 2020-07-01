@@ -11,7 +11,7 @@ class App extends React.Component {
   }
 
   render() {
-    return (
+      return (
       <div className="App">
         <header className="App-header">
           <div>
@@ -53,10 +53,11 @@ class App extends React.Component {
 
 
 class DragableTextList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.items = props.items
+    constructor(props) {
+      super(props);
+      this.items = props.items
   }
+
 
   render() {
     const elements = [];
