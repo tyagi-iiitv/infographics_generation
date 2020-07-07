@@ -2,12 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
+//draggable class
+//You can drag all the element contained by class Draggable
 class Draggable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            //relitive postion used to drag the class
             relX: 0,
             relY: 0,
+            //where the class should be
             x: props.x,
             y: props.y
         };
@@ -29,7 +33,8 @@ class Draggable extends React.Component {
         gridX: PropTypes.number,
         gridY: PropTypes.number
     }; 
-  
+ 
+    //adding liseners to track the mouse move
     onStart(e) {
         const ref = ReactDOM.findDOMNode(this.handle);
         const body = document.body;
@@ -90,7 +95,8 @@ class Draggable extends React.Component {
         this.props.onStop && this.props.onStop(this.state.x, this.state.y);
         e.preventDefault();
     }
-  
+    
+    //draw the class create the div
     render() {
         return <div
             onMouseDown={this.onMouseDown}
