@@ -51,7 +51,7 @@ class App extends React.Component {
   }
 }
 
-
+//draw all dragable text
 class DragableTextList extends React.Component {
     constructor(props) {
       super(props);
