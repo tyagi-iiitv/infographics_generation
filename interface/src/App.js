@@ -13,8 +13,6 @@ class App extends React.Component {
     }
 
     handleRemove(key) {
-        console.log(key);
-        console.log(this.state.items);
         const new_items = this.state.items.filter((item) => item.key !== key);
         this.setState({text: this.state.text, items: new_items})
     }
@@ -49,13 +47,11 @@ class App extends React.Component {
   handleSubmit(e) {
         //show the remove button
         function show(e) {
-            console.log("show")
             e.target.style.opacity= 1;
         }
 
         //hide the remove button
         function hide(e) {
-            console.log("not shown")
             e.target.style.opacity= 0;
         }
         //if nothing input, ignore it
