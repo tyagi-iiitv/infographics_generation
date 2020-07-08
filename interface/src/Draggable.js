@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
 
 class Draggable extends React.Component {
     constructor(props) {
@@ -20,16 +19,8 @@ class Draggable extends React.Component {
         this.onTouchMove = this.onTouchMove.bind(this);
         this.onTouchEnd = this.onTouchEnd.bind(this);
     }
-  
-    static propTypes = {
-        onMove: PropTypes.func,
-        onStop: PropTypes.func,
-        x: PropTypes.number.isRequired,
-        y: PropTypes.number.isRequired,
-        gridX: PropTypes.number,
-        gridY: PropTypes.number
-    }; 
-  
+    
+
     onStart(e) {
         const ref = ReactDOM.findDOMNode(this.handle);
         const body = document.body;
@@ -90,7 +81,7 @@ class Draggable extends React.Component {
         this.props.onStop && this.props.onStop(this.state.x, this.state.y);
         e.preventDefault();
     }
-  
+
     render() {
         return <div
             onMouseDown={this.onMouseDown}
