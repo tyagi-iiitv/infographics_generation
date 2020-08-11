@@ -60,6 +60,18 @@ class App extends React.Component {
             return;
         }
         const id =new Date().toLocaleString();
+        var input_text = this.state.text;
+        var number_sign = 0;
+        var input_length = input_text.length
+        for (var i = 0; i < input_length; i++)  {
+            if (input_text[i] == '#') {
+                number_sign++;
+            } else {
+                this.state.text = input_text.substring(number_sign, input_length);
+                break;
+            }
+        }
+        var input_size = 1 + 0.5*number_sign;
         const newItem = 
         //must have unique key to identify the Draggable class
         <Draggable key={id}>
@@ -67,7 +79,7 @@ class App extends React.Component {
             <div onClick={() => this.handleRemove(id)} className="remove_button" 
             onMouseEnter={show}
             onMouseLeave={hide}>remove</div> 
-            <div>{this.state.text}</div>
+            <div><text style={{fontSize: input_size +'em'}}>{this.state.text}</text></div>
             </div>
         </Draggable>;
         this.setState(state => ({
