@@ -3,32 +3,40 @@ import Draggable from "./Draggable"
 import './App.css';
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { text: '', items: [] };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+    constructor(props) {
+        super(props);
+        this.state = { text: '', items: [] };
+        this.elements = [];
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleClick = this.handleRemove.bind(this);
+    }
+
+    handleRemove(key) {
+        const new_items = this.state.items.filter((item) => item.key !== key);
+        this.setState({text: this.state.text, items: new_items})
+    }
 
   render() {
+
     return (
-      <div className="App">
-        <header className="App-header">
-          <div>
-            <form onSubmit={this.handleSubmit}>
-              <input 
-              id="input_dragable_text"
-              onChange={this.handleChange}
-              value={this.state.text}
-              placeholder = "Press Enter to input"
-              />
-            </form>
-          </div>
-        </header>
-        <div className="App-body">
-          <DragableTextList items={this.state.items}/>
+        <div className="App">
+            <header className="App-header">
+            <div>
+                <form onSubmit={this.handleSubmit}>
+                <input 
+                id="input_dragable_text"
+                onChange={this.handleChange}
+                value={this.state.text}
+                placeholder = "Press Enter to input"
+                />
+                </form>
+            </div>
+            </header>
+            <div className="App-body">
+            {this.state.items}
+            </div>
         </div>
-      </div>
     );
   }
 
@@ -37,40 +45,48 @@ class App extends React.Component {
   }
 
   handleSubmit(e) {
-    e.preventDefault();
-    if (this.state.text.length === 0) {
-      return;
+        //show the remove button
+        function show(e) {
+            e.target.style.opacity= 1;
+        }
+
+        //hide the remove button
+        function hide(e) {
+            e.target.style.opacity= 0;
+        }
+        //if nothing input, ignore it
+        e.preventDefault();
+        if (this.state.text.length === 0) {
+            return;
+        }
+        const id =new Date().toLocaleString();
+        var input_text = this.state.text;
+        var number_sign = 0;
+        var input_length = input_text.length
+        for (var i = 0; i < input_length; i++)  {
+            if (input_text[i] == '#') {
+                number_sign++;
+            } else {
+                this.state.text = input_text.substring(number_sign, input_length);
+                break;
+            }
+        }
+        var input_size = 1 + 0.5*number_sign;
+        const newItem = 
+        //must have unique key to identify the Draggable class
+        <Draggable key={id}>
+            <div className="draggable_content">
+            <div onClick={() => this.handleRemove(id)} className="remove_button" 
+            onMouseEnter={show}
+            onMouseLeave={hide}>remove</div> 
+            <div><text style={{fontSize: input_size +'em'}}>{this.state.text}</text></div>
+            </div>
+        </Draggable>;
+        this.setState(state => ({
+            items: state.items.concat(newItem),
+            text: ''
+        }));
     }
-    const newItem = {
-      text: this.state.text
-    };
-    this.setState(state => ({
-      items: state.items.concat(newItem),
-      text: ''
-    }));
-  }
-}
-
-
-class DragableTextList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.items = props.items
-  }
-
-  render() {
-    const elements = [];
-    const text_array = this.props.items
-    //console.log()
-    for(const item of text_array) {
-      elements.push(<Draggable>{item.text}</Draggable>)
-    }
-    return (
-      <div>
-        {elements}
-      </div>
-    )
-  }
 }
 
 export default App;
