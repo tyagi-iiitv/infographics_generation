@@ -1,4 +1,3 @@
-interface/node_modules/*
 4300_infographics/*
 4300*
 y_train_hd.npy
@@ -7,6 +6,7 @@ env/
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
+interface/node_modules/*
 /node_modules
 /.pnp
 .pnp.js

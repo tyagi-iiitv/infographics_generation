@@ -26,7 +26,7 @@ for x in test_imgs:
     for row in bb.values[:,:]:
         label = row[0]
         if label == 35:
-            dim = row[1:] 
+            dim = row[1:]
             y1 = dim[1]*h - (dim[3]*h)/2
             y2 = dim[1]*h + (dim[3]*h)/2
             x1 = dim[0]*w - (dim[2]*w)/2
@@ -38,7 +38,7 @@ for x in test_imgs:
             X_temp[2] += 1
             X_temp[3] += len(text)
         elif label == 37:
-            dim = row[1:] 
+            dim = row[1:]
             y1 = dim[1]*h - (dim[3]*h)/2
             y2 = dim[1]*h + (dim[3]*h)/2
             x1 = dim[0]*w - (dim[2]*w)/2
@@ -50,7 +50,7 @@ for x in test_imgs:
             X_temp[0] += 1
             X_temp[1] += len(text)
         elif label == 36:
-            dim = row[1:] 
+            dim = row[1:]
             y1 = dim[1]*h - (dim[3]*h)/2
             y2 = dim[1]*h + (dim[3]*h)/2
             x1 = dim[0]*w - (dim[2]*w)/2

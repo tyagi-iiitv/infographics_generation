@@ -105,7 +105,7 @@ class VIFflow():
         return seedsDict
 
     def calculateRegularity(path):  # calculate the regularity of a path
-        # #print(4)  
+        # #print(4)
         # #print(len(path))
         S = [[], [], [], []]
         for i in range(len(path) - 1):
@@ -176,7 +176,7 @@ class VIFflow():
                 temp[p] = temp_distance
         paths = list(temp)
 
-        # given the paths, work on regularity   
+        # given the paths, work on regularity
         regularitys = {}
         for path in paths:
             regularitys[path] = VIFflow.calculateRegularity(path)
@@ -360,7 +360,7 @@ for i,x in enumerate(test_imgs):
     # if i < count:
     #     continue
     img_name = '4300_infographics/images/test/' + x
-    label_name = '4300_infographics/labels/test/' + x[:-4] + '.txt'    
+    label_name = '4300_infographics/labels/test/' + x[:-4] + '.txt'
     print(i, img_name)
     # bb = pd.read_csv(label_name, delimiter=' ', header=None)
     data = cv2.imread(img_name)
@@ -388,5 +388,5 @@ for i,x in enumerate(test_imgs):
         # y_train[i,:] = nflow
 np.save('y_test_hd.npy', y_train)
 # np.save('ignore_files.npy', ignored_files)
-    
+
 

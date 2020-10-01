@@ -24,7 +24,7 @@ class App extends React.Component {
             <header className="App-header">
             <div>
                 <form onSubmit={this.handleSubmit}>
-                <input 
+                <input
                 id="input_dragable_text"
                 onChange={this.handleChange}
                 value={this.state.text}
@@ -72,13 +72,13 @@ class App extends React.Component {
             }
         }
         var input_size = 1 + 0.5*number_sign;
-        const newItem = 
+        const newItem =
         //must have unique key to identify the Draggable class
         <Draggable key={id}>
             <div className="draggable_content">
-            <div onClick={() => this.handleRemove(id)} className="remove_button" 
+            <div onClick={() => this.handleRemove(id)} className="remove_button"
             onMouseEnter={show}
-            onMouseLeave={hide}>remove</div> 
+            onMouseLeave={hide}>remove</div>
             <div><text style={{fontSize: input_size +'em'}}>{this.state.text}</text></div>
             </div>
         </Draggable>;
