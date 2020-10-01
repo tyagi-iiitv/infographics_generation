@@ -19,7 +19,7 @@ class Draggable extends React.Component {
         this.onTouchMove = this.onTouchMove.bind(this);
         this.onTouchEnd = this.onTouchEnd.bind(this);
     }
-    
+
 
     onStart(e) {
         const ref = ReactDOM.findDOMNode(this.handle);
@@ -30,7 +30,7 @@ class Draggable extends React.Component {
             relY: e.pageY - (box.top + body.scrollTop - body.clientTop)
         });
     }
-  
+
     onMove(e) {
         const x = Math.trunc((e.pageX - this.state.relX) / this.gridX) * this.gridX;
         const y = Math.trunc((e.pageY - this.state.relY) / this.gridY) * this.gridY;
@@ -40,9 +40,9 @@ class Draggable extends React.Component {
                 y
             });
             this.props.onMove && this.props.onMove(this.state.x, this.state.y);
-        }        
+        }
     }
-  
+
     onMouseDown(e) {
         if (e.button !== 0) return;
         this.onStart(e);
@@ -50,31 +50,31 @@ class Draggable extends React.Component {
         document.addEventListener('mouseup', this.onMouseUp);
         e.preventDefault();
     }
-  
+
     onMouseUp(e) {
         document.removeEventListener('mousemove', this.onMouseMove);
         document.removeEventListener('mouseup', this.onMouseUp);
         this.props.onStop && this.props.onStop(this.state.x, this.state.y);
         e.preventDefault();
     }
-  
+
     onMouseMove(e) {
         this.onMove(e);
         e.preventDefault();
     }
-  
+
     onTouchStart(e) {
         this.onStart(e.touches[0]);
         document.addEventListener('touchmove', this.onTouchMove, {passive: false});
         document.addEventListener('touchend', this.onTouchEnd, {passive: false});
         e.preventDefault();
     }
-  
+
     onTouchMove(e) {
         this.onMove(e.touches[0]);
         e.preventDefault();
     }
-  
+
     onTouchEnd(e) {
         document.removeEventListener('touchmove', this.onTouchMove);
         document.removeEventListener('touchend', this.onTouchEnd);
