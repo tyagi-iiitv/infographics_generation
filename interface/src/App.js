@@ -76,22 +76,20 @@ class App extends React.Component {
             const newItem =
             //must have unique key to identify the Draggable class
             <Draggable key={id}>
-                <div className="draggable_content">
-                    <div
-                        onClick={() => this.handleRemove(id)}
-                        className="remove_button"
-                        onMouseEnter={show}
-                        onMouseLeave={hide}
+                <div
+                    onClick={() => this.handleRemove(id)}
+                    className="remove_button"
+                    onMouseEnter={show}
+                    onMouseLeave={hide}
+                >
+                    remove
+                </div>
+                <div>
+                    <text
+                        style={{fontSize: input_size +'em', fontWeight: text_weight}}
                     >
-                        remove
-                    </div>
-                    <div>
-                        <text
-                            style={{fontSize: input_size +'em', fontWeight: text_weight}}
-                        >
-                            {this.state.text}
-                        </text>
-                    </div>
+                        {this.state.text}
+                    </text>
                 </div>
             </Draggable>;
             this.setState(state => ({

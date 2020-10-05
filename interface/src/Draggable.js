@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './Draggable.css';
 
 class Draggable extends React.Component {
     constructor(props) {
@@ -86,11 +87,11 @@ class Draggable extends React.Component {
         return <div
             onMouseDown={this.onMouseDown}
             onTouchStart={this.onTouchStart}
+            className="draggable_content"
             style={{
                 position: 'absolute',
                 left: this.state.x,
                 top: this.state.y,
-                touchAction: 'none'
             }}
             ref={(div) => { this.handle = div; }}
         >

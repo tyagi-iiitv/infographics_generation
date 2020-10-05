@@ -47,5 +47,9 @@
     font-size: 1rem;
     color: whitesmoke;
     text-align: center;
-    opacity: 0.0;;
+    opacity: 0.0;
+}
+
+.remove_button:hover, active {
+    cursor: default;
 }
