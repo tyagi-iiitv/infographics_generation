@@ -16,6 +16,6 @@
     opacity: 0;
 }
 
-.draggable_content:hover .draggable_text {
+.draggable_content:hover .draggable_text_container {
     border: 1px dashed white;
 }

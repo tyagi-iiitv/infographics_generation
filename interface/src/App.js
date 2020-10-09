@@ -86,14 +86,16 @@ class App extends React.Component {
                 >
                     <FontAwesomeIcon icon={faTrashAlt}/>
                 </div>
-                <div>
+                <p
+                    className="draggable_text_container"
+                >
                     <text
                         style={{fontSize: input_size +'em', fontWeight: text_weight}}
                         className="draggable_text"
                     >
                         {this.state.text}
                     </text>
-                </div>
+                </p>
             </Draggable>;
             this.setState(state => ({
                 items: state.items.concat(newItem),

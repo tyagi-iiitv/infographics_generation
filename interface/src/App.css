@@ -29,16 +29,15 @@
     color: white;
 }
 
-.draggable_content {
-    display: inline-block;
-    user-select: none;
-    align-content: center;
+.draggable_text_container {
+    padding: 0.4rem;
+    text-align: center;
+    border: 1px dashed transparent;
 }
 
 .draggable_text {
     padding: 0.4rem;
     text-align: center;
-    border: 1px dashed transparent;
 }
 
 .remove_button {
@@ -50,8 +49,13 @@
     opacity: 0;
 }
 
+.remove_button:hover {
+    cursor: pointer;
+    opacity: 1 !important;
+}
+
 .remove_button:active {
-    cursor: default;
+    cursor: pointer;
     color: darkred;
     opacity: 1 !important;
 }
