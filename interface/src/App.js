@@ -2,6 +2,9 @@ import React from 'react';
 import Draggable from "./Draggable"
 import './App.css';
 
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -68,6 +71,7 @@ class App extends React.Component {
             if (input_text[0] === '#') {
                 number_sign++;
             }
+            // TODO(pushkar): Use setState here. Using the syntax directly doesn't works.
             this.state.text = input_text.substring(number_sign, input_length);
             if (number_sign !== 0) {
                 text_weight = 'bold'
@@ -79,14 +83,13 @@ class App extends React.Component {
                 <div
                     onClick={() => this.handleRemove(id)}
                     className="remove_button"
-                    onMouseEnter={show}
-                    onMouseLeave={hide}
                 >
-                    remove
+                    <FontAwesomeIcon icon={faTrashAlt}/>
                 </div>
                 <div>
                     <text
                         style={{fontSize: input_size +'em', fontWeight: text_weight}}
+                        className="draggable_text"
                     >
                         {this.state.text}
                     </text>

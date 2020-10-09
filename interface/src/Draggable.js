@@ -84,6 +84,7 @@ class Draggable extends React.Component {
     }
 
     render() {
+        // TODO(pushkar): Add remove button to Draggable Class itself.
         return <div
             onMouseDown={this.onMouseDown}
             onTouchStart={this.onTouchStart}
@@ -99,4 +100,5 @@ class Draggable extends React.Component {
         </div>;
     }
 }
+
 export default Draggable;

@@ -1,12 +1,21 @@
 .draggable_content {
     position: 'absolute';
     touch-action: 'none';
-}
-
-.draggable_content:hover {
-    cursor: move;
+    padding: 0.4rem;
 }
 
 .draggable_content:active {
-    cursor: grabbing;
+    cursor: move;
+}
+
+.draggable_content:hover > .remove_button {
+    opacity: 1;
+}
+
+.draggable_content:active > .remove_button {
+    opacity: 0;
+}
+
+.draggable_content:hover .draggable_text {
+    border: 1px dashed white;
 }

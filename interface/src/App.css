@@ -35,21 +35,23 @@
     align-content: center;
 }
 
-.remove_button {
-    width: 100%;
-    height: 1rem;
-    border: 0.2rem solid lightslategray;
-    border-top: 0.4rem;
-    display: block;
-    border-radius: 10%;
-    background-color: lightslategray;
-    align-content: center;
-    font-size: 1rem;
-    color: whitesmoke;
+.draggable_text {
+    padding: 0.4rem;
     text-align: center;
-    opacity: 0.0;
+    border: 1px dashed transparent;
 }
 
-.remove_button:hover, active {
+.remove_button {
+    padding-bottom: 0.7rem;
+    display: block;
+    float: right;
+    font-size: 1rem;
+    color: red;
+    opacity: 0;
+}
+
+.remove_button:active {
     cursor: default;
+    color: darkred;
+    opacity: 1 !important;
 }
