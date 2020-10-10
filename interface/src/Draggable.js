@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './Draggable.css';
 
 class Draggable extends React.Component {
     constructor(props) {
@@ -83,14 +84,15 @@ class Draggable extends React.Component {
     }
 
     render() {
+        // TODO(pushkar): Add remove button to Draggable Class itself.
         return <div
             onMouseDown={this.onMouseDown}
             onTouchStart={this.onTouchStart}
+            className="draggable_content"
             style={{
                 position: 'absolute',
                 left: this.state.x,
                 top: this.state.y,
-                touchAction: 'none'
             }}
             ref={(div) => { this.handle = div; }}
         >
@@ -98,4 +100,5 @@ class Draggable extends React.Component {
         </div>;
     }
 }
+
 export default Draggable;
