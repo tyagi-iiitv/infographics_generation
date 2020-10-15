@@ -1,0 +1,14 @@
+import React from 'react';
+import styles from './Canvas.module.scss';
+
+class Canvas extends React.Component {
+    render() {
+        return (
+            <div className={styles.canvas}>
+                {this.props.children}
+            </div>
+        )
+    }
+}
+
+export default Canvas;

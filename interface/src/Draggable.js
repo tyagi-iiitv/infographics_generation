@@ -1,6 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './Draggable.css';
+import styles from './Draggable.module.scss';
+
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 class Draggable extends React.Component {
     constructor(props) {
@@ -9,7 +12,7 @@ class Draggable extends React.Component {
             relX: 0,
             relY: 0,
             x: props.x,
-            y: props.y
+            y: props.y,
         };
         this.gridX = props.gridX || 1;
         this.gridY = props.gridY || 1;
@@ -83,21 +86,34 @@ class Draggable extends React.Component {
         e.preventDefault();
     }
 
+    onClickDelete = () => {
+        if (this.props.deleteButtonPressed) {
+            this.props.deleteButtonPressed();
+        }
+    }
+
     render() {
-        // TODO(pushkar): Add remove button to Draggable Class itself.
-        return <div
-            onMouseDown={this.onMouseDown}
-            onTouchStart={this.onTouchStart}
-            className="draggable_content"
-            style={{
-                position: 'absolute',
-                left: this.state.x,
-                top: this.state.y,
-            }}
-            ref={(div) => { this.handle = div; }}
-        >
-            {this.props.children}
-        </div>;
+        return (
+            <div
+                onMouseDown={this.onMouseDown}
+                onTouchStart={this.onTouchStart}
+                className={styles.draggableContent}
+                style={{
+                    position: 'absolute',
+                    left: this.state.x,
+                    top: this.state.y,
+                }}
+                ref={(div) => { this.handle = div; }}
+            >
+                <div
+                    onClick={this.onClickDelete}
+                    className={styles.removeButton}
+                >
+                    <FontAwesomeIcon icon={faTrashAlt}/>
+                </div>
+                {this.props.children}
+            </div>
+        );
     }
 }
 
