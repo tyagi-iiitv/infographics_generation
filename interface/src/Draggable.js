@@ -87,9 +87,7 @@ class Draggable extends React.Component {
     }
 
     onClickDelete = () => {
-        if (this.props.deleteButtonPressed) {
-            this.props.deleteButtonPressed();
-        }
+        this.props.deleteButtonPressed();
     }
 
     render() {
@@ -106,8 +104,8 @@ class Draggable extends React.Component {
                 ref={(div) => { this.handle = div; }}
             >
                 <div
-                    onClick={this.onClickDelete}
                     className={styles.removeButton}
+                    onClick={this.onClickDelete}
                 >
                     <FontAwesomeIcon icon={faTrashAlt}/>
                 </div>

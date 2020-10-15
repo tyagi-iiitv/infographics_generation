@@ -72,11 +72,9 @@ class App extends React.Component {
             //must have unique key to identify the Draggable class
             <Draggable
                 key={id}
-                deleteButtonPressed={this.handleRemove(id)}
+                deleteButtonPressed={this.handleRemove.bind(this,id)}
             >
-                <p
-                    className={styles.draggableTextContainer}
-                >
+                <p className={styles.draggableTextContainer}>
                     <text
                         style={{fontSize: input_size +'em', fontWeight: text_weight}}
                         className={styles.draggableText}
@@ -89,7 +87,7 @@ class App extends React.Component {
             items: state.items.concat(newItem),
             text: ''
         }));
-        console.log(this.state.items)
+        // console.log(this.state.items)
     }
 }
 
