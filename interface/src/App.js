@@ -1,6 +1,7 @@
 import React from 'react';
 import Draggable from "./Draggable"
 import Canvas from "./Canvas";
+import TextContent from "./TextContent";
 import styles from "./App.module.scss";
 
 class App extends React.Component {
@@ -74,14 +75,11 @@ class App extends React.Component {
                 key={id}
                 deleteButtonPressed={this.handleRemove.bind(this,id)}
             >
-                <p className={styles.draggableTextContainer}>
-                    <text
-                        style={{fontSize: input_size +'em', fontWeight: text_weight}}
-                        className={styles.draggableText}
-                    >
-                        {this.state.text}
-                    </text>
-                </p>
+                <TextContent
+                    text={this.state.text}
+                    size={input_size}
+                    weight={text_weight}
+                />
             </Draggable>;
         this.setState(state => ({
             items: state.items.concat(newItem),

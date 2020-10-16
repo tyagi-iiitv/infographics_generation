@@ -5,6 +5,7 @@ import styles from './Draggable.module.scss';
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+// Implemented from: https://stackoverflow.com/a/49348134/10307491
 class Draggable extends React.Component {
     constructor(props) {
         super(props);
@@ -23,7 +24,6 @@ class Draggable extends React.Component {
         this.onTouchMove = this.onTouchMove.bind(this);
         this.onTouchEnd = this.onTouchEnd.bind(this);
     }
-
 
     onStart(e) {
         const ref = ReactDOM.findDOMNode(this.handle);
