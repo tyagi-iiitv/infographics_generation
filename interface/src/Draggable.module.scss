@@ -1,0 +1,37 @@
+.draggableContent {
+    position: 'absolute';
+    touch-action: 'none';
+    padding: 0.2rem;
+    cursor: default;
+}
+
+.draggableContent:active {
+    cursor: move;
+}
+
+.removeButton {
+    padding-bottom: 0.7rem;
+    display: block;
+    float: right;
+    font-size: 1rem;
+    color: red;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.removeButton:active {
+    color: darkred;
+    opacity: 1 !important;
+}
+
+.draggableContent:hover > .removeButton {
+    opacity: 1;
+}
+
+.draggableContent:active > .removeButton {
+    opacity: 0;
+}
+
+.draggableContent:hover > p {
+    border: 0.5px dashed black;
+}
