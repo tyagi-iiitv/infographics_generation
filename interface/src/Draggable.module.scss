@@ -23,15 +23,3 @@
     color: darkred;
     opacity: 1 !important;
 }
-
-.draggableContent:hover > .removeButton {
-    opacity: 1;
-}
-
-.draggableContent:active > .removeButton {
-    opacity: 0;
-}
-
-.draggableContent:hover > p {
-    border: 0.5px dashed black;
-}

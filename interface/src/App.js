@@ -54,7 +54,7 @@ class App extends React.Component {
         }
 
         const id = Date.now().toLocaleString();
-        console.log("id="+id)
+        // console.log("id="+id)
         var input_text = this.state.text;
         var number_sign = 0;
         var input_size = 1;

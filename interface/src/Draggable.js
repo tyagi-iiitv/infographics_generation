@@ -14,6 +14,7 @@ class Draggable extends React.Component {
             relY: 0,
             x: props.x,
             y: props.y,
+            hovering: false,
         };
         this.gridX = props.gridX || 1;
         this.gridY = props.gridY || 1;
@@ -23,6 +24,8 @@ class Draggable extends React.Component {
         this.onTouchStart = this.onTouchStart.bind(this);
         this.onTouchMove = this.onTouchMove.bind(this);
         this.onTouchEnd = this.onTouchEnd.bind(this);
+        this.setHoverTrue = this.setHoverTrue.bind(this);
+        this.setHoverFalse = this.setHoverFalse.bind(this);
     }
 
     onStart(e) {
@@ -90,11 +93,25 @@ class Draggable extends React.Component {
         this.props.deleteButtonPressed();
     }
 
+    setHoverTrue = () => {
+        this.setState({
+            hovering: true
+        });
+    }
+
+    setHoverFalse = () => {
+        this.setState({
+            hovering: false
+        });
+    }
+
     render() {
         return (
             <div
                 onMouseDown={this.onMouseDown}
                 onTouchStart={this.onTouchStart}
+                onMouseEnter={this.setHoverTrue}
+                onMouseLeave={this.setHoverFalse}
                 className={styles.draggableContent}
                 style={{
                     position: 'absolute',
@@ -106,10 +123,13 @@ class Draggable extends React.Component {
                 <div
                     className={styles.removeButton}
                     onClick={this.onClickDelete}
+                    style={{
+                        opacity: this.state.hovering ? 1 : 0
+                    }}
                 >
                     <FontAwesomeIcon icon={faTrashAlt}/>
                 </div>
-                {this.props.children}
+                {React.cloneElement(this.props.children, { hovering: this.state.hovering })}
             </div>
         );
     }
