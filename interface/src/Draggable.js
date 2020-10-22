@@ -5,19 +5,28 @@ import styles from './Draggable.module.scss';
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-// Implemented from: https://stackoverflow.com/a/49348134/10307491
+/*
+Draggable Class
+Implemented from: https://stackoverflow.com/a/49348134/10307491
+
+Can be dragged around on the canvas using dragging and dropping
+from mouse.
+*/
 class Draggable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             relX: 0,
             relY: 0,
-            x: props.x,
-            y: props.y,
-            hovering: false,
+            x: props.x,  // x-coordinate of the draggable object
+            y: props.y,  // y-coordinate of the object
+            hovering: false,  // Handles change oh hover property
         };
+
+        // Grid that the draggable element snaps to
         this.gridX = props.gridX || 1;
         this.gridY = props.gridY || 1;
+
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
@@ -89,16 +98,20 @@ class Draggable extends React.Component {
         e.preventDefault();
     }
 
+    // Handles deleting the object by calling the handleRemove
+    // function in the App Class
     onClickDelete = () => {
         this.props.deleteButtonPressed();
     }
 
+    // Sets hovering property to true when mouse enters the object
     setHoverTrue = () => {
         this.setState({
             hovering: true
         });
     }
 
+    // Sets hovering property to false when mouse leaves the object
     setHoverFalse = () => {
         this.setState({
             hovering: false
@@ -124,12 +137,18 @@ class Draggable extends React.Component {
                     className={styles.removeButton}
                     onClick={this.onClickDelete}
                     style={{
+                        // Makes delete button visible when hovered
                         opacity: this.state.hovering ? 1 : 0
                     }}
                 >
                     <FontAwesomeIcon icon={faTrashAlt}/>
                 </div>
-                {React.cloneElement(this.props.children, { hovering: this.state.hovering })}
+                {
+                    // Adds hovering property to child component to change behaviour in
+                    // it while hovering on draggable class
+                    // Implemented from: https://stackoverflow.com/a/54568167/10307491
+                    React.cloneElement(this.props.children, { hovering: this.state.hovering })
+                }
             </div>
         );
     }
