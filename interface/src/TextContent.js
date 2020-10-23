@@ -15,12 +15,12 @@ class TextContent extends React.Component {
         };
     }
 
-    // Handles change oh hover property on change in Draggable class
+    // Handles change on hover property on change in Draggable class
     componentDidUpdate(prevProps) {
         if (prevProps.hovering !== this.props.hovering) {
             this.setState({hovering: this.props.hovering});
         }
-      }
+    }
 
     render() {
         return (

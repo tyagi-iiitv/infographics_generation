@@ -58,29 +58,15 @@ class App extends React.Component {
 
         // Unique id generated from time in milliseconds since epoch
         const id = Date.now().toLocaleString();
-        // console.log("id="+id)
-        var input_text = this.state.text;
-        // number_sign = 1 means there's a '#' symbol in prefix and hence,
-        // it's a heading. Can be increased to add more Markdown-style
-        // heading levels
-        var number_sign = 0;
-        var input_size = 1;
-        // Normal text weight for body text; bold for headings
+
+        var input_len = this.state.text.length;
         var text_weight = 'normal';
-        var input_length = input_text.length
+        var input_size = 1;
 
-        if (input_text[0] === '#') {
-            number_sign++;
+        if (this.state.text[0] === '#') {
+            text_weight = 'bold';
+            input_size = 2;
         }
-
-        if (number_sign !== 0) {
-            text_weight = 'bold'
-        }
-
-        // TODO(pushkar): Use setState here. Using the syntax directly doesn't works.
-        this.state.text = input_text.substring(number_sign, input_length);
-
-        input_size = input_size + 1*number_sign;
 
         const newItem =
             //must have unique key to identify the Draggable class
@@ -90,7 +76,11 @@ class App extends React.Component {
                 deleteButtonPressed={this.handleRemove.bind(this,id)}
             >
                 <TextContent
-                    text={this.state.text}
+                    text={
+                        this.state.text[0] === '#' ?
+                        this.state.text.substring(1, input_len) :
+                        this.state.text
+                    }
                     size={input_size}
                     weight={text_weight}
                 />
