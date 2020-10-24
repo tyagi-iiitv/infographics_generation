@@ -1,7 +1,7 @@
 import React from 'react';
-import Draggable from "./Draggable"
-import Canvas from "./Canvas";
-import TextContent from "./TextContent";
+import Draggable from "./components/Draggable/Draggable"
+import Canvas from "./components/Canvas/Canvas";
+import TextContent from "./components/TextContent/TextContent";
 import styles from "./App.module.scss";
 
 class App extends React.Component {
@@ -50,23 +50,14 @@ class App extends React.Component {
     }
 
     handleSubmit(e) {
-        //if nothing input, ignore it
+        //if nothing input or only whitespace, ignore it
         e.preventDefault();
-        if (this.state.text.length === 0) {
+        if (this.state.text.trim().length === 0) {
             return;
         }
 
         // Unique id generated from time in milliseconds since epoch
         const id = Date.now().toLocaleString();
-
-        var input_len = this.state.text.length;
-        var text_weight = 'normal';
-        var input_size = 1;
-
-        if (this.state.text[0] === '#') {
-            text_weight = 'bold';
-            input_size = 2;
-        }
 
         const newItem =
             //must have unique key to identify the Draggable class
@@ -76,13 +67,7 @@ class App extends React.Component {
                 deleteButtonPressed={this.handleRemove.bind(this,id)}
             >
                 <TextContent
-                    text={
-                        this.state.text[0] === '#' ?
-                        this.state.text.substring(1, input_len) :
-                        this.state.text
-                    }
-                    size={input_size}
-                    weight={text_weight}
+                    text={this.state.text.trim()}
                 />
             </Draggable>;
 
@@ -91,7 +76,6 @@ class App extends React.Component {
             items: state.items.concat(newItem),
             text: ''
         }));
-        // console.log(this.state.items)
     }
 }
 

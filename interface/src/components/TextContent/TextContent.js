@@ -13,9 +13,23 @@ class TextContent extends React.Component {
             // For changing border on hovering over Draggable class
             hovering: this.props.hovering,
         };
+        this.text_len = this.props.text.length;
+        // For title text
+        if (this.props.text[0] === '#') {
+            this.text = this.props.text.substring(1,this.text_len);
+            this.text_weight = 'bold';
+            this.text_size = 32;
+        }
+        // For body text
+        else {
+            this.text = this.props.text;
+            this.text_weight = 'normal';
+            this.text_size = 16;
+        }
     }
 
     // Handles change on hover property on change in Draggable class
+    // Implemented from: https://stackoverflow.com/a/54568167/10307491
     componentDidUpdate(prevProps) {
         if (prevProps.hovering !== this.props.hovering) {
             this.setState({hovering: this.props.hovering});
@@ -34,11 +48,11 @@ class TextContent extends React.Component {
                 <span
                     className={styles.textContent}
                     style={{
-                        fontSize: this.props.size + 'em',
-                        fontWeight: this.props.weight
+                        fontSize: this.text_size + 'px',
+                        fontWeight: this.text_weight
                     }}
                 >
-                    {this.props.text}
+                    {this.text}
                 </span>
             </p>
         )

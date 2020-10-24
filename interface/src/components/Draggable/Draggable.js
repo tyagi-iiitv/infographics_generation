@@ -18,9 +18,10 @@ class Draggable extends React.Component {
         this.state = {
             relX: 0,
             relY: 0,
-            x: props.x,  // x-coordinate of the draggable object
-            y: props.y,  // y-coordinate of the object
-            hovering: false,  // Handles change oh hover property
+            x: props.x,         // x-coordinate of the draggable object
+            y: props.y,         // y-coordinate of the object
+            hovering: false,    // Handles change oh hover property
+            grabbing: false
         };
 
         // Grid that the draggable element snaps to
@@ -64,6 +65,9 @@ class Draggable extends React.Component {
         this.onStart(e);
         document.addEventListener('mousemove', this.onMouseMove);
         document.addEventListener('mouseup', this.onMouseUp);
+        this.setState({
+            grabbing: true
+        });
         e.preventDefault();
     }
 
@@ -71,6 +75,9 @@ class Draggable extends React.Component {
         document.removeEventListener('mousemove', this.onMouseMove);
         document.removeEventListener('mouseup', this.onMouseUp);
         this.props.onStop && this.props.onStop(this.state.x, this.state.y);
+        this.setState({
+            grabbing: false
+        });
         e.preventDefault();
     }
 
@@ -138,7 +145,9 @@ class Draggable extends React.Component {
                     onClick={this.onClickDelete}
                     style={{
                         // Makes delete button visible when hovered
-                        opacity: this.state.hovering ? 1 : 0
+                        opacity:
+                            this.state.hovering && !this.state.grabbing
+                            ? 1 : 0
                     }}
                 >
                     <FontAwesomeIcon icon={faTrashAlt}/>
@@ -146,8 +155,12 @@ class Draggable extends React.Component {
                 {
                     // Adds hovering property to child component to change behaviour in
                     // it while hovering on draggable class
-                    // Implemented from: https://stackoverflow.com/a/54568167/10307491
-                    React.cloneElement(this.props.children, { hovering: this.state.hovering })
+                    // Implemented from: https://stackoverflow.com/a/35102287/10307491
+                    // For adding more then one child inside an draggable, check above link
+                    React.cloneElement(this.props.children, {
+                        hovering: this.state.hovering,
+                        grabbing: this.state.grabbing
+                    })
                 }
             </div>
         );
