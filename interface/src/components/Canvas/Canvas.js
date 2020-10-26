@@ -8,13 +8,10 @@ Area where elements would be added
 class Canvas extends React.Component {
     render() {
         return (
-            <div
-                className={styles.canvas}
-                id="canvas"
-            >
+            <div className={styles.canvas} id="canvas">
                 {this.props.children}
             </div>
-        )
+        );
     }
 }
 

@@ -1,8 +1,8 @@
 import React from 'react';
-import Draggable from "./components/Draggable/Draggable"
-import Canvas from "./components/Canvas/Canvas";
-import TextContent from "./components/TextContent/TextContent";
-import styles from "./App.module.scss";
+import Draggable from './components/Draggable/Draggable';
+import Canvas from './components/Canvas/Canvas';
+import TextContent from './components/TextContent/TextContent';
+import styles from './App.module.scss';
 
 class App extends React.Component {
     constructor(props) {
@@ -18,32 +18,8 @@ class App extends React.Component {
     // Removes the element when delete button is pressed
     handleRemove(key) {
         const new_items = this.state.items.filter((item) => item.key !== key);
-        this.setState({text: this.state.text, items: new_items})
+        this.setState({ text: this.state.text, items: new_items });
     }
-
-    render() {
-        return (
-            <div className={styles.App}>
-                <header className={styles.AppHeader}>
-                    <div>
-                        <form onSubmit={this.handleSubmit}>
-                            <input
-                                id="input_dragable_text"
-                                onChange={this.handleChange}
-                                value={this.state.text}
-                                placeholder = "Press Enter to input"
-                            />
-                        </form>
-                    </div>
-                </header>
-                <div className={styles.AppBody}>
-                    <Canvas>
-                        {this.state.items}
-                    </Canvas>
-                </div>
-            </div>
-            );
-        }
 
     handleChange(e) {
         this.setState({ text: e.target.value });
@@ -59,23 +35,44 @@ class App extends React.Component {
         // Unique id generated from time in milliseconds since epoch
         const id = Date.now().toLocaleString();
 
-        const newItem =
+        const newItem = (
             //must have unique key to identify the Draggable class
             <Draggable
                 key={id}
                 // Deletes the object if delete button pressed
-                deleteButtonPressed={this.handleRemove.bind(this,id)}
+                deleteButtonPressed={this.handleRemove.bind(this, id)}
             >
-                <TextContent
-                    text={this.state.text.trim()}
-                />
-            </Draggable>;
+                <TextContent text={this.state.text.trim()} />
+            </Draggable>
+        );
 
         // Adds new draggable item to the list
-        this.setState(state => ({
+        this.setState((state) => ({
             items: state.items.concat(newItem),
-            text: ''
+            text: '',
         }));
+    }
+
+    render() {
+        return (
+            <div className={styles.App}>
+                <header className={styles.AppHeader}>
+                    <div>
+                        <form onSubmit={this.handleSubmit}>
+                            <input
+                                id="input_dragable_text"
+                                onChange={this.handleChange}
+                                value={this.state.text}
+                                placeholder="Press Enter to input"
+                            />
+                        </form>
+                    </div>
+                </header>
+                <div className={styles.AppBody}>
+                    <Canvas>{this.state.items}</Canvas>
+                </div>
+            </div>
+        );
     }
 }
 

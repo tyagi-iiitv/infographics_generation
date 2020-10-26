@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import styles from './Draggable.module.scss';
 
-import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 /*
 Draggable Class
@@ -18,10 +18,10 @@ class Draggable extends React.Component {
         this.state = {
             relX: 0,
             relY: 0,
-            x: props.x,         // x-coordinate of the draggable object
-            y: props.y,         // y-coordinate of the object
-            hovering: false,    // Handles change oh hover property
-            grabbing: false
+            x: props.x, // x-coordinate of the draggable object
+            y: props.y, // y-coordinate of the object
+            hovering: false, // Handles change on hover property
+            grabbing: false, // Handles change on grabbing
         };
 
         // Grid that the draggable element snaps to
@@ -44,7 +44,7 @@ class Draggable extends React.Component {
         const box = ref.getBoundingClientRect();
         this.setState({
             relX: e.pageX - (box.left + body.scrollLeft - body.clientLeft),
-            relY: e.pageY - (box.top + body.scrollTop - body.clientTop)
+            relY: e.pageY - (box.top + body.scrollTop - body.clientTop),
         });
     }
 
@@ -54,7 +54,7 @@ class Draggable extends React.Component {
         if (x !== this.state.x || y !== this.state.y) {
             this.setState({
                 x,
-                y
+                y,
             });
             this.props.onMove && this.props.onMove(this.state.x, this.state.y);
         }
@@ -66,7 +66,7 @@ class Draggable extends React.Component {
         document.addEventListener('mousemove', this.onMouseMove);
         document.addEventListener('mouseup', this.onMouseUp);
         this.setState({
-            grabbing: true
+            grabbing: true,
         });
         e.preventDefault();
     }
@@ -76,7 +76,7 @@ class Draggable extends React.Component {
         document.removeEventListener('mouseup', this.onMouseUp);
         this.props.onStop && this.props.onStop(this.state.x, this.state.y);
         this.setState({
-            grabbing: false
+            grabbing: false,
         });
         e.preventDefault();
     }
@@ -88,8 +88,8 @@ class Draggable extends React.Component {
 
     onTouchStart(e) {
         this.onStart(e.touches[0]);
-        document.addEventListener('touchmove', this.onTouchMove, {passive: false});
-        document.addEventListener('touchend', this.onTouchEnd, {passive: false});
+        document.addEventListener('touchmove', this.onTouchMove, { passive: false });
+        document.addEventListener('touchend', this.onTouchEnd, { passive: false });
         e.preventDefault();
     }
 
@@ -109,21 +109,21 @@ class Draggable extends React.Component {
     // function in the App Class
     onClickDelete = () => {
         this.props.deleteButtonPressed();
-    }
+    };
 
     // Sets hovering property to true when mouse enters the object
     setHoverTrue = () => {
         this.setState({
-            hovering: true
+            hovering: true,
         });
-    }
+    };
 
     // Sets hovering property to false when mouse leaves the object
     setHoverFalse = () => {
         this.setState({
-            hovering: false
+            hovering: false,
         });
-    }
+    };
 
     render() {
         return (
@@ -138,19 +138,19 @@ class Draggable extends React.Component {
                     left: this.state.x,
                     top: this.state.y,
                 }}
-                ref={(div) => { this.handle = div; }}
+                ref={(div) => {
+                    this.handle = div;
+                }}
             >
                 <div
                     className={styles.removeButton}
                     onClick={this.onClickDelete}
                     style={{
                         // Makes delete button visible when hovered
-                        opacity:
-                            this.state.hovering && !this.state.grabbing
-                            ? 1 : 0
+                        opacity: this.state.hovering && !this.state.grabbing ? 1 : 0,
                     }}
                 >
-                    <FontAwesomeIcon icon={faTrashAlt}/>
+                    <FontAwesomeIcon icon={faTrashAlt} />
                 </div>
                 {
                     // Adds hovering property to child component to change behaviour in
@@ -159,7 +159,7 @@ class Draggable extends React.Component {
                     // For adding more then one child inside an draggable, check above link
                     React.cloneElement(this.props.children, {
                         hovering: this.state.hovering,
-                        grabbing: this.state.grabbing
+                        grabbing: this.state.grabbing,
                     })
                 }
             </div>

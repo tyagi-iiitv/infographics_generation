@@ -16,7 +16,7 @@ class TextContent extends React.Component {
         this.text_len = this.props.text.length;
         // For title text
         if (this.props.text[0] === '#') {
-            this.text = this.props.text.substring(1,this.text_len);
+            this.text = this.props.text.substring(1, this.text_len);
             this.text_weight = 'bold';
             this.text_size = 32;
         }
@@ -32,7 +32,7 @@ class TextContent extends React.Component {
     // Implemented from: https://stackoverflow.com/a/54568167/10307491
     componentDidUpdate(prevProps) {
         if (prevProps.hovering !== this.props.hovering) {
-            this.setState({hovering: this.props.hovering});
+            this.setState({ hovering: this.props.hovering });
         }
     }
 
@@ -42,20 +42,22 @@ class TextContent extends React.Component {
                 className={styles.textContainer}
                 style={{
                     // Black dashed border if hovering; transparent otherwise
-                    border: this.state.hovering ? '0.5px dashed black' : '0.5px dashed transparent'
+                    border: this.state.hovering
+                        ? '0.5px dashed black'
+                        : '0.5px dashed transparent',
                 }}
             >
                 <span
                     className={styles.textContent}
                     style={{
                         fontSize: this.text_size + 'px',
-                        fontWeight: this.text_weight
+                        fontWeight: this.text_weight,
                     }}
                 >
                     {this.text}
                 </span>
             </p>
-        )
+        );
     }
 }
 
