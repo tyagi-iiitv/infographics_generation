@@ -6,10 +6,23 @@
     flex-direction: column;
     align-items: center;
     flex-wrap: nowrap;
+    z-index: 11;
 }
 
 .textContent {
     padding: 0.2rem;
     text-align: left;
     vertical-align: top;
+}
+
+.dropdownContainer {
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.dropdown:hover {
+    opacity: 1 !important;
 }

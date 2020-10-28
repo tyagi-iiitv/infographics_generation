@@ -142,15 +142,17 @@ class Draggable extends React.Component {
                     this.handle = div;
                 }}
             >
-                <div
-                    className={styles.removeButton}
-                    onClick={this.onClickDelete}
-                    style={{
-                        // Makes delete button visible when hovered
-                        opacity: this.state.hovering && !this.state.grabbing ? 1 : 0,
-                    }}
-                >
-                    <FontAwesomeIcon icon={faTrashAlt} />
+                <div className={styles.removeButton}>
+                    <FontAwesomeIcon
+                        icon={faTrashAlt}
+                        className={styles.trashIcon}
+                        onClick={this.onClickDelete}
+                        style={{
+                            // Makes delete button visible when hovered
+                            opacity:
+                                this.state.hovering && !this.state.grabbing ? 1 : 0,
+                        }}
+                    />
                 </div>
                 {
                     // Adds hovering property to child component to change behaviour in
