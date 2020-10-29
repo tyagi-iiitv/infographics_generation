@@ -36,6 +36,8 @@ class Draggable extends React.Component {
         this.onTouchMove = this.onTouchMove.bind(this);
         this.onTouchEnd = this.onTouchEnd.bind(this);
         this.toggleHover = this.toggleHover.bind(this);
+        this.toggleLocking = this.toggleLocking.bind(this);
+        this.onClickDelete = this.onClickDelete.bind(this);
     }
 
     onStart(e) {

@@ -13,9 +13,28 @@
     color: white;
 }
 
-.AppHeader textarea {
-    height: 220px;
-    width: 342px;
+.headerContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.textBox {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    margin-right: 10px;
+}
+
+.addImageButton {
+    height: 22px;
+    width: 22px;
+    margin: 20 px;
+    padding: 2px;
 }
 
 .AppBody {

@@ -38,6 +38,7 @@ class TextContent extends React.Component {
             48,
             60,
             72,
+            96,
         ];
 
         // For title text (HTML H1 heading level)
