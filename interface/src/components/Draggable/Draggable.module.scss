@@ -13,17 +13,21 @@
     z-index: 10;
 }
 
-.removeButton {
+.topButtons {
     padding-bottom: 0.2rem;
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.lockIcon {
+    font-size: 1rem;
+    cursor: pointer;
 }
 
 .trashIcon {
     font-size: 1rem;
     color: red;
-    opacity: 0;
     cursor: pointer;
 }
 

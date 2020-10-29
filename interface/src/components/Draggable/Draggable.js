@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import styles from './Draggable.module.scss';
 
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faUnlock, faLock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 /*
@@ -20,8 +20,9 @@ class Draggable extends React.Component {
             relY: 0,
             x: props.x, // x-coordinate of the draggable object
             y: props.y, // y-coordinate of the object
-            hovering: false, // Handles change on hover property
-            grabbing: false, // Handles change on grabbing
+            hovering: false, // True if hovering, false otherwise
+            grabbing: false, // True if grabbing, false otherwise
+            locked: false, // True if locked in place, false otherwise
         };
 
         // Grid that the draggable element snaps to
@@ -60,14 +61,16 @@ class Draggable extends React.Component {
     }
 
     onMouseDown(e) {
-        if (e.button !== 0) return;
-        this.onStart(e);
-        document.addEventListener('mousemove', this.onMouseMove);
-        document.addEventListener('mouseup', this.onMouseUp);
-        this.setState({
-            grabbing: true,
-        });
-        e.preventDefault();
+        if (this.state.locked === false) {
+            if (e.button !== 0) return;
+            this.onStart(e);
+            document.addEventListener('mousemove', this.onMouseMove);
+            document.addEventListener('mouseup', this.onMouseUp);
+            this.setState({
+                grabbing: true,
+            });
+            e.preventDefault();
+        }
     }
 
     onMouseUp(e) {
@@ -110,7 +113,7 @@ class Draggable extends React.Component {
         this.props.deleteButtonPressed();
     };
 
-    // Toggles the hovering property
+    // Toggles the hovering state
     toggleHover = () => {
         if (this.state.hovering === false) {
             this.setState({
@@ -119,6 +122,19 @@ class Draggable extends React.Component {
         } else {
             this.setState({
                 hovering: false,
+            });
+        }
+    };
+
+    // Toggles the locking state
+    toggleLocking = () => {
+        if (this.state.locked === false) {
+            this.setState({
+                locked: true,
+            });
+        } else {
+            this.setState({
+                locked: false,
             });
         }
     };
@@ -140,7 +156,17 @@ class Draggable extends React.Component {
                     this.handle = div;
                 }}
             >
-                <div className={styles.removeButton}>
+                <div className={styles.topButtons}>
+                    <FontAwesomeIcon
+                        icon={this.state.locked ? faLock : faUnlock}
+                        className={styles.lockIcon}
+                        onClick={this.toggleLocking}
+                        style={{
+                            // Makes delete button visible when hovered
+                            opacity: this.state.hovering ? 1 : 0,
+                            color: this.state.locked ? 'red' : 'green',
+                        }}
+                    />
                     <FontAwesomeIcon
                         icon={faTrashAlt}
                         className={styles.trashIcon}
@@ -159,6 +185,7 @@ class Draggable extends React.Component {
                     React.cloneElement(this.props.children, {
                         hovering: this.state.hovering,
                         grabbing: this.state.grabbing,
+                        locked: this.state.locked,
                     })
                 }
             </div>

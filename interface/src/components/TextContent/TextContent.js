@@ -12,6 +12,7 @@ class TextContent extends React.Component {
         super(props);
         this.state = {
             hovering: this.props.hovering,
+            locked: this.props.locked,
             text: '', // Text placed inside the textbox
             textWeight: '', // Weight of the text (bold for title)
             textSize: 0, // Size of text
@@ -55,27 +56,29 @@ class TextContent extends React.Component {
     }
 
     increaseTextSize = () => {
-        var curSize = this.state.textSize;
-        for (var i = 0; i < this.fontSizes.length; i++) {
-            if (this.fontSizes[i] > curSize) {
-                curSize = this.fontSizes[i];
-                break;
+        if (this.state.locked === false) {
+            var curSize = this.state.textSize;
+            for (var i = 0; i < this.fontSizes.length; i++) {
+                if (this.fontSizes[i] > curSize) {
+                    curSize = this.fontSizes[i];
+                    break;
+                }
             }
+            this.setState({ textSize: curSize });
         }
-        this.setState({ textSize: curSize });
-        console.log('Increase called: ' + curSize);
     };
 
     decreaseTextSize = () => {
-        var curSize = this.state.textSize;
-        for (var i = this.fontSizes.length - 1; i >= 0; i--) {
-            if (this.fontSizes[i] < curSize) {
-                curSize = this.fontSizes[i];
-                break;
+        if (this.state.locked === false) {
+            var curSize = this.state.textSize;
+            for (var i = this.fontSizes.length - 1; i >= 0; i--) {
+                if (this.fontSizes[i] < curSize) {
+                    curSize = this.fontSizes[i];
+                    break;
+                }
             }
+            this.setState({ textSize: curSize });
         }
-        this.setState({ textSize: curSize });
-        console.log('Decrease called: ' + curSize);
     };
 
     componentDidUpdate(prevProps) {
@@ -83,6 +86,9 @@ class TextContent extends React.Component {
         // Implemented from: https://stackoverflow.com/a/54568167/10307491
         if (prevProps.hovering !== this.props.hovering) {
             this.setState({ hovering: this.props.hovering });
+        }
+        if (prevProps.locked !== this.props.locked) {
+            this.setState({ locked: this.props.locked });
         }
     }
 
