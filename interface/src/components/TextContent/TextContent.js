@@ -1,4 +1,5 @@
 import React from 'react';
+import SizeButton from '../SizeButton/SizeButton';
 import styles from './TextContent.module.scss';
 
 /*
@@ -11,69 +12,83 @@ class TextContent extends React.Component {
         super(props);
         this.state = {
             hovering: this.props.hovering,
-            grabbing: this.props.grabbing,
             text: '', // Text placed inside the textbox
-            text_weight: '', // Weight of the text (bold for title)
-            text_size: 0, // Size of text
+            textWeight: '', // Weight of the text (bold for title)
+            textSize: 0, // Size of text
         };
-        this.text_len = this.props.text.length;
-        this.font_sizes = [
-            { value: 8 },
-            { value: 9 },
-            { value: 10 },
-            { value: 11 },
-            { value: 12 },
-            { value: 14 },
-            { value: 16 },
-            { value: 18 },
-            { value: 24 },
-            { value: 28 },
-            { value: 30 },
-            { value: 32 },
-            { value: 36 },
-            { value: 42 },
-            { value: 48 },
-            { value: 60 },
-            { value: 72 },
+        this.textLen = this.props.text.length;
+
+        // Font sizes that can be set to the text
+        this.fontSizes = [
+            8,
+            9,
+            10,
+            11,
+            12,
+            14,
+            16,
+            18,
+            24,
+            28,
+            30,
+            32,
+            36,
+            42,
+            48,
+            60,
+            72,
         ];
+
         // For title text (HTML H1 heading level)
         if (this.props.text[0] === '#') {
-            this.state.text = this.props.text.substring(1, this.text_len);
-            this.state.text_weight = 'bold';
-            this.state.text_size = 32;
-            this.text_len--;
+            this.state.text = this.props.text.substring(1, this.textLen);
+            this.state.textWeight = 'bold';
+            this.state.textSize = 32;
+            this.textLen--;
         }
         // For body text
         else {
             this.state.text = this.props.text;
-            this.state.text_weight = 'normal';
-            this.state.text_size = 16;
+            this.state.textWeight = 'normal';
+            this.state.textSize = 16;
         }
     }
 
-    setTextSize(textSize) {
-        this.setState({
-            textSize: textSize,
-        });
-    }
+    increaseTextSize = () => {
+        var curSize = this.state.textSize;
+        for (var i = 0; i < this.fontSizes.length; i++) {
+            if (this.fontSizes[i] > curSize) {
+                curSize = this.fontSizes[i];
+                break;
+            }
+        }
+        this.setState({ textSize: curSize });
+        console.log('Increase called: ' + curSize);
+    };
 
-    // Handles change on hover property on change in Draggable class
-    // Implemented from: https://stackoverflow.com/a/54568167/10307491
+    decreaseTextSize = () => {
+        var curSize = this.state.textSize;
+        for (var i = this.fontSizes.length - 1; i >= 0; i--) {
+            if (this.fontSizes[i] < curSize) {
+                curSize = this.fontSizes[i];
+                break;
+            }
+        }
+        this.setState({ textSize: curSize });
+        console.log('Decrease called: ' + curSize);
+    };
+
     componentDidUpdate(prevProps) {
+        // Handles change on hover property on change in Draggable class
+        // Implemented from: https://stackoverflow.com/a/54568167/10307491
         if (prevProps.hovering !== this.props.hovering) {
             this.setState({ hovering: this.props.hovering });
-        }
-        if (prevProps.grabbing !== this.props.grabbing) {
-            this.setState({ grabbing: this.props.grabbing });
-        }
-        if (prevProps.size !== this.props.size) {
-            this.setState({ size: this.props.size });
         }
     }
 
     render() {
         return (
-            <div>
+            <>
                 <p
                     className={styles.textContainer}
                     style={{
@@ -86,32 +101,30 @@ class TextContent extends React.Component {
                     <span
                         className={styles.textContent}
                         style={{
-                            fontSize: this.state.text_size + 'px',
-                            fontWeight: this.state.text_weight,
+                            fontSize: this.state.textSize + 'px',
+                            fontWeight: this.state.textWeight,
                         }}
                     >
                         {this.state.text}
                     </span>
                 </p>
-                <div className={styles.dropdownContainer}>
-                    <select
-                        name="text-size-dropdown"
-                        className={styles.dropdown}
-                        value={this.state.text_size}
-                        onChange={(e) => this.setTextSize(e.currentTarget.value)}
-                        style={{
-                            opacity:
-                                this.state.hovering && !this.state.grabbing ? 1 : 0,
-                        }}
-                    >
-                        {this.font_sizes.map(({ value }) => (
-                            <option key={value} value={value}>
-                                {value}
-                            </option>
-                        ))}
-                    </select>
+                <div
+                    className={styles.textSizeChangeContainer}
+                    style={{ opacity: this.state.hovering ? 1 : 0 }}
+                >
+                    <SizeButton
+                        text="-"
+                        buttonPressed={() => this.decreaseTextSize.bind(this)}
+                    />
+                    <div className={styles.textSizeDisplay}>
+                        {this.state.textSize}
+                    </div>
+                    <SizeButton
+                        text="+"
+                        buttonPressed={() => this.increaseTextSize.bind(this)}
+                    />
                 </div>
-            </div>
+            </>
         );
     }
 }

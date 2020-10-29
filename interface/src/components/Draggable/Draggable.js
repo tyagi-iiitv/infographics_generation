@@ -34,8 +34,7 @@ class Draggable extends React.Component {
         this.onTouchStart = this.onTouchStart.bind(this);
         this.onTouchMove = this.onTouchMove.bind(this);
         this.onTouchEnd = this.onTouchEnd.bind(this);
-        this.setHoverTrue = this.setHoverTrue.bind(this);
-        this.setHoverFalse = this.setHoverFalse.bind(this);
+        this.toggleHover = this.toggleHover.bind(this);
     }
 
     onStart(e) {
@@ -111,18 +110,17 @@ class Draggable extends React.Component {
         this.props.deleteButtonPressed();
     };
 
-    // Sets hovering property to true when mouse enters the object
-    setHoverTrue = () => {
-        this.setState({
-            hovering: true,
-        });
-    };
-
-    // Sets hovering property to false when mouse leaves the object
-    setHoverFalse = () => {
-        this.setState({
-            hovering: false,
-        });
+    // Toggles the hovering property
+    toggleHover = () => {
+        if (this.state.hovering === false) {
+            this.setState({
+                hovering: true,
+            });
+        } else {
+            this.setState({
+                hovering: false,
+            });
+        }
     };
 
     render() {
@@ -130,8 +128,8 @@ class Draggable extends React.Component {
             <div
                 onMouseDown={this.onMouseDown}
                 onTouchStart={this.onTouchStart}
-                onMouseEnter={this.setHoverTrue}
-                onMouseLeave={this.setHoverFalse}
+                onMouseEnter={this.toggleHover}
+                onMouseLeave={this.toggleHover}
                 className={styles.draggableContent}
                 style={{
                     position: 'absolute',
@@ -149,8 +147,7 @@ class Draggable extends React.Component {
                         onClick={this.onClickDelete}
                         style={{
                             // Makes delete button visible when hovered
-                            opacity:
-                                this.state.hovering && !this.state.grabbing ? 1 : 0,
+                            opacity: this.state.hovering ? 1 : 0,
                         }}
                     />
                 </div>

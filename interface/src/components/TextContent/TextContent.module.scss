@@ -15,14 +15,20 @@
     vertical-align: top;
 }
 
-.dropdownContainer {
-    padding: 0.5rem;
+.textSizeChangeContainer {
+    padding: 1px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    justify-content: center;
     flex-wrap: nowrap;
 }
 
-.dropdown:hover {
-    opacity: 1 !important;
+.textSizeDisplay {
+    width: 23px;
+    height: 23px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 5px;
+    font-size: 12px;
 }
