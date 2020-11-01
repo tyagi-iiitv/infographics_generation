@@ -29,3 +29,7 @@ yarn-debug.log*
 yarn-error.log*
 
 __pycache__/
+
+# CSS Modules
+!*.modules.css
+!*.module.scss

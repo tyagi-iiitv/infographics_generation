@@ -1,0 +1,14 @@
+.canvas {
+    background-color: ghostwhite;
+    font-size: calc(10px + 2vmin);
+    color: black;
+    margin: auto;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 95%;
+    height: 95%;
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+}
