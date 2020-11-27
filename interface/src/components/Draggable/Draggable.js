@@ -23,6 +23,7 @@ class Draggable extends React.Component {
             hovering: false, // True if hovering, false otherwise
             grabbing: false, // True if grabbing, false otherwise
             locked: false, // True if locked in place, false otherwise
+            id: props.id, // Unique prop ID
         };
 
         // Grid that the draggable element snaps to
@@ -59,17 +60,28 @@ class Draggable extends React.Component {
         let y = Math.trunc((e.pageY - this.state.relY) / this.gridY) * this.gridY;
 
         // Restricts dragging if element is going left or right of canvas
-        if (x < canvasArea.left) {
+
+        if (x < canvasArea.left - 3.2) {
             x = canvasArea.left - 3.2;
-        } else if (x > canvasArea.right - box.width) {
+        } else if (x > canvasArea.right - box.width + 3.2) {
             x = canvasArea.right - box.width + 3.2;
         }
 
         // Restricts dragging if element is going above or below of canvas
-        if (y < canvasArea.top) {
-            y = canvasArea.top - 24.4;
-        } else if (y > canvasArea.bottom - box.height) {
-            y = canvasArea.bottom - box.height;
+
+        // Lets bottom size slector for text to go below canvas
+        if (this.state.id.includes('title') || this.state.id.includes('text')) {
+            if (y < canvasArea.top - 24.4) {
+                y = canvasArea.top - 24.4;
+            } else if (y > canvasArea.bottom - box.height + 33.2) {
+                y = canvasArea.bottom - box.height + 33.2;
+            }
+        } else {
+            if (y < canvasArea.top - 24.4) {
+                y = canvasArea.top - 24.4;
+            } else if (y > canvasArea.bottom - box.height + 3.2) {
+                y = canvasArea.bottom - box.height + 3.2;
+            }
         }
 
         if (x !== this.state.x || y !== this.state.y) {
