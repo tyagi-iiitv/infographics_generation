@@ -51,8 +51,27 @@ class Draggable extends React.Component {
     }
 
     onMove(e) {
-        const x = Math.trunc((e.pageX - this.state.relX) / this.gridX) * this.gridX;
-        const y = Math.trunc((e.pageY - this.state.relY) / this.gridY) * this.gridY;
+        const canvasArea = document.getElementById('canvas').getBoundingClientRect();
+        const ref = ReactDOM.findDOMNode(this.handle);
+        const box = ref.getBoundingClientRect();
+
+        let x = Math.trunc((e.pageX - this.state.relX) / this.gridX) * this.gridX;
+        let y = Math.trunc((e.pageY - this.state.relY) / this.gridY) * this.gridY;
+
+        // Restricts dragging if element is going left or right of canvas
+        if (x < canvasArea.left) {
+            x = canvasArea.left - 3.2;
+        } else if (x > canvasArea.right - box.width) {
+            x = canvasArea.right - box.width + 3.2;
+        }
+
+        // Restricts dragging if element is going above or below of canvas
+        if (y < canvasArea.top) {
+            y = canvasArea.top - 24.4;
+        } else if (y > canvasArea.bottom - box.height) {
+            y = canvasArea.bottom - box.height;
+        }
+
         if (x !== this.state.x || y !== this.state.y) {
             this.setState({
                 x,

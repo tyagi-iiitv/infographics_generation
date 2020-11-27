@@ -51,6 +51,7 @@ class App extends React.Component {
             //must have unique key to identify the Draggable class
             <Draggable
                 key={id}
+                id={id}
                 // Deletes the object if delete button pressed
                 deleteButtonPressed={this.handleRemove.bind(this, id)}
             >
@@ -78,6 +79,7 @@ class App extends React.Component {
             //must have unique key to identify the Draggable class
             <Draggable
                 key={id}
+                id={id}
                 // Deletes the object if delete button pressed
                 deleteButtonPressed={this.handleRemove.bind(this, id)}
             >
