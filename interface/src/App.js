@@ -5,8 +5,8 @@ import TextContent from './components/TextContent/TextContent';
 import ImageContent from './components/ImageContent/ImageContent';
 import styles from './App.module.scss';
 
-import { faFileImage } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faFileImage } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class App extends React.Component {
     constructor(props) {
@@ -101,37 +101,34 @@ class App extends React.Component {
     render() {
         return (
             <div className={styles.App}>
-                <header className={styles.AppHeader}>
-                    <div className={styles.headerContainer}>
+                <div className={styles.AppBody}>
+                    <div className={styles.leftContainer}>
+                        <Canvas>{this.state.items}</Canvas>
+                    </div>
+                    <div className={styles.rightContainer}>
+                        <h1 style={{ color: 'white' }}>Text Input Area</h1>
                         <form
                             onSubmit={this.handleSubmitText}
-                            className={styles.textBox}
+                            className={styles.markInputForm}
                         >
-                            <input
-                                id="input_dragable_text"
+                            <textarea
+                                id="input_text"
+                                className={styles.markInput}
                                 onChange={this.handleChangeText}
                                 value={this.state.text}
-                                placeholder="Press Enter to input"
+                                placeholder="Enter text here"
                             />
+                            <button
+                                type="submit"
+                                style={{
+                                    margin: '10px',
+                                    padding: '3px',
+                                }}
+                            >
+                                Input Text
+                            </button>
                         </form>
-                        <input
-                            type="file"
-                            accept="image/jpeg, image/png"
-                            id="fileInput"
-                            name="fileInput"
-                            onChange={this.handleChangePic}
-                            style={{ display: 'none' }}
-                        />
-                        <button
-                            className={styles.addImageButton}
-                            onClick={this.handleSubmitPic}
-                        >
-                            <FontAwesomeIcon icon={faFileImage} />
-                        </button>
                     </div>
-                </header>
-                <div className={styles.AppBody}>
-                    <Canvas>{this.state.items}</Canvas>
                 </div>
             </div>
         );

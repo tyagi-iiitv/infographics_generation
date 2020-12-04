@@ -2,45 +2,78 @@
     text-align: center;
 }
 
-.AppHeader {
-    background-color: #282c34;
-    height: 10vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-}
+// .AppHeader {
+//     background-color: #282c34;
+//     height: 10vh;
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     justify-content: center;
+//     font-size: calc(10px + 2vmin);
+//     color: black;
+// }
 
-.headerContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: nowrap;
-}
+// .headerContainer {
+//     display: flex;
+//     flex-direction: row;
+//     justify-content: center;
+//     align-items: center;
+//     flex-wrap: nowrap;
+// }
 
-.textBox {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: nowrap;
-    margin-right: 10px;
-}
-
-.addImageButton {
-    height: 22px;
-    width: 22px;
-    margin: 20 px;
-    padding: 2px;
-}
+// .addImageButton {
+//     height: 22px;
+//     width: 22px;
+//     margin: 20 px;
+//     padding: 2px;
+// }
 
 .AppBody {
     background-color: #282c34;
-    height: 90vh;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.leftContainer {
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-right: 0.1px solid black;
+}
+
+.rightContainer {
+    width: 20%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    border-left: 0.1px solid black;
+}
+
+.markInputForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+    height: 90%;
+}
+
+.markInput {
+    height: 100%;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    resize: none;
 }
