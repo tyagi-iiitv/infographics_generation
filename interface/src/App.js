@@ -3,21 +3,17 @@ import Draggable from './components/Draggable/Draggable';
 import Canvas from './components/Canvas/Canvas';
 import TextContent from './components/TextContent/TextContent';
 import ImageContent from './components/ImageContent/ImageContent';
+import TextInput from './components/TextInput/TextInput';
 import styles from './App.module.scss';
-
-// import { faFileImage } from '@fortawesome/free-solid-svg-icons';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class App extends React.Component {
     constructor(props) {
         super(props);
-        // text handles input text and items contains all elements added
-        // on the canvas
+        // items contains all elements added n the canvas
         this.state = {
-            text: '',
             items: [],
         };
-        this.handleChangeText = this.handleChangeText.bind(this);
+        // this.handleChangeText = this.handleChangeText.bind(this);
         this.handleSubmitText = this.handleSubmitText.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
         this.handleSubmitPic = this.handleSubmitPic.bind(this);
@@ -27,23 +23,13 @@ class App extends React.Component {
     // Removes the element when delete button is pressed
     handleRemove(key) {
         const new_items = this.state.items.filter((item) => item.key !== key);
-        this.setState({ text: this.state.text, items: new_items });
+        this.setState({ items: new_items });
     }
 
-    handleChangeText(e) {
-        this.setState({ text: e.target.value });
-    }
-
-    handleSubmitText(e) {
-        //if nothing input or only whitespace, ignore it
-        e.preventDefault();
-        if (this.state.text.trim().length === 0) {
-            return;
-        }
-
+    handleSubmitText(text) {
         // Unique id generated from time in milliseconds since epoch
         const id =
-            this.state.text.trim()[0] === '#'
+            text[0] === '#'
                 ? 'title_' + Date.now().toString()
                 : 'text_' + Date.now().toString();
 
@@ -55,14 +41,13 @@ class App extends React.Component {
                 // Deletes the object if delete button pressed
                 deleteButtonPressed={this.handleRemove.bind(this, id)}
             >
-                <TextContent text={this.state.text.trim()} />
+                <TextContent text={text} />
             </Draggable>
         );
 
         // Adds new draggable item to the list
         this.setState({
             items: this.state.items.concat(newItem),
-            text: '',
         });
     }
 
@@ -106,28 +91,7 @@ class App extends React.Component {
                         <Canvas>{this.state.items}</Canvas>
                     </div>
                     <div className={styles.rightContainer}>
-                        <h1 style={{ color: 'white' }}>Text Input Area</h1>
-                        <form
-                            onSubmit={this.handleSubmitText}
-                            className={styles.markInputForm}
-                        >
-                            <textarea
-                                id="input_text"
-                                className={styles.markInput}
-                                onChange={this.handleChangeText}
-                                value={this.state.text}
-                                placeholder="Enter text here"
-                            />
-                            <button
-                                type="submit"
-                                style={{
-                                    margin: '10px',
-                                    padding: '3px',
-                                }}
-                            >
-                                Input Text
-                            </button>
-                        </form>
+                        <TextInput submitText={this.handleSubmitText} />
                     </div>
                 </div>
             </div>
