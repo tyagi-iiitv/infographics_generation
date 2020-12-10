@@ -11,7 +11,7 @@ class TextInput extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            mdText: '',
+            text: '',
             info: [], // Information about visual groups from the input
         };
         this.handleChangeText = this.handleChangeText.bind(this);
@@ -21,13 +21,11 @@ class TextInput extends React.Component {
     handleSubmitText(e) {
         //if no input or only whitespace, ignore it
         e.preventDefault();
-        if (this.state.mdText.trim().length === 0) {
+        if (this.state.text.trim().length === 0) {
             return;
         }
-        this.props.submitText(this.state.mdText.trim());
-        this.setState({
-            mdText: '',
-        });
+        this.props.infoObjects(this.state.info);
+        this.setState({ info: [], text: '' });
     }
 
     handleChangeText(e) {
@@ -72,10 +70,10 @@ class TextInput extends React.Component {
                     info.push(element);
                     element = {};
                 }
-                element.title = lines[i].substring(1, lines[i].length);
+                element.title = lines[i].substring(1, lines[i].length).trim();
                 // Label of the visual group
             } else if (lines[i].startsWith('##')) {
-                element.label = lines[i].substring(2, lines[i].length);
+                element.label = lines[i].substring(2, lines[i].length).trim();
             } else if (lines[i].match(/!\[.*\]\(.*\)/i)) {
                 var imgAltText = lines[i].substring(
                     lines[i].lastIndexOf('[') + 1,
@@ -123,7 +121,7 @@ class TextInput extends React.Component {
             info.push(element);
             element = {};
         }
-        this.setState({ mdText: text, info: info });
+        this.setState({ text: text, info: info });
     }
 
     render() {
@@ -135,7 +133,7 @@ class TextInput extends React.Component {
                         id="input_text"
                         className={styles.inputArea}
                         onChange={this.handleChangeText}
-                        value={this.state.mdText}
+                        value={this.state.text}
                         placeholder="Enter the information here"
                     />
                     <Button
@@ -152,7 +150,7 @@ class TextInput extends React.Component {
                         id="preview_text"
                         className={styles.previewArea}
                         dangerouslySetInnerHTML={{
-                            __html: marked(this.state.mdText, { sanitize: true }),
+                            __html: marked(this.state.text, { sanitize: true }),
                         }}
                     />
                 </form>

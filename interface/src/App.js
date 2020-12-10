@@ -9,15 +9,16 @@ import styles from './App.module.scss';
 class App extends React.Component {
     constructor(props) {
         super(props);
-        // items contains all elements added n the canvas
         this.state = {
-            items: [],
+            items: [], // Items contains all elements added to the canvas
+            info: [], // Information about visual groups from the input
         };
         // this.handleChangeText = this.handleChangeText.bind(this);
         this.handleSubmitText = this.handleSubmitText.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
         this.handleSubmitPic = this.handleSubmitPic.bind(this);
         this.handleChangePic = this.handleChangePic.bind(this);
+        this.getInfoObjects = this.getInfoObjects.bind(this);
     }
 
     // Removes the element when delete button is pressed
@@ -83,6 +84,11 @@ class App extends React.Component {
         document.getElementById('fileInput').click();
     };
 
+    // Add info object to state
+    getInfoObjects(info) {
+        this.setState({ info: info });
+    }
+
     render() {
         return (
             <div className={styles.App}>
@@ -91,7 +97,7 @@ class App extends React.Component {
                         <Canvas>{this.state.items}</Canvas>
                     </div>
                     <div className={styles.rightContainer}>
-                        <TextInput submitText={this.handleSubmitText} />
+                        <TextInput infoObjects={this.getInfoObjects} />
                     </div>
                 </div>
             </div>
