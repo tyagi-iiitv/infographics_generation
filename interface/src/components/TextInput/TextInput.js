@@ -11,8 +11,7 @@ class TextInput extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            labels: ['a', 'b', 'c', 'd'], // To store the labels of the titles
-            mdText: `labels: a, b, c, d\n\n// Enter the information below\n`,
+            mdText: '',
             info: [], // Information about visual groups from the input
         };
         this.handleChangeText = this.handleChangeText.bind(this);
@@ -37,21 +36,12 @@ class TextInput extends React.Component {
         var lines = text.split('\n');
         var i;
 
-        // Remove comments and empty lines
+        // Remove empty lines
         for (i = lines.length - 1; i >= 0; i--) {
             lines[i] = lines[i].trim();
-            if (lines[i].startsWith('//') || lines[i].length === 0) {
+            if (lines[i].length === 0) {
                 lines.splice(i, 1);
             }
-        }
-
-        // Get labels for the infographics and then remove that line
-        var labels = [];
-        if (lines.length !== 0 && lines[0].startsWith('labels:')) {
-            var labelString = lines[0].substring(7, lines[0].length);
-            labels = labelString.split(',');
-            labels = labels.map((label) => label.trim());
-            lines.splice(0, 1);
         }
 
         // Gets a the title, subtitle, images, image alt texts and body texts of each
@@ -59,7 +49,7 @@ class TextInput extends React.Component {
         var info = [];
         var element = {};
         for (i = 0; i < lines.length; i++) {
-            // Title of the object
+            // Title of the visual group
             if (lines[i].startsWith('#') && !lines[i].startsWith('##')) {
                 // If element is not empty push it to the list and
                 // creates new element again
@@ -67,8 +57,8 @@ class TextInput extends React.Component {
                     if (!('title' in element)) {
                         element.title = '';
                     }
-                    if (!('subtitle' in element)) {
-                        element.subtitle = '';
+                    if (!('label' in element)) {
+                        element.label = '';
                     }
                     if (!('images' in element)) {
                         element.images = [];
@@ -83,15 +73,15 @@ class TextInput extends React.Component {
                     element = {};
                 }
                 element.title = lines[i].substring(1, lines[i].length);
-                // Subtitle of the object
+                // Label of the visual group
             } else if (lines[i].startsWith('##')) {
-                element.subtitle = lines[i].substring(2, lines[i].length);
-                // Image elements
+                element.label = lines[i].substring(2, lines[i].length);
             } else if (lines[i].match(/!\[.*\]\(.*\)/i)) {
                 var imgAltText = lines[i].substring(
                     lines[i].lastIndexOf('[') + 1,
                     lines[i].lastIndexOf(']')
                 );
+                // Image Alt text
                 if (!('imagesAlt' in element)) {
                     element.imagesAlt = [];
                 }
@@ -100,6 +90,7 @@ class TextInput extends React.Component {
                     lines[i].lastIndexOf('(') + 1,
                     lines[i].lastIndexOf(')')
                 );
+                // Image link
                 if (!('images' in element)) {
                     element.images = [];
                 }
@@ -117,8 +108,8 @@ class TextInput extends React.Component {
             if (!('title' in element)) {
                 element.title = '';
             }
-            if (!('subtitle' in element)) {
-                element.subtitle = '';
+            if (!('label' in element)) {
+                element.label = '';
             }
             if (!('images' in element)) {
                 element.images = [];
@@ -132,9 +123,7 @@ class TextInput extends React.Component {
             info.push(element);
             element = {};
         }
-        console.log(labels);
-        console.log(info);
-        this.setState({ mdText: text, labels: labels, info: info });
+        this.setState({ mdText: text, info: info });
     }
 
     render() {
