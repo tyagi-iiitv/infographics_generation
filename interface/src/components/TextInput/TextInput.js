@@ -152,6 +152,14 @@ class TextInput extends React.Component {
         // Goes over the info array and generates the HTML for previewing it
         for (j = 0; j < info.length; j++) {
             var visGrp = info[j];
+            renderedText +=
+                `<div\n` +
+                `   style='border-bottom:0.5px dashed black;'\n` +
+                `   onMouseEnter={this.style.background='#eaedee'}\n` +
+                `   onMouseLeave={this.style.background='white'}\n` +
+                `>\n`;
+
+            renderedText += `<p><u>Visual Group #${j + 1}</u></p>`;
             // If no label, just add title as a level 1 heading
             if (visGrp.label !== '') {
                 renderedText += `<h1>(${visGrp['label']}) ${visGrp['title']}</h1>\n`;
@@ -174,13 +182,17 @@ class TextInput extends React.Component {
                 renderedText += `<p>Images:</p>\n`;
                 renderedText += `<ul>\n`;
                 for (i = 0; i < visGrp['images'].length; i++) {
-                    renderedText += `<li><img src=${visGrp['images'][i]} alt='${visGrp['imagesAlt'][i]}' height=200px></li>\n`;
+                    renderedText +=
+                        `<li><img\n` +
+                        `   src=${visGrp['images'][i]}\n` +
+                        `   alt='${visGrp['imagesAlt'][i]}'\n` +
+                        `   height=200px></li>\n`;
                 }
                 renderedText += `</ul>\n`;
             }
-            // Inserts a line after every visual group
-            renderedText += `<hr color='black' height='50%'/>\n`;
+            renderedText += `</div>\n`;
         }
+        console.log(renderedText);
         this.setState({ text: text, info: info, renderedText: renderedText });
     }
 

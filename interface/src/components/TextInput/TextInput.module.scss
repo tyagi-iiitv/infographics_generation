@@ -39,4 +39,6 @@
     background-color: white;
     overflow: scroll;
     scroll-behavior: auto;
+    display: flex;
+    flex-direction: column;
 }
