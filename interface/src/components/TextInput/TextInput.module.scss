@@ -1,6 +1,7 @@
 .textInputArea {
     height: 100%;
     width: 100%;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -26,6 +27,7 @@
     margin-right: auto;
     resize: none;
     overflow: scroll;
+    margin: 0;
 }
 
 .previewArea {
@@ -34,7 +36,7 @@
     padding: 2px;
     border: 1px solid black;
     text-align: left;
-    background-color: #dcdcdc;
+    background-color: white;
     overflow: scroll;
     scroll-behavior: auto;
 }

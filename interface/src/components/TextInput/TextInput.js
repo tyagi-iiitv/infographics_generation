@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from './TextInput.module.scss';
 import Button from '@material-ui/core/Button';
-import marked from 'marked';
 
 /*
 TextInputClass
@@ -11,13 +10,15 @@ class TextInput extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            text: '',
+            text: '', // Text
+            renderedText: '', // Text to render in the preview area
             info: [], // Information about visual groups from the input
         };
         this.handleChangeText = this.handleChangeText.bind(this);
         this.handleSubmitText = this.handleSubmitText.bind(this);
     }
 
+    // Send the info array to parent
     handleSubmitText(e) {
         //if no input or only whitespace, ignore it
         e.preventDefault();
@@ -25,9 +26,10 @@ class TextInput extends React.Component {
             return;
         }
         this.props.infoObjects(this.state.info);
-        this.setState({ info: [], text: '' });
+        this.setState({ info: [], text: '', renderedText: '' });
     }
 
+    // Handles the text input area for extracting information and previewing
     handleChangeText(e) {
         var text = e.target.value;
         // Get a list of lines
@@ -42,7 +44,7 @@ class TextInput extends React.Component {
             }
         }
 
-        // Gets a the title, subtitle, images, image alt texts and body texts of each
+        // Gets a the title, label, images, image alt texts and body texts of each
         // visual group and saves them in an object
         var info = [];
         var element = {};
@@ -121,39 +123,73 @@ class TextInput extends React.Component {
             info.push(element);
             element = {};
         }
-        this.setState({ text: text, info: info });
+
+        var renderedText = '';
+        var j;
+        // Goes over the info array and generates the HTML for previewing it
+        for (j = 0; j < info.length; j++) {
+            var visGrp = info[j];
+            // If no label, just add title as a level 1 heading
+            if (visGrp.label !== '') {
+                renderedText += `<h1>(${visGrp['label']}) ${visGrp['title']}</h1>\n`;
+            }
+            // Enter the label as (<label>) before the title in the heading
+            else {
+                renderedText += `<h1>${visGrp.title}</h1>\n`;
+            }
+            // Displays all the text as bullets
+            if (visGrp['text'].length > 0) {
+                renderedText += `<p>Text:</p>\n`;
+                renderedText += `<ul>\n`;
+                for (i = 0; i < visGrp['text'].length; i++) {
+                    renderedText += `<li>${visGrp['text'][i]}</li>\n`;
+                }
+                renderedText += `</ul>\n`;
+            }
+            // Displays all the images as bullets
+            if (visGrp['images'].length > 0) {
+                renderedText += `<p>Images:</p>\n`;
+                renderedText += `<ul>\n`;
+                for (i = 0; i < visGrp['images'].length; i++) {
+                    renderedText += `<li><img src=${visGrp['images'][i]} alt='${visGrp['imagesAlt'][i]}' height=200px></li>\n`;
+                }
+                renderedText += `</ul>\n`;
+            }
+            // Inserts a line after every visual group
+            renderedText += `<hr color='black' height='50%'>\n`;
+        }
+        this.setState({ text: text, info: info, renderedText: renderedText });
     }
 
     render() {
         return (
             <div className={styles.textInputArea}>
                 <p style={{ color: 'white' }}>Text Input Area</p>
-                <form onSubmit={this.handleSubmitText} className={styles.inputForm}>
-                    <textarea
-                        id="input_text"
-                        className={styles.inputArea}
-                        onChange={this.handleChangeText}
-                        value={this.state.text}
-                        placeholder="Enter the information here"
-                    />
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        style={{
-                            margin: '10px',
-                        }}
-                    >
-                        Input Text
-                    </Button>
-                    <div
-                        id="preview_text"
-                        className={styles.previewArea}
-                        dangerouslySetInnerHTML={{
-                            __html: marked(this.state.text, { sanitize: true }),
-                        }}
-                    />
-                </form>
+                <textarea
+                    id="input_text"
+                    className={styles.inputArea}
+                    onChange={this.handleChangeText}
+                    value={this.state.text}
+                    placeholder="Enter the information here"
+                />
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                        margin: '10px',
+                    }}
+                    onClick={this.handleSubmitText}
+                >
+                    Input Text
+                </Button>
+                <div
+                    id="preview_text"
+                    className={styles.previewArea}
+                    dangerouslySetInnerHTML={{
+                        __html: this.state.renderedText,
+                    }}
+                />
             </div>
         );
     }
