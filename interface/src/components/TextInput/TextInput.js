@@ -1,6 +1,9 @@
 import React from 'react';
 import styles from './TextInput.module.scss';
 import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 /*
 TextInputClass
@@ -14,6 +17,26 @@ class TextInput extends React.Component {
             renderedText: '', // Text to render in the preview area
             info: [], // Information about visual groups from the input
         };
+
+        // Tooltip to help users understand how to type in the information.
+        this.tooltipInfo = (
+            <div>
+                Enter the information in the input box below. <br />
+                <br />
+                For each Visual Group, <br />
+                - Use '# title' for adding a title <br />
+                - Use '## label' for adding a label <br />
+                - Use '![image alt text](image url)' for adding an image <br />
+                - Enter text in a new line to add text <br />
+                - In case the visual group does not contain a title, use an empty '#'
+                to signal the start of a new visual group <br />
+                <br />
+                In the preview window, each visual group is separated by a horizontal
+                line and the label (if present) is displayed before the title, in
+                brackets.
+            </div>
+        );
+
         this.handleChangeText = this.handleChangeText.bind(this);
         this.handleSubmitText = this.handleSubmitText.bind(this);
     }
@@ -156,7 +179,7 @@ class TextInput extends React.Component {
                 renderedText += `</ul>\n`;
             }
             // Inserts a line after every visual group
-            renderedText += `<hr color='black' height='50%'>\n`;
+            renderedText += `<hr color='black' height='50%'/>\n`;
         }
         this.setState({ text: text, info: info, renderedText: renderedText });
     }
@@ -164,7 +187,14 @@ class TextInput extends React.Component {
     render() {
         return (
             <div className={styles.textInputArea}>
-                <p style={{ color: 'white' }}>Text Input Area</p>
+                <p style={{ color: 'white' }}>
+                    {`Text Input Area `}
+                    <Tooltip title={this.tooltipInfo} arrow interactive>
+                        <span>
+                            <FontAwesomeIcon icon={faQuestionCircle} />
+                        </span>
+                    </Tooltip>
+                </p>
                 <textarea
                     id="input_text"
                     className={styles.inputArea}
