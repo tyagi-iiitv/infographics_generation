@@ -1,9 +1,11 @@
 import React from 'react';
-import Draggable from './components/Draggable/Draggable';
-import Canvas from './components/Canvas/Canvas';
-import TextContent from './components/TextContent/TextContent';
-import ImageContent from './components/ImageContent/ImageContent';
-import TextInput from './components/TextInput/TextInput';
+import {
+    Draggable,
+    Canvas,
+    TextContent,
+    ImageContent,
+    TextInput,
+} from './components';
 import styles from './App.module.scss';
 
 class App extends React.Component {
