@@ -1,6 +1,8 @@
 import React from 'react';
 import Draggable from './components/Draggable/Draggable';
-import Canvas from './components/Canvas/Canvas';
+import { Canvas } from './components/Canvas/Canvas';
+import { ClearCanvasButton } from './components/Canvas/ClearCanvasButton';
+import { SaveCanvasButton } from './components/Canvas/SaveCanvasButton';
 import TextContent from './components/TextContent/TextContent';
 import ImageContent from './components/ImageContent/ImageContent';
 import styles from './App.module.scss';
@@ -128,8 +130,14 @@ class App extends React.Component {
                         </button>
                     </div>
                 </header>
-                <div className={styles.AppBody}>
+
+                {/* <div className={styles.AppBody}>
                     <Canvas>{this.state.items}</Canvas>
+                </div> */}
+                <Canvas />
+                <div>
+                    <ClearCanvasButton />
+                    <SaveCanvasButton />
                 </div>
             </div>
         );

@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom';
 import styles from './index.module.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { CanvasProvider } from './components/Canvas/CanvasContext';
 
 ReactDOM.render(
     <React.StrictMode>
-        <App className={styles} />
+        <CanvasProvider>
+            <App className={styles} />
+        </CanvasProvider>
     </React.StrictMode>,
     document.getElementById('root')
 );

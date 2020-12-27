@@ -1,5 +1,5 @@
 .canvas {
-    background-color: ghostwhite;
+    background-color: rgb(64, 196, 147);
     font-size: calc(10px + 2vmin);
     color: black;
     margin: auto;
@@ -10,5 +10,7 @@
     justify-content: center;
     width: 95%;
     height: 95%;
+    // border: 1px solid #532020;
+    // border-radius: 4px;
     box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
 }

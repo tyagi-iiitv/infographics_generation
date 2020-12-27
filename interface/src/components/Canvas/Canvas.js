@@ -1,18 +1,27 @@
-import React from 'react';
-import styles from './Canvas.module.scss';
+import React, { useEffect } from 'react';
+import { useCanvas } from './CanvasContext';
 
-/*
-Canvas Class
-Area where elements would be added
-*/
-class Canvas extends React.Component {
-    render() {
-        return (
-            <div className={styles.canvas} id="canvas">
-                {this.props.children}
-            </div>
-        );
-    }
+export function Canvas() {
+    const {
+        canvasRef,
+        prepareCanvas,
+        startDrawing,
+        finishDrawing,
+        draw,
+    } = useCanvas();
+
+    useEffect(() => {
+        prepareCanvas();
+    }, []);
+
+    return (
+        <canvas
+            onMouseDown={startDrawing}
+            onMouseUp={finishDrawing}
+            onMouseMove={draw}
+            ref={canvasRef}
+        />
+    );
 }
 
-export default Canvas;
+// ref: https://github.com/satansdeer/drawing-react-canvas/blob/master/src/App.js

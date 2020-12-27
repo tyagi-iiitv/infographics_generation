@@ -10,3 +10,29 @@ body {
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+// .clearbutton {
+//     // position: absolute;
+//     top: 30px;
+//     left: 30px;
+//     font-size: 23px;
+
+//   }
+
+//  .savebutton {
+//     position: absolute;
+//     bottom: 30px;
+//     right: 30px;
+//     font-size: 23px;
+//   }
+
+a {
+    cursor: pointer;
+    width: 50px;
+    /* height: 10px; */
+    padding: 5px;
+    border: solid 1px;
+    margin-left: 10px;
+    text-decoration: none;
+}
+// ref: https://stackoverflow.com/questions/8357058/how-to-make-a-href-link-look-like-a-button
