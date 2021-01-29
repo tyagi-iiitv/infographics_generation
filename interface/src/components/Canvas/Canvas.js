@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useCanvas } from './CanvasContext';
+import styles from './Canvas.module.scss';
 
 export function Canvas() {
     const {
@@ -20,6 +21,7 @@ export function Canvas() {
             onMouseUp={finishDrawing}
             onMouseMove={draw}
             ref={canvasRef}
+            className={styles.canvas}
         />
     );
 }
