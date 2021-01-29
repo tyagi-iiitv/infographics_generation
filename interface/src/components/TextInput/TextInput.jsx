@@ -192,7 +192,6 @@ class TextInput extends React.Component {
             }
             renderedText += `</div>\n`;
         }
-        console.log(renderedText);
         this.setState({ text: text, info: info, renderedText: renderedText });
     }
 
