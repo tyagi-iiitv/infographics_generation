@@ -1,14 +1,11 @@
 import React from 'react';
 import {
     Draggable,
-    // Canvas,
+    CanvasArea,
     TextContent,
     ImageContent,
     TextInput,
 } from './components';
-import { Canvas } from './components/Canvas/Canvas';
-import { ClearCanvasButton } from './components/Canvas/ClearCanvasButton';
-import { SaveCanvasButton } from './components/Canvas/SaveCanvasButton';
 import styles from './App.module.scss';
 
 class App extends React.Component {
@@ -99,9 +96,7 @@ class App extends React.Component {
             <div className={styles.App}>
                 <div className={styles.AppBody}>
                     <div className={styles.leftContainer}>
-                        <Canvas>{this.state.items}</Canvas>
-                        <ClearCanvasButton />
-                        <SaveCanvasButton />
+                        <CanvasArea />
                     </div>
                     <div className={styles.rightContainer}>
                         <TextInput infoObjects={this.getInfoObjects} />
