@@ -8,29 +8,16 @@
     height: 100%;
 }
 
-.canvasArea {
-    background-color: ghostwhite;
-    margin: auto;
-    margin-bottom: 0.5%;
-    margin-top: 2%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    width: 95%;
-    height: 100%;
-}
-
 .canvasToolbox {
+    bottom: 0;
     margin: auto;
-    margin-top: 0.5%;
     margin-bottom: 2%;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
     width: 95%;
-    height: 7%;
+    max-height: 7%;
 }
 
 .toolButtonGroup {
@@ -48,4 +35,5 @@
     align-items: center;
     justify-content: center;
     padding-top: 5px;
+    font-size: calc(5px + 0.75vmin);
 }

@@ -18,12 +18,54 @@ CanvasArea Class
 Area where elements would be added
 */
 class CanvasArea extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            canvasRes: '4:3',
+        };
+        this.draw_canvas = React.createRef();
+        this.clearCanvas = this.clearCanvas.bind(this);
+        this.setCanvasRes = this.setCanvasRes.bind(this);
+    }
+
+    componentDidMount() {
+        const canvas = this.draw_canvas.current;
+        const ctx = canvas.getContext('2d');
+        this.setCanvasRes(1280, 960);
+        ctx.fillStyle = 'ghostwhite';
+        ctx.lineWidth = 1;
+    }
+
+    setCanvasRes(width, height) {
+        const canvas = this.draw_canvas.current;
+        canvas.width = width;
+        canvas.height = height;
+    }
+
+    clearCanvas = () => {
+        const canvas = this.draw_canvas.current;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'ghostwhite';
+    };
+
     render() {
         return (
             <div className={styles.canvasAreaContainer}>
-                <div className={styles.canvasArea} id="canvas">
-                    {this.props.children}
-                </div>
+                <canvas
+                    id="draw_canvas"
+                    ref={this.draw_canvas}
+                    width="0"
+                    height="0"
+                    style={{
+                        margin: 'auto',
+                        display: 'block',
+                        'max-width': '95%',
+                        'max-height': '89%',
+                        'background-color': 'ghostwhite',
+                    }}
+                    className={styles.canvasArea}
+                />
                 <div className={styles.canvasToolbox}>
                     <ButtonGroup
                         className={styles.toolButtonGroup}
@@ -31,22 +73,36 @@ class CanvasArea extends React.Component {
                         color="default"
                         aria-label="Resolution change button group"
                     >
-                        <Tooltip title="Change resolution to 1:1">
+                        <Tooltip title="Change resolution to 4:3">
                             <Button
                                 size="medium"
                                 variant="contained"
                                 color="default"
                                 className={styles.toolButton}
+                                style={
+                                    this.state.canvasRes === '4:3'
+                                        ? { pointerEvents: 'none' }
+                                        : {}
+                                }
+                                onClick={() => {
+                                    this.setState({
+                                        canvasRes: '4:3',
+                                    });
+                                    this.setCanvasRes(1280, 960);
+                                }}
+                                disabled={this.state.canvasRes === '4:3'}
                             >
-                                <div className={styles.dimButton}>
+                                <div
+                                    className={styles.dimButton}
+                                    style={{
+                                        color:
+                                            this.state.canvasRes === '4:3'
+                                                ? 'white'
+                                                : 'black',
+                                    }}
+                                >
                                     <FontAwesomeIcon icon={faExpand} />
-                                    <div
-                                        style={{
-                                            'font-size': 'calc(5px + 0.75vmin)',
-                                        }}
-                                    >
-                                        1:1
-                                    </div>
+                                    <div>4:3</div>
                                 </div>
                             </Button>
                         </Tooltip>
@@ -56,35 +112,63 @@ class CanvasArea extends React.Component {
                                 variant="contained"
                                 color="default"
                                 className={styles.toolButton}
+                                style={
+                                    this.state.canvasRes === '3:4'
+                                        ? { pointerEvents: 'none' }
+                                        : {}
+                                }
+                                onClick={() => {
+                                    this.setState({
+                                        canvasRes: '3:4',
+                                    });
+                                    this.setCanvasRes(960, 1280);
+                                }}
+                                disabled={this.state.canvasRes === '3:4'}
                             >
-                                <div className={styles.dimButton}>
+                                <div
+                                    className={styles.dimButton}
+                                    style={{
+                                        color:
+                                            this.state.canvasRes === '3:4'
+                                                ? 'white'
+                                                : 'black',
+                                    }}
+                                >
                                     <FontAwesomeIcon icon={faExpand} />
-                                    <div
-                                        style={{
-                                            'font-size': 'calc(5px + 0.75vmin)',
-                                        }}
-                                    >
-                                        3:4
-                                    </div>
+                                    <div>3:4</div>
                                 </div>
                             </Button>
                         </Tooltip>
-                        <Tooltip title="Change resolution to 4:3">
+                        <Tooltip title="Change resolution to 1:1">
                             <Button
                                 size="medium"
                                 variant="contained"
                                 color="default"
                                 className={styles.toolButton}
+                                style={
+                                    this.state.canvasRes === '1:1'
+                                        ? { pointerEvents: 'none' }
+                                        : {}
+                                }
+                                onClick={() => {
+                                    this.setState({
+                                        canvasRes: '1:1',
+                                    });
+                                    this.setCanvasRes(1280, 1280);
+                                }}
+                                disabled={this.state.canvasRes === '1:1'}
                             >
-                                <div className={styles.dimButton}>
+                                <div
+                                    className={styles.dimButton}
+                                    style={{
+                                        color:
+                                            this.state.canvasRes === '1:1'
+                                                ? 'white'
+                                                : 'black',
+                                    }}
+                                >
                                     <FontAwesomeIcon icon={faExpand} />
-                                    <div
-                                        style={{
-                                            'font-size': 'calc(5px + 0.75vmin)',
-                                        }}
-                                    >
-                                        4:3
-                                    </div>
+                                    <div>1:1</div>
                                 </div>
                             </Button>
                         </Tooltip>
@@ -94,16 +178,30 @@ class CanvasArea extends React.Component {
                                 variant="contained"
                                 color="default"
                                 className={styles.toolButton}
+                                style={
+                                    this.state.canvasRes === '16:9'
+                                        ? { pointerEvents: 'none' }
+                                        : {}
+                                }
+                                onClick={() => {
+                                    this.setState({
+                                        canvasRes: '16:9',
+                                    });
+                                    this.setCanvasRes(1280, 720);
+                                }}
+                                disabled={this.state.canvasRes === '16:9'}
                             >
-                                <div className={styles.dimButton}>
+                                <div
+                                    className={styles.dimButton}
+                                    style={{
+                                        color:
+                                            this.state.canvasRes === '16:9'
+                                                ? 'white'
+                                                : 'black',
+                                    }}
+                                >
                                     <FontAwesomeIcon icon={faExpand} />
-                                    <div
-                                        style={{
-                                            'font-size': 'calc(5px + 0.75vmin)',
-                                        }}
-                                    >
-                                        16:9
-                                    </div>
+                                    <div>16:9</div>
                                 </div>
                             </Button>
                         </Tooltip>
@@ -113,16 +211,30 @@ class CanvasArea extends React.Component {
                                 variant="contained"
                                 color="default"
                                 className={styles.toolButton}
+                                style={
+                                    this.state.canvasRes === '9:16'
+                                        ? { pointerEvents: 'none' }
+                                        : {}
+                                }
+                                onClick={() => {
+                                    this.setState({
+                                        canvasRes: '9:16',
+                                    });
+                                    this.setCanvasRes(720, 1280);
+                                }}
+                                disabled={this.state.canvasRes === '9:16'}
                             >
-                                <div className={styles.dimButton}>
+                                <div
+                                    className={styles.dimButton}
+                                    style={{
+                                        color:
+                                            this.state.canvasRes === '9:16'
+                                                ? 'white'
+                                                : 'black',
+                                    }}
+                                >
                                     <FontAwesomeIcon icon={faExpand} />
-                                    <div
-                                        style={{
-                                            'font-size': 'calc(5px + 0.75vmin)',
-                                        }}
-                                    >
-                                        9:16
-                                    </div>
+                                    <div>9:16</div>
                                 </div>
                             </Button>
                         </Tooltip>
@@ -132,7 +244,7 @@ class CanvasArea extends React.Component {
                         className={styles.toolButtonGroup}
                         variant="contained"
                         color="default"
-                        aria-label="Resolution change button group"
+                        aria-label="Draw Area tools"
                     >
                         <Tooltip title="Upload Image">
                             <Button
@@ -179,6 +291,9 @@ class CanvasArea extends React.Component {
                                 variant="contained"
                                 color="primary"
                                 className={styles.toolButton}
+                                onClick={() => {
+                                    this.clearCanvas();
+                                }}
                             >
                                 <FontAwesomeIcon
                                     icon={faTrash}
@@ -197,7 +312,7 @@ export default CanvasArea;
 
 /*
 Resolutions:
-4:3 - 640x480
-16:9 - 640 x 360
-1:1 - 640x640
+4:3 - 1280x960
+16:9 - 1280 x 720
+1:1 - 1280x1280
 */
