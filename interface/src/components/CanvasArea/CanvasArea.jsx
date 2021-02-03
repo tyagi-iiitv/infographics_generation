@@ -22,17 +22,27 @@ class CanvasArea extends React.Component {
         this.state = {
             canvasRes: '4:3',
             imgIdx: -1,
+            selectedTool: 'upload',
+            isPainting: false,
         };
         this.draw_canvas = React.createRef();
         this.imgForm = React.createRef();
-        this.clearCanvas = this.clearCanvas.bind(this);
+        this.undraw = this.undraw.bind(this);
+        this.clearCanvasArea = this.clearCanvasArea.bind(this);
         this.setCanvasRes = this.setCanvasRes.bind(this);
         this.redrawPics = this.redrawPics.bind(this);
         this.addPic = this.addPic.bind(this);
+        this.addClick = this.addClick.bind(this);
+        this.redraw = this.redraw.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
         this.imgs = [];
+        this.clickX = [];
+        this.clickY = [];
+        this.clickDrag = [];
+        this.clickColor = [];
     }
 
     componentDidMount() {
@@ -40,15 +50,25 @@ class CanvasArea extends React.Component {
         const ctx = canvas.getContext('2d');
         this.setCanvasRes(1280, 960);
         ctx.fillStyle = 'ghostwhite';
-        ctx.lineWidth = 1;
     }
 
-    clearCanvas = () => {
+    undraw = () => {
+        const canvas = this.draw_canvas.current;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'ghostwhite';
+    };
+
+    clearCanvasArea = () => {
         const canvas = this.draw_canvas.current;
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'ghostwhite';
         this.imgs = [];
+        this.clickX = [];
+        this.clickY = [];
+        this.clickDrag = [];
+        this.clickColor = [];
         this.setState({
             imgIdx: -1,
         });
@@ -58,14 +78,12 @@ class CanvasArea extends React.Component {
         const canvas = this.draw_canvas.current;
         canvas.width = width;
         canvas.height = height;
-        this.clearCanvas();
+        this.clearCanvasArea();
     }
 
     redrawPics = () => {
         const canvas = this.draw_canvas.current;
         const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'ghostwhite';
         for (const img of this.imgs) {
             ctx.drawImage(img.image, img.x, img.y, img.width, img.height);
         }
@@ -97,33 +115,108 @@ class CanvasArea extends React.Component {
         };
     }
 
-    onMouseUp(e) {
-        for (var img of this.imgs) {
-            img.isDragged = false;
+    addClick(x, y, dragging) {
+        this.clickX.push(x);
+        this.clickY.push(y);
+        this.clickDrag.push(dragging);
+        var curColor;
+        if (this.state.selectedTool === 'draw') {
+            curColor = '#000000';
+        } else if (this.state.selectedTool === 'erase') {
+            curColor = '#f8f8ff';
         }
-        this.setState({
-            imgIdx: -1,
-        });
+        this.clickColor.push(curColor);
+    }
+
+    redraw = () => {
+        const canvas = this.draw_canvas.current;
+        const ctx = canvas.getContext('2d');
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 20;
+
+        for (var i = 0; i < this.clickX.length; i++) {
+            ctx.beginPath();
+            if (this.clickDrag[i] && i) {
+                ctx.moveTo(this.clickX[i - 1], this.clickY[i - 1]);
+            } else {
+                ctx.moveTo(this.clickX[i] - 1, this.clickY[i]);
+            }
+            ctx.lineTo(this.clickX[i], this.clickY[i]);
+            ctx.closePath();
+            ctx.strokeStyle = this.clickColor[i];
+            ctx.stroke();
+        }
+    };
+
+    onMouseUp(e) {
+        if (this.state.selectedTool === 'upload') {
+            for (var img of this.imgs) {
+                img.isDragged = false;
+            }
+            this.setState({
+                imgIdx: -1,
+            });
+        } else if (
+            this.state.selectedTool === 'draw' ||
+            this.state.selectedTool === 'erase'
+        ) {
+            this.setState({
+                isPainting: false,
+            });
+        }
+        e.preventDefault();
+    }
+
+    onMouseLeave(e) {
+        if (this.state.selectedTool === 'draw') {
+            this.setState({
+                isPainting: false,
+            });
+        }
         e.preventDefault();
     }
 
     onMouseMove(e) {
         const canvas = this.draw_canvas.current;
-        const i = this.state.imgIdx;
-        if (i !== -1 && this.imgs[i].isDragged) {
-            const scaledCanvas = canvas.getBoundingClientRect();
-            const canX =
-                ((e.pageX - scaledCanvas.x - window.scrollX) / scaledCanvas.width) *
-                canvas.width;
-            const canY =
-                ((e.pageY - scaledCanvas.y - window.scrollY) / scaledCanvas.height) *
-                canvas.height;
-            const img = this.imgs[i];
-            const width = img.width;
-            const height = img.height;
-            img.x = canX - width / 2;
-            img.y = canY - height / 2;
-            this.redrawPics();
+        const scaledCanvas = canvas.getBoundingClientRect();
+        if (this.state.selectedTool === 'upload') {
+            const i = this.state.imgIdx;
+            if (i !== -1 && this.imgs[i].isDragged) {
+                const canX =
+                    ((e.pageX - scaledCanvas.x - window.scrollX) /
+                        scaledCanvas.width) *
+                    canvas.width;
+                const canY =
+                    ((e.pageY - scaledCanvas.y - window.scrollY) /
+                        scaledCanvas.height) *
+                    canvas.height;
+                const img = this.imgs[i];
+                const width = img.width;
+                const height = img.height;
+                img.x = canX - width / 2;
+                img.y = canY - height / 2;
+                this.undraw();
+                this.redraw();
+                this.redrawPics();
+            }
+        } else if (
+            this.state.selectedTool === 'draw' ||
+            this.state.selectedTool === 'erase'
+        ) {
+            if (this.state.isPainting === true) {
+                const canX =
+                    ((e.pageX - scaledCanvas.x - window.scrollX) /
+                        scaledCanvas.width) *
+                    canvas.width;
+                const canY =
+                    ((e.pageY - scaledCanvas.y - window.scrollY) /
+                        scaledCanvas.height) *
+                    canvas.height;
+                this.addClick(canX, canY, true);
+                this.undraw();
+                this.redraw();
+                this.redrawPics();
+            }
         }
         e.preventDefault();
     }
@@ -131,39 +224,56 @@ class CanvasArea extends React.Component {
     onMouseDown(e) {
         const canvas = this.draw_canvas.current;
         const scaledCanvas = canvas.getBoundingClientRect();
-        const canX =
-            ((e.pageX - scaledCanvas.x - window.scrollX) / scaledCanvas.width) *
-            canvas.width;
-        const canY =
-            ((e.pageY - scaledCanvas.y - window.scrollY) / scaledCanvas.height) *
-            canvas.height;
-        var i,
-            x,
-            y,
-            flag = false;
-        for (i in this.imgs) {
-            const img = this.imgs[i];
-            const width = img.width;
-            const height = img.height;
-            x = img.x;
-            y = img.y;
-            console.log(canX, canY, x, y, width, height);
-            if (canX < x + width && canX > x && canY > y && canY < y + height) {
-                flag = true;
-                break;
+        if (this.state.selectedTool === 'upload') {
+            const canX =
+                ((e.pageX - scaledCanvas.x - window.scrollX) / scaledCanvas.width) *
+                canvas.width;
+            const canY =
+                ((e.pageY - scaledCanvas.y - window.scrollY) / scaledCanvas.height) *
+                canvas.height;
+            var i,
+                x,
+                y,
+                flag = false;
+            for (i in this.imgs) {
+                const img = this.imgs[i];
+                const width = img.width;
+                const height = img.height;
+                x = img.x;
+                y = img.y;
+                console.log(canX, canY, x, y, width, height);
+                if (canX < x + width && canX > x && canY > y && canY < y + height) {
+                    flag = true;
+                    break;
+                }
             }
-        }
-        if (flag === true) {
+            if (flag === true) {
+                this.setState({
+                    imgIdx: Number(i),
+                });
+                const img = this.imgs[i];
+                const width = img.width;
+                const height = img.height;
+                img.x = canX - width / 2;
+                img.y = canY - height / 2;
+                this.redrawPics();
+                this.imgs[i].isDragged = true;
+            }
+        } else if (
+            this.state.selectedTool === 'draw' ||
+            this.state.selectedTool === 'erase'
+        ) {
+            const canX =
+                ((e.pageX - scaledCanvas.x - window.scrollX) / scaledCanvas.width) *
+                canvas.width;
+            const canY =
+                ((e.pageY - scaledCanvas.y - window.scrollY) / scaledCanvas.height) *
+                canvas.height;
             this.setState({
-                imgIdx: i,
+                isPainting: true,
             });
-            const img = this.imgs[i];
-            const width = img.width;
-            const height = img.height;
-            img.x = canX - width / 2;
-            img.y = canY - height / 2;
-            this.redrawPics();
-            this.imgs[i].isDragged = true;
+            this.addClick(canX, canY);
+            this.redraw();
         }
         e.preventDefault();
     }
@@ -187,6 +297,7 @@ class CanvasArea extends React.Component {
                     onMouseUp={this.onMouseUp}
                     onMouseDown={this.onMouseDown}
                     onMouseMove={this.onMouseMove}
+                    onMouseLeave={this.onMouseLeave}
                 />
                 <div className={styles.canvasToolbox}>
                     <ButtonGroup
@@ -370,6 +481,9 @@ class CanvasArea extends React.Component {
                             color="primary"
                             className={styles.toolButton}
                             onClick={() => {
+                                this.setState({
+                                    selectedTool: 'upload',
+                                });
                                 this.imgForm.current.click();
                             }}
                         >
@@ -383,6 +497,23 @@ class CanvasArea extends React.Component {
                             variant="contained"
                             color="primary"
                             className={styles.toolButton}
+                            onClick={() => {
+                                if (this.state.selectedTool === 'draw') {
+                                    this.setState({
+                                        selectedTool: 'upload',
+                                    });
+                                } else {
+                                    this.setState({
+                                        selectedTool: 'draw',
+                                    });
+                                }
+                            }}
+                            style={
+                                this.state.selectedTool === 'draw'
+                                    ? { backgroundColor: '#101536' }
+                                    : {}
+                            }
+                            disableElevation={this.state.selectedTool === 'draw'}
                         >
                             <FontAwesomeIcon icon={faPencilAlt} aria-label="Draw" />
                         </Button>
@@ -391,6 +522,23 @@ class CanvasArea extends React.Component {
                             variant="contained"
                             color="primary"
                             className={styles.toolButton}
+                            onClick={() => {
+                                if (this.state.selectedTool === 'erase') {
+                                    this.setState({
+                                        selectedTool: 'upload',
+                                    });
+                                } else {
+                                    this.setState({
+                                        selectedTool: 'erase',
+                                    });
+                                }
+                            }}
+                            style={
+                                this.state.selectedTool === 'erase'
+                                    ? { backgroundColor: '#101536' }
+                                    : {}
+                            }
+                            disableElevation={this.state.selectedTool === 'erase'}
                         >
                             <FontAwesomeIcon icon={faEraser} aria-label="Erase" />
                         </Button>
@@ -400,7 +548,10 @@ class CanvasArea extends React.Component {
                             color="primary"
                             className={styles.toolButton}
                             onClick={() => {
-                                this.clearCanvas();
+                                this.setState({
+                                    selectedTool: 'upload',
+                                });
+                                this.clearCanvasArea();
                             }}
                         >
                             <FontAwesomeIcon
