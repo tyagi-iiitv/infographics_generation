@@ -2,6 +2,7 @@ import React from 'react';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import styles from './CanvasArea.module.scss';
+import { saveAs } from 'file-saver';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -10,6 +11,7 @@ import {
     faTrash,
     faUpload,
     faExpand,
+    faDownload,
 } from '@fortawesome/free-solid-svg-icons';
 
 /*
@@ -34,6 +36,7 @@ class CanvasArea extends React.Component {
         this.addPic = this.addPic.bind(this);
         this.addClick = this.addClick.bind(this);
         this.redraw = this.redraw.bind(this);
+        this.downloadCanvasFlow = this.downloadCanvasFlow.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
@@ -148,6 +151,14 @@ class CanvasArea extends React.Component {
         }
     };
 
+    downloadCanvasFlow = () => {
+        const canvas = this.draw_canvas.current;
+        this.undraw();
+        this.redraw();
+        saveAs(canvas.toDataURL(), 'flow.png');
+        this.redrawPics();
+    };
+
     onMouseUp(e) {
         if (this.state.selectedTool === 'upload') {
             for (var img of this.imgs) {
@@ -256,6 +267,8 @@ class CanvasArea extends React.Component {
                 const height = img.height;
                 img.x = canX - width / 2;
                 img.y = canY - height / 2;
+                this.undraw();
+                this.redraw();
                 this.redrawPics();
                 this.imgs[i].isDragged = true;
             }
@@ -469,6 +482,27 @@ class CanvasArea extends React.Component {
                         style={{ display: 'none' }}
                         onChange={this.addPic}
                     />
+                    <ButtonGroup
+                        className={styles.toolButtonGroup}
+                        variant="contained"
+                        color="default"
+                        aria-label="Download Tools"
+                    >
+                        <Button
+                            size="medium"
+                            variant="contained"
+                            color="secondary"
+                            className={styles.toolButton}
+                            onClick={() => {
+                                this.downloadCanvasFlow();
+                            }}
+                        >
+                            <FontAwesomeIcon
+                                icon={faDownload}
+                                aria-label="Download Image"
+                            />
+                        </Button>
+                    </ButtonGroup>
                     <ButtonGroup
                         className={styles.toolButtonGroup}
                         variant="contained"
