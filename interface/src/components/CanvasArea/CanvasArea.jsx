@@ -52,21 +52,21 @@ class CanvasArea extends React.Component {
         const canvas = this.draw_canvas.current;
         const ctx = canvas.getContext('2d');
         this.setCanvasRes(1280, 960);
-        ctx.fillStyle = 'ghostwhite';
+        ctx.fillStyle = 'white';
     }
 
     undraw = () => {
         const canvas = this.draw_canvas.current;
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'ghostwhite';
+        ctx.fillStyle = 'white';
     };
 
     clearCanvasArea = () => {
         const canvas = this.draw_canvas.current;
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'ghostwhite';
+        ctx.fillStyle = 'white';
         this.imgs = [];
         this.clickX = [];
         this.clickY = [];
@@ -126,7 +126,7 @@ class CanvasArea extends React.Component {
         if (this.state.selectedTool === 'draw') {
             curColor = '#000000';
         } else if (this.state.selectedTool === 'erase') {
-            curColor = '#f8f8ff';
+            curColor = '#ffffff';
         }
         this.clickColor.push(curColor);
     }
@@ -304,7 +304,7 @@ class CanvasArea extends React.Component {
                         display: 'block',
                         maxWidth: '95%',
                         maxHeight: '89%',
-                        backgroundColor: 'ghostwhite',
+                        backgroundColor: 'white',
                     }}
                     className={styles.canvasArea}
                     onMouseUp={this.onMouseUp}

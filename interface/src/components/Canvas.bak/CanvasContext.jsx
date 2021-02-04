@@ -21,7 +21,7 @@ export const CanvasProvider = ({ children }) => {
         context.lineCap = 'round';
         context.strokeStyle = 'black';
         context.lineWidth = 19;
-        context.fillStyle = 'ghostwhite';
+        context.fillStyle = 'white';
         context.fillRect(0, 0, canvas.width, canvas.height);
         contextRef.current = context;
     };
@@ -50,7 +50,7 @@ export const CanvasProvider = ({ children }) => {
     const clearCanvas = () => {
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d');
-        context.fillStyle = 'ghostwhite';
+        context.fillStyle = 'white';
         context.fillRect(0, 0, canvas.width, canvas.height);
     };
 

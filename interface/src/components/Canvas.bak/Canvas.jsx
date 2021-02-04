@@ -27,7 +27,7 @@ class DrawArea extends React.Component {
         context.lineCap = 'round';
         context.strokeStyle = 'black';
         context.lineWidth = 19;
-        context.fillStyle = 'ghostwhite';
+        context.fillStyle = 'white';
         context.fillRect(0, 0, canvas.width, canvas.height);
         contextRef.current = context;
     };
