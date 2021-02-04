@@ -1,8 +1,8 @@
 import React from 'react';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
-import styles from './CanvasArea.module.scss';
 import { saveAs } from 'file-saver';
+import styles from './CanvasArea.module.scss';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -15,47 +15,58 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 /*
+Drawing functions implemented from:
+http://www.williammalone.com/articles/create-html5-canvas-javascript-drawing-app/
+*/
+
+/*
 CanvasArea Class
-Area where elements would be added
+Area where user would drag element and draw the flow
 */
 class CanvasArea extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            canvasRes: '4:3',
-            imgIdx: -1,
-            selectedTool: 'upload',
-            isPainting: false,
+            canvasRes: '4:3', // The present resolution of the canvas
+            imgIdx: -1, // The image which is currently being dragged
+            selectedTool: 'upload', // Tool selected by the user
+            isDrawing: false, // Whether the user is drawing/erasing inside the canvas
         };
-        this.draw_canvas = React.createRef();
-        this.imgForm = React.createRef();
+
         this.undraw = this.undraw.bind(this);
         this.clearCanvasArea = this.clearCanvasArea.bind(this);
         this.setCanvasRes = this.setCanvasRes.bind(this);
         this.redrawPics = this.redrawPics.bind(this);
         this.addPic = this.addPic.bind(this);
         this.addClick = this.addClick.bind(this);
-        this.redraw = this.redraw.bind(this);
+        this.redrawLines = this.redrawLines.bind(this);
         this.downloadCanvasFlow = this.downloadCanvasFlow.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
-        this.onMouseLeave = this.onMouseLeave.bind(this);
-        this.imgs = [];
-        this.clickX = [];
-        this.clickY = [];
-        this.clickDrag = [];
-        this.clickColor = [];
+
+        this.draw_canvas = React.createRef(); // Reference for the canvas area
+        this.imgForm = React.createRef(); // Reference for the upload image input
+
+        this.imgs = []; // List of images uploaded by the user
+        this.clickX = []; // X-coordinates of the drawing/erasing
+        this.clickY = []; // Y-coordinates of the drawing/erasing
+        this.clickDrag = []; // True if user is clicking
+        this.clickColor = []; // Black for pen and white for eraser
     }
 
+    /*
+    Initializing canavs with default resolution
+    */
     componentDidMount() {
-        const canvas = this.draw_canvas.current;
-        const ctx = canvas.getContext('2d');
         this.setCanvasRes(1280, 960);
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
+    /*
+    Clears the drawing area from all drawings and uploaded images.
+    Does not clears the data saved in memory, so can be redrawn.
+    */
     undraw = () => {
         const canvas = this.draw_canvas.current;
         const ctx = canvas.getContext('2d');
@@ -64,12 +75,13 @@ class CanvasArea extends React.Component {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     };
 
+    /*
+    Clears the drawing area as well as the memory, so cannot be redrawn.
+    */
     clearCanvasArea = () => {
-        const canvas = this.draw_canvas.current;
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // First undraws everything
+        this.undraw();
+        // Then clears memory
         this.imgs = [];
         this.clickX = [];
         this.clickY = [];
@@ -80,21 +92,37 @@ class CanvasArea extends React.Component {
         });
     };
 
+    /*
+    Sets the canvas resolution in pixels
+    Resolutions:
+    4:3  - 1280 x 960
+    3:4  - 960 x 1280
+    1:1  - 1280 x 1280
+    16:9 - 1280 x 720
+    9:16 - 720 x 1280
+    */
     setCanvasRes(width, height) {
+        this.clearCanvasArea();
         const canvas = this.draw_canvas.current;
         canvas.width = width;
         canvas.height = height;
-        this.clearCanvasArea();
     }
 
+    /*
+    Re-adds the uploaded draggable pictures to the canvas
+    */
     redrawPics = () => {
         const canvas = this.draw_canvas.current;
         const ctx = canvas.getContext('2d');
+        // Positions all the images to their past position
         for (const img of this.imgs) {
             ctx.drawImage(img.image, img.x, img.y, img.width, img.height);
         }
     };
 
+    /*
+    Adds the uploaded image to the drawing area
+    */
     addPic(e) {
         e.preventDefault();
         if (!e.target.files[0]) {
@@ -107,8 +135,10 @@ class CanvasArea extends React.Component {
         img.src = URL.createObjectURL(e.target.files[0]);
         e.target.value = '';
         img.onload = () => {
+            // Currently, setting all uploaded images to fixed width of 200px
             ctx.drawImage(img, 50, 50, 200, (img.height * 200) / img.width);
 
+            // Add this image to the list of uploaded images
             const newImg = {
                 image: img,
                 x: 50,
@@ -121,11 +151,16 @@ class CanvasArea extends React.Component {
         };
     }
 
+    /*
+    Saves the pointer location, dragging condition and draw colour to the
+    list
+    */
     addClick(x, y, dragging) {
         this.clickX.push(x);
         this.clickY.push(y);
         this.clickDrag.push(dragging);
         var curColor;
+        // Black if pen, white if eraser
         if (this.state.selectedTool === 'draw') {
             curColor = '#000000';
         } else if (this.state.selectedTool === 'erase') {
@@ -134,17 +169,22 @@ class CanvasArea extends React.Component {
         this.clickColor.push(curColor);
     }
 
-    redraw = () => {
+    /*
+    Redraws all the lines of the pen and eraser tool
+    */
+    redrawLines = () => {
         const canvas = this.draw_canvas.current;
         const ctx = canvas.getContext('2d');
         ctx.lineJoin = 'round';
-        ctx.lineWidth = 20;
+        ctx.lineWidth = 20; // Change for line thickness
 
         for (var i = 0; i < this.clickX.length; i++) {
             ctx.beginPath();
             if (this.clickDrag[i] && i) {
+                // If first point, connect to bottom-left point
                 ctx.moveTo(this.clickX[i - 1], this.clickY[i - 1]);
             } else {
+                // Else, conenct to last point
                 ctx.moveTo(this.clickX[i] - 1, this.clickY[i]);
             }
             ctx.lineTo(this.clickX[i], this.clickY[i]);
@@ -154,19 +194,30 @@ class CanvasArea extends React.Component {
         }
     };
 
+    /*
+    Downlaods only the flow i.e. the lines suer drew with the pen and eraser tool
+    */
     downloadCanvasFlow = () => {
         const canvas = this.draw_canvas.current;
         this.undraw();
-        this.redraw();
+        this.redrawLines();
         saveAs(canvas.toDataURL(), 'flow.png');
         this.redrawPics();
     };
 
+    /*
+    On releasing mouse button,
+
+    If the upload tool is selected: Sets isDragged property of currently
+    dragged image ton false, so that no image can be dragged on mouse movement.
+
+    If draw/erase tool is selected: Sets isDrawing condition to false so
+    that no lines can be drawn/erased
+    */
     onMouseUp(e) {
+        e.preventDefault();
         if (this.state.selectedTool === 'upload') {
-            for (var img of this.imgs) {
-                img.isDragged = false;
-            }
+            this.imgs[this.state.imgIdx].isDragged = false;
             this.setState({
                 imgIdx: -1,
             });
@@ -175,27 +226,46 @@ class CanvasArea extends React.Component {
             this.state.selectedTool === 'erase'
         ) {
             this.setState({
-                isPainting: false,
+                isDrawing: false,
             });
         }
-        e.preventDefault();
     }
 
+    /*
+    On taking mouse pointer out of the canvas,
+
+    If draw/erase tool is selected: Sets isDrawing condition to false so
+    that no lines can be drawn/erased
+    */
     onMouseLeave(e) {
-        if (this.state.selectedTool === 'draw') {
+        e.preventDefault();
+        if (
+            this.state.selectedTool === 'draw' ||
+            this.state.selectedTool === 'erase'
+        ) {
             this.setState({
-                isPainting: false,
+                isDrawing: false,
             });
         }
-        e.preventDefault();
     }
 
+    /*
+    On moving the mouse pointer,
+
+    If the upload tool is selected: If an image is draggable,
+    change its position and redraw the canvas.
+
+    If draw/erase tool is selected: Registeres the current mouse
+    position to the memory and redraws the canvas.
+    */
     onMouseMove(e) {
+        e.preventDefault();
         const canvas = this.draw_canvas.current;
         const scaledCanvas = canvas.getBoundingClientRect();
         if (this.state.selectedTool === 'upload') {
             const i = this.state.imgIdx;
             if (i !== -1 && this.imgs[i].isDragged) {
+                // Position fo image w.r.t the canvas
                 const canX =
                     ((e.pageX - scaledCanvas.x - window.scrollX) /
                         scaledCanvas.width) *
@@ -209,15 +279,12 @@ class CanvasArea extends React.Component {
                 const height = img.height;
                 img.x = canX - width / 2;
                 img.y = canY - height / 2;
-                this.undraw();
-                this.redraw();
-                this.redrawPics();
             }
         } else if (
             this.state.selectedTool === 'draw' ||
             this.state.selectedTool === 'erase'
         ) {
-            if (this.state.isPainting === true) {
+            if (this.state.isDrawing === true) {
                 const canX =
                     ((e.pageX - scaledCanvas.x - window.scrollX) /
                         scaledCanvas.width) *
@@ -227,14 +294,23 @@ class CanvasArea extends React.Component {
                         scaledCanvas.height) *
                     canvas.height;
                 this.addClick(canX, canY, true);
-                this.undraw();
-                this.redraw();
-                this.redrawPics();
             }
         }
-        e.preventDefault();
+        this.undraw();
+        this.redrawLines();
+        this.redrawPics();
     }
 
+    /*
+    On clicking the mouse button,
+
+    If the upload tool is selected: Finds the image which is under the
+    mosue pointer and sets it's isDragged property to true so that it
+    can eb dragged around.
+
+    If draw/erase tool is selected: Sets the isDrawing condition to true so
+    that tit can start drawing.
+    */
     onMouseDown(e) {
         const canvas = this.draw_canvas.current;
         const scaledCanvas = canvas.getBoundingClientRect();
@@ -255,7 +331,6 @@ class CanvasArea extends React.Component {
                 const height = img.height;
                 x = img.x;
                 y = img.y;
-                console.log(canX, canY, x, y, width, height);
                 if (canX < x + width && canX > x && canY > y && canY < y + height) {
                     flag = true;
                     break;
@@ -270,10 +345,10 @@ class CanvasArea extends React.Component {
                 const height = img.height;
                 img.x = canX - width / 2;
                 img.y = canY - height / 2;
-                this.undraw();
-                this.redraw();
-                this.redrawPics();
                 this.imgs[i].isDragged = true;
+                this.undraw();
+                this.redrawLines();
+                this.redrawPics();
             }
         } else if (
             this.state.selectedTool === 'draw' ||
@@ -286,10 +361,12 @@ class CanvasArea extends React.Component {
                 ((e.pageY - scaledCanvas.y - window.scrollY) / scaledCanvas.height) *
                 canvas.height;
             this.setState({
-                isPainting: true,
+                isDrawing: true,
             });
             this.addClick(canX, canY);
-            this.redraw();
+            this.undraw();
+            this.redrawLines();
+            this.redrawPics();
         }
         e.preventDefault();
     }
@@ -604,10 +681,3 @@ class CanvasArea extends React.Component {
 }
 
 export default CanvasArea;
-
-/*
-Resolutions:
-4:3 - 1280x960
-16:9 - 1280 x 720
-1:1 - 1280x1280
-*/
