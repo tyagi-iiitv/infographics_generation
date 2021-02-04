@@ -31,3 +31,10 @@ pip install flask numpy pandas
     ]
   }
 ```
+- Call the endpoints through React example
+```
+async handleSubmit(){
+    const response = await Axios.post("/layout", 
+        {data: this.state}
+    )
+```
