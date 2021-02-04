@@ -53,6 +53,7 @@ class CanvasArea extends React.Component {
         const ctx = canvas.getContext('2d');
         this.setCanvasRes(1280, 960);
         ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
     undraw = () => {
@@ -60,6 +61,7 @@ class CanvasArea extends React.Component {
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
     };
 
     clearCanvasArea = () => {
@@ -67,6 +69,7 @@ class CanvasArea extends React.Component {
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         this.imgs = [];
         this.clickX = [];
         this.clickY = [];
