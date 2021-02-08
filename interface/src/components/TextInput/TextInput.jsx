@@ -1,13 +1,14 @@
 import React from 'react';
-import styles from './TextInput.module.scss';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
+import styles from './TextInput.module.scss';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 /*
 TextInputClass
-Area where user would add the text to create the infographic
+Area where user would add the text to describe the infographic
 */
 class TextInput extends React.Component {
     constructor(props) {
@@ -41,18 +42,21 @@ class TextInput extends React.Component {
         this.handleSubmitText = this.handleSubmitText.bind(this);
     }
 
-    // Send the info array to parent
+    /*
+    Send the info array to parent
+    */
     handleSubmitText(e) {
-        //if no input or only whitespace, ignore it
         e.preventDefault();
+        //if no input or only whitespace, ignore it
         if (this.state.text.trim().length === 0) {
             return;
         }
         this.props.infoObjects(this.state.info);
-        this.setState({ info: [], text: '', renderedText: '' });
     }
 
-    // Handles the text input area for extracting information and previewing
+    /*
+    Handles the text input area for extracting information and previewing
+    */
     handleChangeText(e) {
         var text = e.target.value;
         // Get a list of lines
@@ -155,7 +159,7 @@ class TextInput extends React.Component {
             renderedText +=
                 `<div\n` +
                 `   style='border-bottom:0.5px dashed black;'\n` +
-                `   onMouseEnter={this.style.background='#eaedee'}\n` +
+                `   onMouseEnter={this.style.background='#e0ffff'}\n` +
                 `   onMouseLeave={this.style.background='white'}\n` +
                 `>\n`;
 
@@ -192,16 +196,15 @@ class TextInput extends React.Component {
             }
             renderedText += `</div>\n`;
         }
-        console.log(renderedText);
         this.setState({ text: text, info: info, renderedText: renderedText });
     }
 
     render() {
         return (
-            <div className={styles.textInputArea}>
+            <div className={styles.textInputContainer}>
                 <p style={{ color: 'white' }}>
                     {`Text Input Area `}
-                    <Tooltip title={this.tooltipInfo} arrow interactive>
+                    <Tooltip title={this.tooltipInfo} arrow>
                         <span>
                             <FontAwesomeIcon icon={faQuestionCircle} />
                         </span>
@@ -212,7 +215,7 @@ class TextInput extends React.Component {
                     className={styles.inputArea}
                     onChange={this.handleChangeText}
                     value={this.state.text}
-                    placeholder="Enter the information here"
+                    placeholder="Enter the information about visual groups here..."
                 />
                 <Button
                     type="submit"

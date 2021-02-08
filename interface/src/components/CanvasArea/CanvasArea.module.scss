@@ -1,0 +1,40 @@
+.canvasAreaContainer {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.canvasToolbox {
+    bottom: 0;
+    margin: auto;
+    margin-bottom: 2%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 95%;
+    max-height: 7%;
+}
+
+.toolButtonGroup {
+    height: 80%;
+}
+
+.toolButton {
+    height: 100%;
+    min-width: 0 !important;
+}
+
+.dimButton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-items: center;
+    justify-content: center;
+    padding-top: 5px;
+    font-size: calc(5px + 0.75vmin);
+}
