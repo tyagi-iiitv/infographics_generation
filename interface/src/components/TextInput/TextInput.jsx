@@ -11,13 +11,14 @@ TextInputClass
 Area where user would add the text to describe the infographic
 */
 class TextInput extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
             text: '', // Text
             renderedText: '', // Text to render in the preview area
-            info: [], // Information about visual groups from the input
         };
+        this.info = []; // Information about visual groups from the input
+        this.numVisGrps = 0; // Number of visual groups
 
         // Tooltip to help users understand how to type in the information.
         this.tooltipInfo = (
@@ -39,19 +40,15 @@ class TextInput extends React.Component {
         );
 
         this.handleChangeText = this.handleChangeText.bind(this);
-        this.handleSubmitText = this.handleSubmitText.bind(this);
+        this.sendInfo = this.sendInfo.bind(this);
     }
 
     /*
-    Send the info array to parent
+    Send the info array to server
     */
-    handleSubmitText(e) {
+    sendInfo(e) {
         e.preventDefault();
-        //if no input or only whitespace, ignore it
-        if (this.state.text.trim().length === 0) {
-            return;
-        }
-        this.props.infoObjects(this.state.info);
+        return;
     }
 
     /*
@@ -196,7 +193,12 @@ class TextInput extends React.Component {
             }
             renderedText += `</div>\n`;
         }
-        this.setState({ text: text, info: info, renderedText: renderedText });
+        this.numVisGrps = info.length;
+        this.info = info;
+        this.setState({
+            text,
+            renderedText,
+        });
     }
 
     render() {
@@ -224,9 +226,9 @@ class TextInput extends React.Component {
                     style={{
                         margin: '10px',
                     }}
-                    onClick={this.handleSubmitText}
+                    onClick={this.sendInfo}
                 >
-                    Input Text
+                    Update Info
                 </Button>
                 <div
                     id="preview_text"

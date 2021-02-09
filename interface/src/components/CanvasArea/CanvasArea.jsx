@@ -1,7 +1,6 @@
 import React from 'react';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
-import { saveAs } from 'file-saver';
 import styles from './CanvasArea.module.scss';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,7 +10,6 @@ import {
     faTrash,
     faUpload,
     faExpand,
-    faDownload,
 } from '@fortawesome/free-solid-svg-icons';
 
 /*
@@ -40,7 +38,7 @@ class CanvasArea extends React.Component {
         this.addPic = this.addPic.bind(this);
         this.addClick = this.addClick.bind(this);
         this.redrawLines = this.redrawLines.bind(this);
-        this.downloadCanvasFlow = this.downloadCanvasFlow.bind(this);
+        this.sendInfo = this.sendInfo.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
@@ -54,13 +52,14 @@ class CanvasArea extends React.Component {
         this.clickY = []; // Y-coordinates of the drawing/erasing
         this.clickDrag = []; // True if user is clicking
         this.clickColor = []; // Black for pen and white for eraser
+        this.canvasDims = { width: 1280, height: 960 }; // Dimensions of the canvas
     }
 
     /*
     Initializing canavs with default resolution
     */
     componentDidMount() {
-        this.setCanvasRes(1280, 960);
+        this.setCanvasRes(this.canvasDims.width, this.canvasDims.height);
     }
 
     /*
@@ -95,11 +94,11 @@ class CanvasArea extends React.Component {
     /*
     Sets the canvas resolution in pixels
     Resolutions:
-    4:3  - 1280 x 960
-    3:4  - 960 x 1280
-    1:1  - 1280 x 1280
-    16:9 - 1280 x 720
-    9:16 - 720 x 1280
+    4:3  - 1280 px   x   960 px
+    3:4  - 960 px    x   1280 px
+    1:1  - 1280 px   x   1280 px
+    16:9 - 1280 px   x   720 px
+    9:16 - 720 px    x   1280 px
     */
     setCanvasRes(width, height) {
         this.clearCanvasArea();
@@ -195,14 +194,15 @@ class CanvasArea extends React.Component {
     };
 
     /*
-    Downlaods only the flow i.e. the lines suer drew with the pen and eraser tool
+    Send flow image and dragged locations to server
     */
-    downloadCanvasFlow = () => {
-        const canvas = this.draw_canvas.current;
-        this.undraw();
-        this.redrawLines();
-        saveAs(canvas.toDataURL(), 'flow.png');
-        this.redrawPics();
+    sendInfo = () => {
+        // const canvas = this.draw_canvas.current;
+        // this.undraw();
+        // this.redrawLines();
+        // saveAs(canvas.toDataURL(), 'flow.png');
+        // this.redrawPics();
+        return;
     };
 
     /*
@@ -217,10 +217,13 @@ class CanvasArea extends React.Component {
     onMouseUp(e) {
         e.preventDefault();
         if (this.state.selectedTool === 'upload') {
-            this.imgs[this.state.imgIdx].isDragged = false;
-            this.setState({
-                imgIdx: -1,
-            });
+            var i = this.state.imgIdx;
+            if (i !== -1 && this.imgs[i].isDragged) {
+                this.imgs[this.state.imgIdx].isDragged = false;
+                this.setState({
+                    imgIdx: -1,
+                });
+            }
         } else if (
             this.state.selectedTool === 'draw' ||
             this.state.selectedTool === 'erase'
@@ -413,7 +416,12 @@ class CanvasArea extends React.Component {
                                 this.setState({
                                     canvasRes: '4:3',
                                 });
-                                this.setCanvasRes(1280, 960);
+                                this.canvasDims.width = 1280;
+                                this.canvasDims.height = 960;
+                                this.setCanvasRes(
+                                    this.canvasDims.width,
+                                    this.canvasDims.height
+                                );
                             }}
                             disabled={this.state.canvasRes === '4:3'}
                         >
@@ -444,7 +452,12 @@ class CanvasArea extends React.Component {
                                 this.setState({
                                     canvasRes: '3:4',
                                 });
-                                this.setCanvasRes(960, 1280);
+                                this.canvasDims.width = 960;
+                                this.canvasDims.height = 1280;
+                                this.setCanvasRes(
+                                    this.canvasDims.width,
+                                    this.canvasDims.height
+                                );
                             }}
                             disabled={this.state.canvasRes === '3:4'}
                         >
@@ -475,7 +488,12 @@ class CanvasArea extends React.Component {
                                 this.setState({
                                     canvasRes: '1:1',
                                 });
-                                this.setCanvasRes(1280, 1280);
+                                this.canvasDims.width = 1280;
+                                this.canvasDims.height = 1280;
+                                this.setCanvasRes(
+                                    this.canvasDims.width,
+                                    this.canvasDims.height
+                                );
                             }}
                             disabled={this.state.canvasRes === '1:1'}
                         >
@@ -506,7 +524,12 @@ class CanvasArea extends React.Component {
                                 this.setState({
                                     canvasRes: '16:9',
                                 });
-                                this.setCanvasRes(1280, 720);
+                                this.canvasDims.width = 1280;
+                                this.canvasDims.height = 720;
+                                this.setCanvasRes(
+                                    this.canvasDims.width,
+                                    this.canvasDims.height
+                                );
                             }}
                             disabled={this.state.canvasRes === '16:9'}
                         >
@@ -537,7 +560,12 @@ class CanvasArea extends React.Component {
                                 this.setState({
                                     canvasRes: '9:16',
                                 });
-                                this.setCanvasRes(720, 1280);
+                                this.canvasDims.width = 720;
+                                this.canvasDims.height = 1280;
+                                this.setCanvasRes(
+                                    this.canvasDims.width,
+                                    this.canvasDims.height
+                                );
                             }}
                             disabled={this.state.canvasRes === '9:16'}
                         >
@@ -574,13 +602,10 @@ class CanvasArea extends React.Component {
                             color="secondary"
                             className={styles.toolButton}
                             onClick={() => {
-                                this.downloadCanvasFlow();
+                                this.sendInfo();
                             }}
                         >
-                            <FontAwesomeIcon
-                                icon={faDownload}
-                                aria-label="Download Image"
-                            />
+                            Update Flow
                         </Button>
                     </ButtonGroup>
                     <ButtonGroup
