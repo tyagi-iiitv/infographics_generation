@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
+import axios from 'axios';
 import styles from './TextInput.module.scss';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -46,9 +47,13 @@ class TextInput extends React.Component {
     /*
     Send the info array to server
     */
-    sendInfo(e) {
+    async sendInfo(e) {
         e.preventDefault();
-        return;
+        const response = await axios.post('/visgrps/', {
+            numVisGrps: this.numVisGrps,
+            visGrpsInfo: this.info,
+        });
+        console.log(response);
     }
 
     /*

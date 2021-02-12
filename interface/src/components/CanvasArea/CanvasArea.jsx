@@ -1,6 +1,7 @@
 import React from 'react';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
+import axios from 'axios';
 import styles from './CanvasArea.module.scss';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -196,14 +197,18 @@ class CanvasArea extends React.Component {
     /*
     Send flow image and dragged locations to server
     */
-    sendInfo = () => {
-        // const canvas = this.draw_canvas.current;
-        // this.undraw();
-        // this.redrawLines();
-        // saveAs(canvas.toDataURL(), 'flow.png');
+    async sendInfo() {
+        const canvas = this.draw_canvas.current;
+        this.undraw();
+        this.redrawLines();
+        const response = await axios.post('/layout/', {
+            canvasDims: { ...this.canvasDims },
+            flowImg: canvas.toDataURL('image/png'),
+        });
+        console.log(response);
+
         // this.redrawPics();
-        return;
-    };
+    }
 
     /*
     On releasing mouse button,
