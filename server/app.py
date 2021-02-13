@@ -31,8 +31,15 @@ def get_corners_in_flow(flow_img):
     skel = cv2.GaussianBlur(skel, (5,5), 0)
     num_vis_grps = int(session.get("num_vis_grps", 0))
     corners = cv2.goodFeaturesToTrack(skel, num_vis_grps, 0.2, 128)
-    corners = np.int0(corners)/1024
-    return corners.reshape(-1, 2)
+    if (corners is None):
+        return 0
+    else:
+        corners = np.int0(corners)/1024
+        canvas_dims = session.get("canvas_dims")
+        corners = corners.reshape(-1, 2)
+        dims = np.array([canvas_dims['width'], canvas_dims['height']])
+        corners = corners*dims
+        return corners.tolist()
 
 def get_uniformity(box_center, flow):
     box_center = np.array(box_center)
@@ -63,11 +70,8 @@ def layout():
         dataUrlPattern = re.compile('data:image/png;base64,(.*)$')
         flow_imgb64 = dataUrlPattern.match(data['flowImg']).group(1)
         flow_img = base64.b64decode(flow_imgb64)
-        corners = get_corners_in_flow(flow_img)
-        dims = np.array([canvas_dims['width'], canvas_dims['height']])
-        corners = corners*dims
-        session["corners"] = json.dumps(corners.tolist())
-        return session.get("corners")
+        session["corners"] = get_corners_in_flow(flow_img)
+        return json.dumps({'corners': session.get("corners")})
         # box_center = json.loads(request.data.decode("utf-8"))['box-center']
         # scores = []
         # for i,flow in enumerate(flows):

@@ -39,6 +39,7 @@ class CanvasArea extends React.Component {
         this.addPic = this.addPic.bind(this);
         this.addClick = this.addClick.bind(this);
         this.redrawLines = this.redrawLines.bind(this);
+        this.getBase64Image = this.getBase64Image.bind(this);
         this.sendInfo = this.sendInfo.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
@@ -147,7 +148,7 @@ class CanvasArea extends React.Component {
                 height: (img.height * 200) / img.width,
                 isDragged: false,
             };
-            this.imgs = this.imgs.concat(newImg);
+            this.imgs.push(newImg);
         };
     }
 
@@ -195,19 +196,43 @@ class CanvasArea extends React.Component {
     };
 
     /*
+    Returns Base 64 string of an image
+    */
+    getBase64Image(img) {
+        var canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        return canvas.toDataURL('image/png');
+    }
+
+    /*
     Send flow image and dragged locations to server
     */
     async sendInfo() {
         const canvas = this.draw_canvas.current;
         this.undraw();
         this.redrawLines();
+        const flowImg = canvas.toDataURL('image/png');
+        this.redrawPics();
+        var draggedImages = [];
+        this.imgs.forEach((img) => {
+            const draggedImage = {
+                img: this.getBase64Image(img.image),
+                x: img.x,
+                y: img.y,
+                width: img.width,
+                height: img.height,
+            };
+            draggedImages.push(draggedImage);
+        });
         const response = await axios.post('/layout/', {
             canvasDims: { ...this.canvasDims },
-            flowImg: canvas.toDataURL('image/png'),
+            flowImg: flowImg,
+            draggedImages: draggedImages,
         });
         console.log(response);
-
-        // this.redrawPics();
     }
 
     /*
