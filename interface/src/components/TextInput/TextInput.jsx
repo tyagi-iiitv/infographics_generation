@@ -96,7 +96,7 @@ class TextInput extends React.Component {
                         element.imagesAlt = [];
                     }
                     if (!('text' in element)) {
-                        element.text = '';
+                        element.text = [];
                     }
                     info.push(element);
                     element = {};
@@ -147,7 +147,7 @@ class TextInput extends React.Component {
                 element.imagesAlt = [];
             }
             if (!('text' in element)) {
-                element.text = '';
+                element.text = [];
             }
             info.push(element);
             element = {};
