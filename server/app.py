@@ -13,12 +13,16 @@ app = Flask(__name__)
 app.secret_key = 'info'
 
 
-def get_corners_in_flow(flow_img):
+def base64_to_npimg(img_str):
     dataUrlPattern = re.compile('data:image/png;base64,(.*)$')
-    flow_imgb64 = dataUrlPattern.match(flow_img).group(1)
-    flow_img = base64.b64decode(flow_imgb64)
+    img_str = dataUrlPattern.match(img_str).group(1)
+    flow_img = base64.b64decode(img_str)
+    img_as_np = np.frombuffer(flow_img, dtype=np.uint8)
+    return img_as_np
 
-    flow_as_np = np.frombuffer(flow_img, dtype=np.uint8)
+
+def get_corners_in_flow(flow_img):
+    flow_as_np = base64_to_npimg(flow_img)
     im = cv2.imdecode(flow_as_np, flags=1)
     im = cv2.resize(im, (1024, 1024))
     imgray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
@@ -62,6 +66,13 @@ def get_closest_flows(corners):
     return np.array(closest_flows)
 
 
+def get_scaled_corners(corners):
+    corners = corners.reshape(-1, 2)
+    canvas_dims = session.get("canvas_dims")
+    dims = np.array([canvas_dims['width'], canvas_dims['height']])
+    return corners*dims
+
+
 def get_uniformity(box_center, flow):
     box_center = np.array(box_center)
     flow = np.array(flow)
@@ -82,13 +93,6 @@ def margins(flow):
     flow = np.array(flow)
     mean_margin = sum([min(x[1:3]) for x in flow])/len(flow)
     return sum([abs(min(x[1:3])-mean_margin) for x in flow])
-
-
-def get_scaled_corners(corners):
-    corners = corners.reshape(-1, 2)
-    canvas_dims = session.get("canvas_dims")
-    dims = np.array([canvas_dims['width'], canvas_dims['height']])
-    return corners*dims
 
 
 @app.route('/')
@@ -115,6 +119,10 @@ def layout():
     if request.method == 'POST':
         data = json.loads(request.data.decode("utf-8"))
         session["canvas_dims"] = data['canvasDims']
+        dragged_images = data['draggedImages']
+        for dragged_image in dragged_images:
+            del dragged_image['img']
+        session['dragged_images'] = dragged_images
         corners, corners_padded = get_corners_in_flow(data["flowImg"])
         corners = get_scaled_corners(corners)
         session["corners"] = corners.tolist()
@@ -125,6 +133,8 @@ def layout():
         return json.dumps({
             'corners': session.get("corners"),
             'closestFlows': session.get("closest_flows"),
+            'canvasDims': session.get("canvas_dims"),
+            'draggedImages': session.get('dragged_images'),
             })
 
         # box_center = json.loads(request.data.decode("utf-8"))['box-center']
