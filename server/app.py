@@ -43,10 +43,10 @@ def get_corners_in_flow(flow_img):
     skel = cv2.GaussianBlur(skel, (5,5), 0)
 
     num_vis_grps = int(session.get("num_vis_grps", 0))
-    corners = cv2.goodFeaturesToTrack(skel, num_vis_grps, 0.2, 128)
+    corners = cv2.goodFeaturesToTrack(skel, num_vis_grps, 0.2, 64)
 
-    if (corners is None):
-        return None
+    if corners is None or len(corners) != num_vis_grps:
+        return None, None
     else:
         corners = (np.int0(corners)/1024).reshape(-1, 2)
         corners_padded = corners.reshape(-1)
@@ -73,26 +73,44 @@ def get_scaled_corners(corners):
     return corners*dims
 
 
-def get_uniformity(box_center, flow):
-    box_center = np.array(box_center)
-    flow = np.array(flow)
-    mean_dist = sum([np.linalg.norm(x[1:3]-box_center) for x in flow])/len(flow)
-    return sum([abs(np.linalg.norm(x[1:3]-box_center)-mean_dist) for x in flow])
+def get_uniformity(dragged_images, flow):
+    uniformity_scores = []
+    for dragged_image in dragged_images:
+        x = dragged_image['x']
+        y = dragged_image['y']
+        width = dragged_image['width']
+        height = dragged_image['height']
+        box_center = np.array([(x+width)/2, (y + height)/2])
+        mean_dist = np.mean(np.linalg.norm(flow - box_center, axis=1), axis=0)
+        uniformity_score = np.mean(abs(np.linalg.norm(flow - box_center, axis=1)-mean_dist), axis=0)
+        uniformity_scores.append(uniformity_score)
+    if len(uniformity_scores) > 0:
+        return np.mean(np.array(uniformity_scores), axis=0)
+    else:
+        return -1
 
 
-def overlapping(box_dims, flow):
-    box_dims = np.array(box_dims)
-    flow = np.array(flow)
-    for i,elem in enumerate(flow):
-        if elem[1] < box_dims[0]+box_dims[2] and elem[2] < box_dims[1]+box_dims[3]:
-            return 0
-    return 1
+def overlapping(dragged_images, flow):
+    for dragged_image in dragged_images:
+        x = dragged_image['x']
+        y = dragged_image['y']
+        width = dragged_image['width']
+        height = dragged_image['height']
+        for point in flow:
+            if x < point[0] < x + width and y < point[1] < y + height:
+                return 1
+    return 0
 
 
 def margins(flow):
     flow = np.array(flow)
-    mean_margin = sum([min(x[1:3]) for x in flow])/len(flow)
-    return sum([abs(min(x[1:3])-mean_margin) for x in flow])
+    canvas_dims = session.get("canvas_dims")
+    dims = np.array([canvas_dims['width'], canvas_dims['height']])
+    dist_from_margins = np.concatenate((dims - flow, flow), axis=1)
+    min_margins = np.amin(dist_from_margins, axis=1)
+    mean_margin = np.mean(min_margins)
+    margin_score = np.mean(abs(min_margins-mean_margin))
+    return margin_score
 
 
 @app.route('/')
@@ -124,32 +142,23 @@ def layout():
             del dragged_image['img']
         session['dragged_images'] = dragged_images
         corners, corners_padded = get_corners_in_flow(data["flowImg"])
-        corners = get_scaled_corners(corners)
-        session["corners"] = corners.tolist()
-        closest_flows = get_closest_flows(corners_padded)
-        for i in range(len(closest_flows)):
-            closest_flows[i] = get_scaled_corners(closest_flows[i])
-        session["closest_flows"] = closest_flows.tolist()
+        if corners is not None:
+            corners = get_scaled_corners(corners)
+            corners = corners.tolist()
+            closest_flows = get_closest_flows(corners_padded)
+            for i in range(len(closest_flows)):
+                closest_flows[i] = get_scaled_corners(closest_flows[i])
+            closest_flows = closest_flows.tolist()
+        else:
+            closest_flows = None
+        session["corners"] = corners
+        session["closest_flows"] = closest_flows
         return json.dumps({
             'corners': session.get("corners"),
             'closestFlows': session.get("closest_flows"),
             'canvasDims': session.get("canvas_dims"),
             'draggedImages': session.get('dragged_images'),
             })
-
-        # box_center = json.loads(request.data.decode("utf-8"))['box-center']
-        # scores = []
-        # for i,flow in enumerate(flows):
-        #     scores.append(get_uniformity(box_center, flow))
-        # flows_df = pd.DataFrame(flows, columns=['flow_vals'])
-        # flows_df['scores'] = scores
-        # flows_df['id'] = flows_df.index
-        # flows_df = flows_df.sort_values(by=['scores'])
-        # flows_df = flows_df.assign(flow_vals=flows_df['flow_vals']).explode('flow_vals')
-        # flows_df[['bb_id','x','y','l','w']] = pd.DataFrame(flows_df['flow_vals'].tolist(), index=flows_df.index)
-        # flows_df = flows_df[['x','y','scores', 'id']]
-        # flows_df['id'] = flows_df['id'].astype('str')
-        # return flows_df.to_json()
 
 
 if __name__ == '__main__':
