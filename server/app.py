@@ -42,7 +42,7 @@ def get_corners_in_flow(flow_img):
             break
     skel = cv2.GaussianBlur(skel, (5,5), 0)
 
-    num_vis_grps = int(session.get("num_vis_grps", 0))
+    num_vis_grps = session.get("num_vis_grps")
     corners = cv2.goodFeaturesToTrack(skel, num_vis_grps, 0.2, 64)
 
     if corners is None or len(corners) != num_vis_grps:
@@ -51,29 +51,39 @@ def get_corners_in_flow(flow_img):
         corners = (np.int0(corners)/1024).reshape(-1, 2)
         corners_padded = corners.reshape(-1)
         corners_padded = np.pad(corners_padded, (0,500-len(corners_padded)))
-        return corners, corners_padded
+        return corners.tolist(), corners_padded
 
 
 def get_closest_flows(corners):
     u = AnnoyIndex(500, 'euclidean')
     u.load('flows.ann')
-    closest_flow_indexes = u.get_nns_by_vector(corners, 4, search_k=-1, include_distances=False)
+    closest_flow_indexes = u.get_nns_by_vector(corners, 5, search_k=-1, include_distances=False)
     closest_flows = []
     for index in closest_flow_indexes:
         points = np.array(u.get_item_vector(index))
         points = points[np.nonzero(points)[0]].reshape(-1, 2)
-        closest_flows.append(points)
-    return np.array(closest_flows)
+        closest_flows.append(points.tolist())
+    num_vis_grps = session.get("num_vis_grps")
+    for i in reversed(range(len(closest_flows))):
+        closest_flow = closest_flows[i]
+        if len(closest_flow) != num_vis_grps:
+            del closest_flows[i]
+    if len(closest_flows) > 0:
+        return closest_flows
+    else:
+        return None
 
 
 def get_scaled_corners(corners):
+    corners = np.array(corners)
     corners = corners.reshape(-1, 2)
     canvas_dims = session.get("canvas_dims")
     dims = np.array([canvas_dims['width'], canvas_dims['height']])
-    return corners*dims
+    return (corners*dims).tolist()
 
 
 def get_uniformity(dragged_images, flow):
+    flow = np.array(flow)
     uniformity_scores = []
     for dragged_image in dragged_images:
         x = dragged_image['x']
@@ -91,6 +101,7 @@ def get_uniformity(dragged_images, flow):
 
 
 def overlapping(dragged_images, flow):
+    flow = np.array(flow)
     for dragged_image in dragged_images:
         x = dragged_image['x']
         y = dragged_image['y']
@@ -103,14 +114,16 @@ def overlapping(dragged_images, flow):
 
 
 def margins(flow):
-    flow = np.array(flow)
-    canvas_dims = session.get("canvas_dims")
-    dims = np.array([canvas_dims['width'], canvas_dims['height']])
-    dist_from_margins = np.concatenate((dims - flow, flow), axis=1)
-    min_margins = np.amin(dist_from_margins, axis=1)
-    mean_margin = np.mean(min_margins)
-    margin_score = np.mean(abs(min_margins-mean_margin))
-    return margin_score
+    if flow is not None:
+        flow = np.array(flow)
+        canvas_dims = session.get("canvas_dims")
+        dims = np.array([canvas_dims['width'], canvas_dims['height']])
+        dist_from_margins = np.concatenate((dims - flow, flow), axis=1)
+        min_margins = np.amin(dist_from_margins, axis=1)
+        mean_margin = np.mean(min_margins)
+        margin_score = np.mean(abs(min_margins-mean_margin))
+        return margin_score
+    return -1
 
 
 @app.route('/')
@@ -144,20 +157,34 @@ def layout():
         corners, corners_padded = get_corners_in_flow(data["flowImg"])
         if corners is not None:
             corners = get_scaled_corners(corners)
-            corners = corners.tolist()
             closest_flows = get_closest_flows(corners_padded)
-            for i in range(len(closest_flows)):
-                closest_flows[i] = get_scaled_corners(closest_flows[i])
-            closest_flows = closest_flows.tolist()
+            if closest_flows is not None:
+                for i in range(len(closest_flows)):
+                    closest_flows[i] = get_scaled_corners(closest_flows[i])
         else:
             closest_flows = None
-        session["corners"] = corners
+        session["flow"] = corners
         session["closest_flows"] = closest_flows
+        ranks = {
+            'flowUniformity': get_uniformity(dragged_images, corners),
+            'flowMargins': margins(corners),
+            'flowOverlapping': overlapping(dragged_images, corners),
+            'uniformity': [],
+            'margins': [],
+            'overlapping': [],
+        }
+        if closest_flows is not None:
+            for closest_flow in closest_flows:
+                ranks['uniformity'].append(get_uniformity(dragged_images, closest_flow))
+                ranks['margins'].append(margins(closest_flow))
+                ranks['overlapping'].append(overlapping(dragged_images, closest_flow))
+        session['ranks'] = ranks
         return json.dumps({
-            'corners': session.get("corners"),
+            'flow': session.get("flow"),
             'closestFlows': session.get("closest_flows"),
             'canvasDims': session.get("canvas_dims"),
             'draggedImages': session.get('dragged_images'),
+            'ranks': session.get('ranks')
             })
 
 
