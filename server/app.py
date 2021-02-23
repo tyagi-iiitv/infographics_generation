@@ -27,7 +27,7 @@ def get_corners_in_flow(flow_img):
     im = cv2.resize(im, (1024, 1024))
     imgray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
     im_inv = cv2.bitwise_not(imgray)
-    ret,thresh = cv2.threshold(im_inv,127,255,0)
+    ret, thresh = cv2.threshold(im_inv,127,255,0)
 
     img_t = thresh
     skel = np.zeros(thresh.shape, np.uint8)
@@ -179,12 +179,14 @@ def layout():
                 ranks['margins'].append(margins(closest_flow))
                 ranks['overlapping'].append(overlapping(dragged_images, closest_flow))
         session['ranks'] = ranks
+        svg = open('vg.svg')
         return json.dumps({
             'flow': session.get("flow"),
             'closestFlows': session.get("closest_flows"),
             'canvasDims': session.get("canvas_dims"),
             'draggedImages': session.get('dragged_images'),
-            'ranks': session.get('ranks')
+            'ranks': session.get('ranks'),
+            'svg': svg.read(),
             })
 
 

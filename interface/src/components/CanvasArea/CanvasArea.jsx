@@ -124,17 +124,21 @@ class CanvasArea extends React.Component {
     /*
     Adds the uploaded image to the drawing area
     */
-    addPic(e) {
-        e.preventDefault();
-        if (!e.target.files[0]) {
-            return;
+    addPic(e, isSvg = false, x = 50, y = 50) {
+        var img = new Image();
+        if (!isSvg) {
+            if (!e.target.files[0]) {
+                return;
+            }
+            img.src = URL.createObjectURL(e.target.files[0]);
+            e.target.value = '';
+        } else {
+            img.src = URL.createObjectURL(e);
         }
 
         const canvas = this.draw_canvas.current;
         const ctx = canvas.getContext('2d');
-        var img = new Image();
-        img.src = URL.createObjectURL(e.target.files[0]);
-        e.target.value = '';
+
         img.onload = () => {
             // Currently, setting all uploaded images to fixed width of 200px
             ctx.drawImage(img, 50, 50, 200, (img.height * 200) / img.width);
@@ -142,8 +146,8 @@ class CanvasArea extends React.Component {
             // Add this image to the list of uploaded images
             const newImg = {
                 image: img,
-                x: 50,
-                y: 50,
+                x: x,
+                y: y,
                 width: 200,
                 height: (img.height * 200) / img.width,
                 isDragged: false,
@@ -243,6 +247,10 @@ class CanvasArea extends React.Component {
             );
         }
         console.log(response);
+        var svg = new Blob([response.data.svg], {
+            type: 'image/svg+xml;charset=utf-8',
+        });
+        this.addPic(svg, true);
     }
 
     /*
@@ -255,7 +263,6 @@ class CanvasArea extends React.Component {
     that no lines can be drawn/erased
     */
     onMouseUp(e) {
-        e.preventDefault();
         if (this.state.selectedTool === 'upload') {
             var i = this.state.imgIdx;
             if (i !== -1 && this.imgs[i].isDragged) {
@@ -272,6 +279,7 @@ class CanvasArea extends React.Component {
                 isDrawing: false,
             });
         }
+        e.preventDefault();
     }
 
     /*
@@ -281,7 +289,6 @@ class CanvasArea extends React.Component {
     that no lines can be drawn/erased
     */
     onMouseLeave(e) {
-        e.preventDefault();
         if (
             this.state.selectedTool === 'draw' ||
             this.state.selectedTool === 'erase'
@@ -290,6 +297,7 @@ class CanvasArea extends React.Component {
                 isDrawing: false,
             });
         }
+        e.preventDefault();
     }
 
     /*
@@ -302,7 +310,6 @@ class CanvasArea extends React.Component {
     position to the memory and redraws the canvas.
     */
     onMouseMove(e) {
-        e.preventDefault();
         const canvas = this.draw_canvas.current;
         const scaledCanvas = canvas.getBoundingClientRect();
         if (this.state.selectedTool === 'upload') {
@@ -342,6 +349,7 @@ class CanvasArea extends React.Component {
         this.undraw();
         this.redrawLines();
         this.redrawPics();
+        e.preventDefault();
     }
 
     /*
@@ -643,6 +651,9 @@ class CanvasArea extends React.Component {
                             className={styles.toolButton}
                             onClick={() => {
                                 this.sendInfo();
+                                this.setState({
+                                    selectedTool: 'upload',
+                                });
                             }}
                         >
                             Update Flow
