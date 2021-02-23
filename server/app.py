@@ -43,7 +43,7 @@ def get_corners_in_flow(flow_img):
     skel = cv2.GaussianBlur(skel, (5,5), 0)
 
     num_vis_grps = session.get("num_vis_grps")
-    corners = cv2.goodFeaturesToTrack(skel, num_vis_grps, 0.2, 64)
+    corners = cv2.goodFeaturesToTrack(skel, num_vis_grps, 0.2, 128)
 
     if corners is None or len(corners) != num_vis_grps:
         return None, None
@@ -188,6 +188,8 @@ def layout():
             'draggedImages': session.get('dragged_images'),
             'ranks': session.get('ranks'),
             'svg': svg,
+            'numVisGrps': session.get("num_vis_grps"),
+            'visGrpsInfo': session.get("vis_grps_info"),
             })
 
 

@@ -142,19 +142,15 @@ class CanvasArea extends React.Component {
 
         img.onload = () => {
             // Currently, setting all uploaded images to fixed width of 200px
-            ctx.drawImage(
-                img,
-                x ?? 50,
-                y ?? 50,
-                200,
-                (img.height * 200) / img.width
-            );
+            x = x - 100 ?? 50;
+            y = y - (img.height * 200) / (2 * img.width) ?? 50;
+            ctx.drawImage(img, x, y, 200, (img.height * 200) / img.width);
 
             // Add this image to the list of uploaded images
             const newImg = {
                 image: img,
-                x: x ?? 50,
-                y: y ?? 50,
+                x: x,
+                y: y,
                 width: 200,
                 height: (img.height * 200) / img.width,
                 isDragged: false,
@@ -243,7 +239,7 @@ class CanvasArea extends React.Component {
             flowImg: flowImg,
             draggedImages: draggedImages,
         });
-        var data = response['data'];
+        const data = response['data'];
         if (data['flow'] === null) {
             alert(
                 'No flow detected! Try drawing something more to describe the flow.'
@@ -252,13 +248,16 @@ class CanvasArea extends React.Component {
             alert(
                 'Not enough visual groups! Try increasing visual groups or changing the flow.'
             );
+        } else {
+            const svg = new Blob([response.data.svg], {
+                type: 'image/svg+xml;charset=utf-8',
+            });
+            const flow = response.data.flow;
+            flow.forEach((point) => {
+                this.addPic(svg, true, point[0], point[1]);
+            });
         }
         console.log(response);
-        console.log(response.data.svg);
-        var svg = new Blob([response.data.svg], {
-            type: 'image/svg+xml;charset=utf-8',
-        });
-        this.addPic(svg, true, 100, 100);
     }
 
     /*
