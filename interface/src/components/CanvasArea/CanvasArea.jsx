@@ -124,7 +124,8 @@ class CanvasArea extends React.Component {
     /*
     Adds the uploaded image to the drawing area
     */
-    addPic(e, isSvg = false, x = 50, y = 50) {
+    addPic(e, isSvg, x, y) {
+        isSvg = isSvg ?? false;
         var img = new Image();
         if (!isSvg) {
             if (!e.target.files[0]) {
@@ -141,13 +142,19 @@ class CanvasArea extends React.Component {
 
         img.onload = () => {
             // Currently, setting all uploaded images to fixed width of 200px
-            ctx.drawImage(img, 50, 50, 200, (img.height * 200) / img.width);
+            ctx.drawImage(
+                img,
+                x ?? 50,
+                y ?? 50,
+                200,
+                (img.height * 200) / img.width
+            );
 
             // Add this image to the list of uploaded images
             const newImg = {
                 image: img,
-                x: x,
-                y: y,
+                x: x ?? 50,
+                y: y ?? 50,
                 width: 200,
                 height: (img.height * 200) / img.width,
                 isDragged: false,
@@ -247,10 +254,11 @@ class CanvasArea extends React.Component {
             );
         }
         console.log(response);
+        console.log(response.data.svg);
         var svg = new Blob([response.data.svg], {
             type: 'image/svg+xml;charset=utf-8',
         });
-        this.addPic(svg, true);
+        this.addPic(svg, true, 100, 100);
     }
 
     /*

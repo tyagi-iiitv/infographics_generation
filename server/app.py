@@ -83,33 +83,34 @@ def get_scaled_corners(corners):
 
 
 def get_uniformity(dragged_images, flow):
-    flow = np.array(flow)
-    uniformity_scores = []
-    for dragged_image in dragged_images:
-        x = dragged_image['x']
-        y = dragged_image['y']
-        width = dragged_image['width']
-        height = dragged_image['height']
-        box_center = np.array([(x+width)/2, (y + height)/2])
-        mean_dist = np.mean(np.linalg.norm(flow - box_center, axis=1), axis=0)
-        uniformity_score = np.mean(abs(np.linalg.norm(flow - box_center, axis=1)-mean_dist), axis=0)
-        uniformity_scores.append(uniformity_score)
-    if len(uniformity_scores) > 0:
-        return np.mean(np.array(uniformity_scores), axis=0)
-    else:
-        return -1
+    if flow is not None:
+        flow = np.array(flow)
+        uniformity_scores = []
+        for dragged_image in dragged_images:
+            x = dragged_image['x']
+            y = dragged_image['y']
+            width = dragged_image['width']
+            height = dragged_image['height']
+            box_center = np.array([(x+width)/2, (y + height)/2])
+            mean_dist = np.mean(np.linalg.norm(flow - box_center, axis=1), axis=0)
+            uniformity_score = np.mean(abs(np.linalg.norm(flow - box_center, axis=1)-mean_dist), axis=0)
+            uniformity_scores.append(uniformity_score)
+        if len(uniformity_scores) > 0:
+            return np.mean(np.array(uniformity_scores), axis=0)
+    return -1
 
 
 def overlapping(dragged_images, flow):
-    flow = np.array(flow)
-    for dragged_image in dragged_images:
-        x = dragged_image['x']
-        y = dragged_image['y']
-        width = dragged_image['width']
-        height = dragged_image['height']
-        for point in flow:
-            if x < point[0] < x + width and y < point[1] < y + height:
-                return 1
+    if flow is not None:
+        flow = np.array(flow)
+        for dragged_image in dragged_images:
+            x = dragged_image['x']
+            y = dragged_image['y']
+            width = dragged_image['width']
+            height = dragged_image['height']
+            for point in flow:
+                if x < point[0] < x + width and y < point[1] < y + height:
+                    return 1
     return 0
 
 
@@ -179,14 +180,14 @@ def layout():
                 ranks['margins'].append(margins(closest_flow))
                 ranks['overlapping'].append(overlapping(dragged_images, closest_flow))
         session['ranks'] = ranks
-        svg = open('vg.svg')
+        svg = open('vg.svg').read()
         return json.dumps({
             'flow': session.get("flow"),
             'closestFlows': session.get("closest_flows"),
             'canvasDims': session.get("canvas_dims"),
             'draggedImages': session.get('dragged_images'),
             'ranks': session.get('ranks'),
-            'svg': svg.read(),
+            'svg': svg,
             })
 
 
