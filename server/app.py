@@ -40,10 +40,12 @@ def get_corners_in_flow(flow_img):
         img_t = eroded.copy()
         if cv2.countNonZero(img_t)==0:
             break
-    skel = cv2.GaussianBlur(skel, (5,5), 0)
+    skel = cv2.GaussianBlur(skel, (25, 25), cv2.BORDER_DEFAULT)
 
     num_vis_grps = session.get("num_vis_grps")
-    corners = cv2.goodFeaturesToTrack(skel, num_vis_grps, 0.2, 128)
+    canvas_dims = session.get("canvas_dims")
+    min_dist = min(canvas_dims["width"], canvas_dims["height"])/10
+    corners = cv2.goodFeaturesToTrack(skel, num_vis_grps, 0.2, min_dist)
 
     if corners is None or len(corners) != num_vis_grps:
         return None, None
