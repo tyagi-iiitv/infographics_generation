@@ -84,6 +84,11 @@ def get_scaled_corners(corners):
     return (corners*dims).tolist()
 
 
+def sigmoid(z):
+    z = np.array(z)
+    return 1/(1 + np.exp(-z))
+
+
 def get_uniformity(dragged_images, flow):
     if flow is not None:
         flow = np.array(flow)
@@ -93,12 +98,15 @@ def get_uniformity(dragged_images, flow):
             y = dragged_image['y']
             width = dragged_image['width']
             height = dragged_image['height']
-            box_center = np.array([(x+width)/2, (y + height)/2])
-            mean_dist = np.mean(np.linalg.norm(flow - box_center, axis=1), axis=0)
-            uniformity_score = np.mean(abs(np.linalg.norm(flow - box_center, axis=1)-mean_dist), axis=0)
+            box_center = np.array([(x + width)/2, (y + height)/2])
+            # mean_dist = np.mean(np.linalg.norm(flow - box_center, axis=1), axis=0)
+            uniformity_score = np.std(abs(np.linalg.norm(flow - box_center, axis=1)), axis=0)
             uniformity_scores.append(uniformity_score)
         if len(uniformity_scores) > 0:
-            return np.mean(np.array(uniformity_scores), axis=0)
+            # print(uniformity_scores)
+            # print(sigmoid(uniformity_scores))
+            squished_uniformity = 1 - sigmoid(uniformity_scores)
+            return np.mean(squished_uniformity, axis=0)
     return -1
 
 
@@ -123,8 +131,8 @@ def margins(flow):
         dims = np.array([canvas_dims['width'], canvas_dims['height']])
         dist_from_margins = np.concatenate((dims - flow, flow), axis=1)
         min_margins = np.amin(dist_from_margins, axis=1)
-        mean_margin = np.mean(min_margins)
-        margin_score = np.mean(abs(min_margins-mean_margin))
+        squished_margins = sigmoid(min_margins)
+        margin_score = np.mean(squished_margins)
         return margin_score
     return -1
 

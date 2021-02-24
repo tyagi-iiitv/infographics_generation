@@ -37,6 +37,7 @@ class CanvasArea extends React.Component {
         this.setCanvasRes = this.setCanvasRes.bind(this);
         this.redrawPics = this.redrawPics.bind(this);
         this.addPic = this.addPic.bind(this);
+        this.addSVGPic = this.addSVGPic.bind(this);
         this.addClick = this.addClick.bind(this);
         this.redrawLines = this.redrawLines.bind(this);
         this.getBase64Image = this.getBase64Image.bind(this);
@@ -124,21 +125,45 @@ class CanvasArea extends React.Component {
     /*
     Adds the uploaded image to the drawing area
     */
-    addPic(e, isSvg, x, y) {
-        isSvg = isSvg ?? false;
-        var img = new Image();
-        if (!isSvg) {
-            if (!e.target.files[0]) {
-                return;
-            }
-            img.src = URL.createObjectURL(e.target.files[0]);
-            e.target.value = '';
-        } else {
-            img.src = URL.createObjectURL(e);
-        }
-
+    addPic(e) {
         const canvas = this.draw_canvas.current;
         const ctx = canvas.getContext('2d');
+
+        var img = new Image();
+        if (!e.target.files[0]) {
+            return;
+        }
+        img.src = URL.createObjectURL(e.target.files[0]);
+        e.target.value = '';
+
+        img.onload = () => {
+            // Currently, setting all uploaded images to fixed width of 200px
+            const x = 50;
+            const y = 50;
+            ctx.drawImage(img, x, y, 200, (img.height * 200) / img.width);
+
+            // Add this image to the list of uploaded images
+            const newImg = {
+                image: img,
+                x: x,
+                y: y,
+                width: 200,
+                height: (img.height * 200) / img.width,
+                isDragged: false,
+            };
+            this.imgs.push(newImg);
+        };
+    }
+
+    /*
+    Adds the uploaded SVG image to the drawing area
+    */
+    addSVGPic(e, x, y) {
+        const canvas = this.draw_canvas.current;
+        const ctx = canvas.getContext('2d');
+
+        var img = new Image();
+        img.src = URL.createObjectURL(e);
 
         img.onload = () => {
             // Currently, setting all uploaded images to fixed width of 200px
@@ -254,7 +279,7 @@ class CanvasArea extends React.Component {
             });
             const flow = response.data.flow;
             flow.forEach((point) => {
-                this.addPic(svg, true, point[0], point[1]);
+                this.addSVGPic(svg, point[0], point[1]);
             });
         }
         console.log(response);
