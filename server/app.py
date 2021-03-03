@@ -101,14 +101,10 @@ def get_uniformity(dragged_images, flow):
             width = dragged_image['width']
             height = dragged_image['height']
             box_center = np.array([(x + width)/2, (y + height)/2])
-            # mean_dist = np.mean(np.linalg.norm(flow - box_center, axis=1), axis=0)
             uniformity_score = np.std(abs(np.linalg.norm(flow - box_center, axis=1)), axis=0)
             uniformity_scores.append(uniformity_score)
         if len(uniformity_scores) > 0:
-            print(uniformity_scores)
-            # print(sigmoid(uniformity_scores))
             squished_uniformity = normalize(uniformity_scores)
-            print(squished_uniformity)
             return np.mean(squished_uniformity, axis=0)
     return -1
 
@@ -140,6 +136,18 @@ def margins(flow):
     return -1
 
 
+def get_flows_for_empty_canvas(num_vg):
+    match=[]
+    flows = session.get('flows')
+    for i, row in enumerate(flows):
+        flow_df = pd.DataFrame(row)
+        flow_df = flow_df[[1,2]]
+        flow_arr = flow_df.to_numpy().reshape(-1, 2)
+        if len(flow_arr) == num_vg:
+            match.append(flow_arr)
+    return match
+
+
 @app.route('/')
 def index():
     return "<h1> Infographics Generation </h1>"
@@ -154,8 +162,8 @@ def visgrps():
         session["num_vis_grps"] = num_vis_grps
         session["vis_grps_info"] = vis_grps_info
         return json.dumps({
-            'numVisGrps': session.get("num_vis_grps"),
-            'visGrpsInfo': session.get("vis_grps_info"),
+            'numVisGrps': num_vis_grps,
+            'visGrpsInfo': vis_grps_info,
             })
 
 
@@ -168,6 +176,8 @@ def layout():
         for dragged_image in dragged_images:
             del dragged_image['img']
         session['dragged_images'] = dragged_images
+        flows = np.load('flows.npy', allow_pickle=True)
+        session['flows'] = flows
         corners, corners_padded = get_corners_in_flow(data["flowImg"])
         if corners is not None:
             corners = get_scaled_corners(corners)
@@ -176,7 +186,10 @@ def layout():
                 for i in range(len(closest_flows)):
                     closest_flows[i] = get_scaled_corners(closest_flows[i])
         else:
-            closest_flows = None
+            closest_flows = get_flows_for_empty_canvas(session.get("num_vis_grps"))
+            for i in range(len(closest_flows)):
+                closest_flows[i] = get_scaled_corners(closest_flows[i])
+            print(closest_flows[:5])
         session["flow"] = corners
         session["closest_flows"] = closest_flows
         ranks = {
@@ -207,5 +220,4 @@ def layout():
 
 
 if __name__ == '__main__':
-    flows = np.load('flows.npy', allow_pickle=True)
     app.run(debug=True, port=5000)
