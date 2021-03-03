@@ -84,9 +84,11 @@ def get_scaled_corners(corners):
     return (corners*dims).tolist()
 
 
-def sigmoid(z):
+def normalize(z):
     z = np.array(z)
-    return 1/(1 + np.exp(-z))
+    max_val = max(z)
+    min_val = min(z)
+    return (z - min_val)/(max_val - min_val)
 
 
 def get_uniformity(dragged_images, flow):
@@ -103,9 +105,10 @@ def get_uniformity(dragged_images, flow):
             uniformity_score = np.std(abs(np.linalg.norm(flow - box_center, axis=1)), axis=0)
             uniformity_scores.append(uniformity_score)
         if len(uniformity_scores) > 0:
-            # print(uniformity_scores)
+            print(uniformity_scores)
             # print(sigmoid(uniformity_scores))
-            squished_uniformity = 1 - sigmoid(uniformity_scores)
+            squished_uniformity = normalize(uniformity_scores)
+            print(squished_uniformity)
             return np.mean(squished_uniformity, axis=0)
     return -1
 
@@ -131,7 +134,7 @@ def margins(flow):
         dims = np.array([canvas_dims['width'], canvas_dims['height']])
         dist_from_margins = np.concatenate((dims - flow, flow), axis=1)
         min_margins = np.amin(dist_from_margins, axis=1)
-        squished_margins = sigmoid(min_margins)
+        squished_margins = normalize(min_margins)
         margin_score = np.mean(squished_margins)
         return margin_score
     return -1

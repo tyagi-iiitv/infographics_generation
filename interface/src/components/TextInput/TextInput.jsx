@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import axios from 'axios';
 import styles from './TextInput.module.scss';
@@ -41,25 +40,12 @@ class TextInput extends React.Component {
         );
 
         this.handleChangeText = this.handleChangeText.bind(this);
-        this.sendInfo = this.sendInfo.bind(this);
-    }
-
-    /*
-    Send the info array to server
-    */
-    async sendInfo(e) {
-        e.preventDefault();
-        const response = await axios.post('/visgrps/', {
-            numVisGrps: this.numVisGrps,
-            visGrpsInfo: this.info,
-        });
-        console.log(response);
     }
 
     /*
     Handles the text input area for extracting information and previewing
     */
-    handleChangeText(e) {
+    async handleChangeText(e) {
         var text = e.target.value;
         // Get a list of lines
         var lines = text.split('\n');
@@ -164,8 +150,7 @@ class TextInput extends React.Component {
                 `   onMouseEnter={this.style.background='#e0ffff'}\n` +
                 `   onMouseLeave={this.style.background='white'}\n` +
                 `>\n`;
-
-            renderedText += `<p><u>Visual Group #${j + 1}</u></p>`;
+            renderedText += `<p align='center'><u>Visual Group #${j + 1}</u></p>\n`;
             // If no label, just add title as a level 1 heading
             if (visGrp.label !== '') {
                 renderedText += `<h1>(${visGrp['label']}) ${visGrp['title']}</h1>\n`;
@@ -200,6 +185,13 @@ class TextInput extends React.Component {
         }
         this.numVisGrps = info.length;
         this.info = info;
+        const response = await axios.post('/visgrps/', {
+            numVisGrps: this.numVisGrps,
+            visGrpsInfo: this.info,
+        });
+        if (response.status !== 200) {
+            console.log(response);
+        }
         this.setState({
             text,
             renderedText,
@@ -209,39 +201,29 @@ class TextInput extends React.Component {
     render() {
         return (
             <div className={styles.textInputContainer}>
-                <p style={{ color: 'white' }}>
+                <div style={{ color: 'white' }}>
                     {`Text Input Area `}
                     <Tooltip title={this.tooltipInfo} arrow>
                         <span>
                             <FontAwesomeIcon icon={faQuestionCircle} />
                         </span>
                     </Tooltip>
-                </p>
-                <textarea
-                    id="input_text"
-                    className={styles.inputArea}
-                    onChange={this.handleChangeText}
-                    value={this.state.text}
-                    placeholder="Enter the information about visual groups here..."
-                />
-                <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    style={{
-                        margin: '10px',
-                    }}
-                    onClick={this.sendInfo}
-                >
-                    Update Info
-                </Button>
-                <div
-                    id="preview_text"
-                    className={styles.previewArea}
-                    dangerouslySetInnerHTML={{
-                        __html: this.state.renderedText,
-                    }}
-                />
+                </div>
+                <form className={styles.inputForm}>
+                    <textarea
+                        id="input_text"
+                        className={styles.inputArea}
+                        onChange={this.handleChangeText}
+                        placeholder="Enter the information about visual groups here..."
+                    />
+                    <div
+                        id="preview_text"
+                        className={styles.previewArea}
+                        dangerouslySetInnerHTML={{
+                            __html: this.state.renderedText,
+                        }}
+                    />
+                </form>
             </div>
         );
     }

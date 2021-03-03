@@ -1,10 +1,10 @@
 .textInputContainer {
     height: 100%;
     width: 100%;
-    padding: 10px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     flex-wrap: nowrap;
 }
@@ -12,7 +12,7 @@
 .inputForm {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     flex-wrap: nowrap;
     width: 100%;
@@ -20,18 +20,19 @@
 }
 
 .inputArea {
-    height: 40%;
+    height: 45%;
     width: 90%;
     border: 1px solid black;
     margin-left: auto;
     margin-right: auto;
     resize: none;
     overflow: scroll;
+    scroll-behavior: auto;
     margin: 0;
 }
 
 .previewArea {
-    height: 40%;
+    height: 45%;
     width: 90%;
     padding: 2px;
     border: 1px solid black;
