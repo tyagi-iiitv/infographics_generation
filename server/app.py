@@ -12,8 +12,12 @@ from annoy import AnnoyIndex
 app = Flask(__name__)
 app.secret_key = 'info'
 
+# Loads the flows array
+flows = np.load('flows.npy', allow_pickle=True)
 
-def base64_to_npimg(img_str):
+
+# Converts a abse64 image string to a numpy image
+def base64_img_to_np(img_str):
     dataUrlPattern = re.compile('data:image/png;base64,(.*)$')
     img_str = dataUrlPattern.match(img_str).group(1)
     flow_img = base64.b64decode(img_str)
@@ -21,8 +25,9 @@ def base64_to_npimg(img_str):
     return img_as_np
 
 
+# Identifies corners in the flow
 def get_corners_in_flow(flow_img):
-    flow_as_np = base64_to_npimg(flow_img)
+    flow_as_np = base64_img_to_np(flow_img)
     im = cv2.imdecode(flow_as_np, flags=1)
     im = cv2.resize(im, (1024, 1024))
     imgray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
@@ -42,10 +47,11 @@ def get_corners_in_flow(flow_img):
             break
     skel = cv2.GaussianBlur(skel, (25, 25), cv2.BORDER_DEFAULT)
 
-    num_vis_grps = session.get("num_vis_grps")
-    canvas_dims = session.get("canvas_dims")
-    min_dist = min(canvas_dims["width"], canvas_dims["height"])/10
-    corners = cv2.goodFeaturesToTrack(skel, num_vis_grps, 0.2, min_dist)
+    num_vis_grps = session.get('num_vis_grps')
+    canvas_dims = session.get('canvas_dims')
+    min_dist = min(canvas_dims['width'], canvas_dims['height'])/10
+    quality_measure = 0.2
+    corners = cv2.goodFeaturesToTrack(skel, num_vis_grps, quality_measure, min_dist)
 
     if corners is None or len(corners) != num_vis_grps:
         return None, None
@@ -56,6 +62,7 @@ def get_corners_in_flow(flow_img):
         return corners.tolist(), corners_padded
 
 
+# Gets closest flow from the user-drawn flow
 def get_closest_flows(corners):
     u = AnnoyIndex(500, 'euclidean')
     u.load('flows.ann')
@@ -65,7 +72,7 @@ def get_closest_flows(corners):
         points = np.array(u.get_item_vector(index))
         points = points[np.nonzero(points)[0]].reshape(-1, 2)
         closest_flows.append(points.tolist())
-    num_vis_grps = session.get("num_vis_grps")
+    num_vis_grps = session.get('num_vis_grps')
     for i in reversed(range(len(closest_flows))):
         closest_flow = closest_flows[i]
         if len(closest_flow) != num_vis_grps:
@@ -76,14 +83,16 @@ def get_closest_flows(corners):
         return None
 
 
+# Scales the points to the canvas size
 def get_scaled_corners(corners):
     corners = np.array(corners)
     corners = corners.reshape(-1, 2)
-    canvas_dims = session.get("canvas_dims")
-    dims = np.array([canvas_dims['width'], canvas_dims['height']])
+    canvas_dims = session.get('canvas_dims')
+    dims = np.array([[canvas_dims['width'], canvas_dims['height']]])
     return (corners*dims).tolist()
 
 
+# Min-max normalization fo the rnakings
 def normalize(z):
     z = np.array(z)
     max_val = max(z)
@@ -91,6 +100,7 @@ def normalize(z):
     return (z - min_val)/(max_val - min_val)
 
 
+# Gives a ranking to see how uniformly spred the flow is
 def get_uniformity(dragged_images, flow):
     if flow is not None:
         flow = np.array(flow)
@@ -105,11 +115,12 @@ def get_uniformity(dragged_images, flow):
             uniformity_scores.append(uniformity_score)
         if len(uniformity_scores) > 0:
             squished_uniformity = normalize(uniformity_scores)
-            return np.mean(squished_uniformity, axis=0)
+            return float(np.mean(squished_uniformity))
     return -1
 
 
-def overlapping(dragged_images, flow):
+# Gives a ranking to see if the flow is ovberlapping some dragged image
+def get_overlapping(dragged_images, flow):
     if flow is not None:
         flow = np.array(flow)
         for dragged_image in dragged_images:
@@ -123,100 +134,140 @@ def overlapping(dragged_images, flow):
     return 0
 
 
-def margins(flow):
+# Gives a ranking to see how far the flow is from the margins
+def get_margins(flow):
     if flow is not None:
         flow = np.array(flow)
-        canvas_dims = session.get("canvas_dims")
+        canvas_dims = session.get('canvas_dims')
         dims = np.array([canvas_dims['width'], canvas_dims['height']])
         dist_from_margins = np.concatenate((dims - flow, flow), axis=1)
         min_margins = np.amin(dist_from_margins, axis=1)
         squished_margins = normalize(min_margins)
         margin_score = np.mean(squished_margins)
-        return margin_score
+        return float(margin_score)
     return -1
 
 
+# Takes in all the three rankings and gives an overall ranking
+def get_overall_ranking(uniformity, overlapping, margins):
+    alpha = 0.33
+    beta = 0.33
+    return (1-beta-alpha)*uniformity + alpha*overlapping + beta*margins
+
+
+# Gets flows, when no points detecetd in user-drawn flow
 def get_flows_for_empty_canvas(num_vg):
     match=[]
-    flows = session.get('flows')
     for i, row in enumerate(flows):
-        flow_df = pd.DataFrame(row)
-        flow_df = flow_df[[1,2]]
-        flow_arr = flow_df.to_numpy().reshape(-1, 2)
+        flow_arr = np.array(row[1:3]).reshape(-1, 2)
         if len(flow_arr) == num_vg:
-            match.append(flow_arr)
-    return match
+            match.append(flow_arr.tolist())
+    return match[:10]
 
 
 @app.route('/')
 def index():
-    return "<h1> Infographics Generation </h1>"
+    return '<h1>Infographics Generation</h1>'
 
 
-@app.route("/visgrps/", methods=['POST'])
+@app.route('/visgrps/', methods=['POST', 'GET'])
 def visgrps():
     if request.method == 'POST':
-        data = json.loads(request.data.decode("utf-8"))
+        # If API called
+
+        data = json.loads(request.data.decode('utf-8'))
         num_vis_grps = data['numVisGrps']
         vis_grps_info = data['visGrpsInfo']
-        session["num_vis_grps"] = num_vis_grps
-        session["vis_grps_info"] = vis_grps_info
+        session['num_vis_grps'] = num_vis_grps
+        session['vis_grps_info'] = vis_grps_info
         return json.dumps({
             'numVisGrps': num_vis_grps,
             'visGrpsInfo': vis_grps_info,
             })
+    elif request.method == 'GET':
+        # Shows this on the page
+
+        return json.dumps({
+            'numVisGrps': session.get('num_vis_grps'),
+            'visGrpsInfo': session.get('vis_grps_info'),
+        })
 
 
-@app.route("/layout/", methods=['POST'])
+@app.route('/layout/', methods=['POST', 'GET'])
 def layout():
     if request.method == 'POST':
-        data = json.loads(request.data.decode("utf-8"))
-        session["canvas_dims"] = data['canvasDims']
+        # If API called
+
+        # Get POST request from API call
+        data = json.loads(request.data.decode('utf-8'))
+
+        # Save canvas simensions in sessions
+        session['canvas_dims'] = data['canvasDims']
+
+        # Get dragged images and remove the image elements
+        # to save space, as we don't need them right now
         dragged_images = data['draggedImages']
         for dragged_image in dragged_images:
             del dragged_image['img']
+        # Save dragged image data in sesions
         session['dragged_images'] = dragged_images
-        flows = np.load('flows.npy', allow_pickle=True)
-        session['flows'] = flows
-        corners, corners_padded = get_corners_in_flow(data["flowImg"])
+
+        # Get corners and padded corners from the flow that user has drawn
+        corners, corners_padded = get_corners_in_flow(data['flowImg'])
+
         if corners is not None:
+            # If corners are detected from the user-drawn flow,
+            # scale them to canvas size, and get closest flows
             corners = get_scaled_corners(corners)
             closest_flows = get_closest_flows(corners_padded)
             if closest_flows is not None:
                 for i in range(len(closest_flows)):
                     closest_flows[i] = get_scaled_corners(closest_flows[i])
         else:
-            closest_flows = get_flows_for_empty_canvas(session.get("num_vis_grps"))
+            # If corners are not detected, get all flows with same
+            # number of visual groups as entered by the user and scale them
+            closest_flows = get_flows_for_empty_canvas(session.get('num_vis_grps'))
             for i in range(len(closest_flows)):
                 closest_flows[i] = get_scaled_corners(closest_flows[i])
-            print(closest_flows[:5])
-        session["flow"] = corners
+
+        session['flow'] = corners
+        session['closest_flows'] = closest_flows
+
+        # Ranking of the closest flows
+        closest_flow_rankings = []
+        for closest_flow in closest_flows:
+            uniformity = get_uniformity(dragged_images, closest_flow)
+            overlapping = get_overlapping(dragged_images, closest_flow)
+            margins = get_margins(closest_flow)
+            overall_rank = get_overall_ranking(uniformity, overlapping, margins)
+            closest_flow_rankings.append(overall_rank)
+
+        sorting_indices = np.argsort(closest_flow_rankings)
+        closest_flows = np.array(closest_flows)[sorting_indices].tolist()
         session["closest_flows"] = closest_flows
-        ranks = {
-            'flowUniformity': get_uniformity(dragged_images, corners),
-            'flowMargins': margins(corners),
-            'flowOverlapping': overlapping(dragged_images, corners),
-            'uniformity': [],
-            'margins': [],
-            'overlapping': [],
-        }
-        if closest_flows is not None:
-            for closest_flow in closest_flows:
-                ranks['uniformity'].append(get_uniformity(dragged_images, closest_flow))
-                ranks['margins'].append(margins(closest_flow))
-                ranks['overlapping'].append(overlapping(dragged_images, closest_flow))
-        session['ranks'] = ranks
-        svg = open('vg.svg').read()
+
+        # SVG string
+        session['svg'] = open('vg.svg').read()
+
         return json.dumps({
-            'flow': session.get("flow"),
-            'closestFlows': session.get("closest_flows"),
-            'canvasDims': session.get("canvas_dims"),
+            'flow': session.get('flow'),
+            'closestFlows': session.get('closest_flows'),
+            'svg': session.get('svg'),
+            'numVisGrps': session.get('num_vis_grps'),
+            'visGrpsInfo': session.get('vis_grps_info'),
+        })
+    elif request.method == 'GET':
+        # Shows this on the page
+
+        return json.dumps({
+            'flow': session.get('flow'),
+            'closestFlows': session.get('closest_flows'),
+            'canvasDims': session.get('canvas_dims'),
             'draggedImages': session.get('dragged_images'),
-            'ranks': session.get('ranks'),
-            'svg': svg,
-            'numVisGrps': session.get("num_vis_grps"),
-            'visGrpsInfo': session.get("vis_grps_info"),
-            })
+            'svg': session.get('svg'),
+            'numVisGrps': session.get('num_vis_grps'),
+            'visGrpsInfo': session.get('vis_grps_info'),
+        })
 
 
 if __name__ == '__main__':

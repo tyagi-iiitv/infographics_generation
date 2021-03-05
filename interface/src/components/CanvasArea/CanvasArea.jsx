@@ -265,15 +265,7 @@ class CanvasArea extends React.Component {
             draggedImages: draggedImages,
         });
         const data = response['data'];
-        if (data['flow'] === null) {
-            alert(
-                'No flow detected! Try drawing something more to describe the flow.'
-            );
-        } else if (data['closestFlows'] === null) {
-            alert(
-                'Not enough visual groups! Try increasing visual groups or changing the flow.'
-            );
-        } else {
+        if (data['flow'] !== null) {
             const svg = new Blob([response.data.svg], {
                 type: 'image/svg+xml;charset=utf-8',
             });
