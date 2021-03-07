@@ -49,8 +49,8 @@ def get_corners_in_flow(flow_img):
 
     num_vis_grps = session.get('num_vis_grps')
     canvas_dims = session.get('canvas_dims')
-    min_dist = min(canvas_dims['width'], canvas_dims['height'])/10
-    quality_measure = 0.2
+    min_dist = min(canvas_dims['width'], canvas_dims['height'])/8
+    quality_measure = 0.3
     corners = cv2.goodFeaturesToTrack(skel, num_vis_grps, quality_measure, min_dist)
 
     if corners is None or len(corners) != num_vis_grps:

@@ -28,16 +28,19 @@ class CanvasArea extends React.Component {
         this.state = {
             canvasRes: '4:3', // The present resolution of the canvas
             imgIdx: -1, // The image which is currently being dragged
+            vgIdx: -1, // The vg which is currently being dragged
             selectedTool: 'upload', // Tool selected by the user
             isDrawing: false, // Whether the user is drawing/erasing inside the canvas
         };
 
         this.undraw = this.undraw.bind(this);
         this.clearCanvasArea = this.clearCanvasArea.bind(this);
+        this.clearVGs = this.clearVGs.bind(this);
         this.setCanvasRes = this.setCanvasRes.bind(this);
         this.redrawPics = this.redrawPics.bind(this);
+        this.drawVGs = this.drawVGs.bind(this);
         this.addPic = this.addPic.bind(this);
-        this.addSVGPic = this.addSVGPic.bind(this);
+        this.addVG = this.addVG.bind(this);
         this.addClick = this.addClick.bind(this);
         this.redrawLines = this.redrawLines.bind(this);
         this.getBase64Image = this.getBase64Image.bind(this);
@@ -45,12 +48,14 @@ class CanvasArea extends React.Component {
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
+        this.imgBelow = this.imgBelow.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
 
         this.draw_canvas = React.createRef(); // Reference for the canvas area
         this.imgForm = React.createRef(); // Reference for the upload image input
 
         this.imgs = []; // List of images uploaded by the user
+        this.vgs = []; // List of visual group svgs added
         this.clickX = []; // X-coordinates of the drawing/erasing
         this.clickY = []; // Y-coordinates of the drawing/erasing
         this.clickDrag = []; // True if user is clicking
@@ -85,6 +90,7 @@ class CanvasArea extends React.Component {
         this.undraw();
         // Then clears memory
         this.imgs = [];
+        this.vgs = [];
         this.clickX = [];
         this.clickY = [];
         this.clickDrag = [];
@@ -92,6 +98,16 @@ class CanvasArea extends React.Component {
         this.setState({
             imgIdx: -1,
         });
+    };
+
+    /*
+    Removes the Visual Groups added to the canvas
+    */
+    clearVGs = () => {
+        this.undraw();
+        this.vgs = [];
+        this.redrawLines();
+        this.redrawPics();
     };
 
     /*
@@ -119,6 +135,18 @@ class CanvasArea extends React.Component {
         // Positions all the images to their past position
         for (const img of this.imgs) {
             ctx.drawImage(img.image, img.x, img.y, img.width, img.height);
+        }
+    };
+
+    /*
+    Adds the Visual Groups to the canvas
+    */
+    drawVGs = () => {
+        const canvas = this.draw_canvas.current;
+        const ctx = canvas.getContext('2d');
+        // Positions all the VGs to their respective positions
+        for (const vg of this.vgs) {
+            ctx.drawImage(vg.image, vg.x, vg.y, vg.width, vg.height);
         }
     };
 
@@ -158,7 +186,7 @@ class CanvasArea extends React.Component {
     /*
     Adds the uploaded SVG image to the drawing area
     */
-    addSVGPic(e, x, y) {
+    addVG(e, x, y) {
         const canvas = this.draw_canvas.current;
         const ctx = canvas.getContext('2d');
 
@@ -180,7 +208,7 @@ class CanvasArea extends React.Component {
                 height: (img.height * 200) / img.width,
                 isDragged: false,
             };
-            this.imgs.push(newImg);
+            this.vgs.push(newImg);
         };
     }
 
@@ -244,10 +272,8 @@ class CanvasArea extends React.Component {
     */
     async sendInfo() {
         const canvas = this.draw_canvas.current;
-        this.undraw();
-        this.redrawLines();
+        this.clearVGs();
         const flowImg = canvas.toDataURL('image/png');
-        this.redrawPics();
         var draggedImages = [];
         this.imgs.forEach((img) => {
             const draggedImage = {
@@ -271,7 +297,7 @@ class CanvasArea extends React.Component {
             });
             const flow = response.data.flow;
             flow.forEach((point) => {
-                this.addSVGPic(svg, point[0], point[1]);
+                this.addVG(svg, point[0], point[1]);
             });
         }
         console.log(response);
@@ -288,11 +314,19 @@ class CanvasArea extends React.Component {
     */
     onMouseUp(e) {
         if (this.state.selectedTool === 'upload') {
-            var i = this.state.imgIdx;
+            var i;
+            i = this.state.imgIdx;
             if (i !== -1 && this.imgs[i].isDragged) {
                 this.imgs[this.state.imgIdx].isDragged = false;
                 this.setState({
                     imgIdx: -1,
+                });
+            }
+            i = this.state.vgIdx;
+            if (i !== -1 && this.vgs[i].isDragged) {
+                this.vgs[this.state.vgIdx].isDragged = false;
+                this.setState({
+                    vgIdx: -1,
                 });
             }
         } else if (
@@ -337,22 +371,31 @@ class CanvasArea extends React.Component {
         const canvas = this.draw_canvas.current;
         const scaledCanvas = canvas.getBoundingClientRect();
         if (this.state.selectedTool === 'upload') {
-            const i = this.state.imgIdx;
-            if (i !== -1 && this.imgs[i].isDragged) {
-                // Position fo image w.r.t the canvas
-                const canX =
-                    ((e.pageX - scaledCanvas.x - window.scrollX) /
-                        scaledCanvas.width) *
-                    canvas.width;
-                const canY =
-                    ((e.pageY - scaledCanvas.y - window.scrollY) /
-                        scaledCanvas.height) *
-                    canvas.height;
-                const img = this.imgs[i];
+            // Position of mouse pointer w.r.t the canvas
+            const canX =
+                ((e.pageX - scaledCanvas.x - window.scrollX) / scaledCanvas.width) *
+                canvas.width;
+            const canY =
+                ((e.pageY - scaledCanvas.y - window.scrollY) / scaledCanvas.height) *
+                canvas.height;
+            const i = this.state.imgIdx,
+                v = this.state.vgIdx;
+            if (i !== -1 || v !== -1) {
+                var img;
+                if (i !== -1 && this.imgs[i].isDragged) {
+                    img = this.imgs[i];
+                }
+                if (v !== -1 && this.vgs[v].isDragged) {
+                    img = this.vgs[v];
+                }
                 const width = img.width;
                 const height = img.height;
                 img.x = canX - width / 2;
                 img.y = canY - height / 2;
+                this.undraw();
+                this.redrawLines();
+                this.redrawPics();
+                this.drawVGs();
             }
         } else if (
             this.state.selectedTool === 'draw' ||
@@ -368,12 +411,40 @@ class CanvasArea extends React.Component {
                         scaledCanvas.height) *
                     canvas.height;
                 this.addClick(canX, canY, true);
+                this.undraw();
+                this.redrawLines();
+                this.redrawPics();
             }
         }
-        this.undraw();
-        this.redrawLines();
-        this.redrawPics();
         e.preventDefault();
+    }
+
+    /*
+    Returns the index of the image in elemType, if it is below the pointer, else,
+    returns -1.
+    elemType can be either this.imgs or this.vgs.
+    */
+    imgBelow(canX, canY, elemType) {
+        var i,
+            x,
+            y,
+            flag = false;
+        for (i in elemType) {
+            const img = elemType[i];
+            const width = img.width;
+            const height = img.height;
+            x = img.x;
+            y = img.y;
+            if (canX < x + width && canX > x && canY > y && canY < y + height) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag === true) {
+            return i;
+        } else {
+            return -1;
+        }
     }
 
     /*
@@ -396,39 +467,45 @@ class CanvasArea extends React.Component {
             const canY =
                 ((e.pageY - scaledCanvas.y - window.scrollY) / scaledCanvas.height) *
                 canvas.height;
-            var i,
-                x,
-                y,
-                flag = false;
-            for (i in this.imgs) {
-                const img = this.imgs[i];
-                const width = img.width;
-                const height = img.height;
-                x = img.x;
-                y = img.y;
-                if (canX < x + width && canX > x && canY > y && canY < y + height) {
-                    flag = true;
-                    break;
-                }
-            }
-            if (flag === true) {
+            var i;
+            i = this.imgBelow(canX, canY, this.vgs);
+            if (i !== -1) {
                 this.setState({
-                    imgIdx: Number(i),
+                    vgIdx: Number(i),
                 });
-                const img = this.imgs[i];
+                const img = this.vgs[i];
                 const width = img.width;
                 const height = img.height;
                 img.x = canX - width / 2;
                 img.y = canY - height / 2;
-                this.imgs[i].isDragged = true;
+                this.vgs[i].isDragged = true;
                 this.undraw();
                 this.redrawLines();
                 this.redrawPics();
+                this.drawVGs();
+            } else {
+                i = this.imgBelow(canX, canY, this.imgs);
+                if (i !== -1) {
+                    this.setState({
+                        imgIdx: Number(i),
+                    });
+                    const img = this.imgs[i];
+                    const width = img.width;
+                    const height = img.height;
+                    img.x = canX - width / 2;
+                    img.y = canY - height / 2;
+                    this.imgs[i].isDragged = true;
+                    this.undraw();
+                    this.redrawLines();
+                    this.redrawPics();
+                    this.drawVGs();
+                }
             }
         } else if (
             this.state.selectedTool === 'draw' ||
             this.state.selectedTool === 'erase'
         ) {
+            this.clearVGs();
             const canX =
                 ((e.pageX - scaledCanvas.x - window.scrollX) / scaledCanvas.width) *
                 canvas.width;
