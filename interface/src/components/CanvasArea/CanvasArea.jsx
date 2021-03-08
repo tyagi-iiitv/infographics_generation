@@ -272,8 +272,11 @@ class CanvasArea extends React.Component {
     */
     async sendInfo() {
         const canvas = this.draw_canvas.current;
-        this.clearVGs();
+        this.undraw();
+        this.redrawLines();
         const flowImg = canvas.toDataURL('image/png');
+        this.redrawPics();
+        this.clearVGs();
         var draggedImages = [];
         this.imgs.forEach((img) => {
             const draggedImage = {
@@ -291,15 +294,21 @@ class CanvasArea extends React.Component {
             draggedImages: draggedImages,
         });
         const data = response['data'];
+        const svg = new Blob([response.data.svg], {
+            type: 'image/svg+xml;charset=utf-8',
+        });
         if (data['flow'] !== null) {
-            const svg = new Blob([response.data.svg], {
-                type: 'image/svg+xml;charset=utf-8',
-            });
             const flow = response.data.flow;
             flow.forEach((point) => {
                 this.addVG(svg, point[0], point[1]);
             });
+        } else {
+            const flow = response.data.closestFlows[0];
+            flow.forEach((point) => {
+                this.addVG(svg, point[0], point[1]);
+            });
         }
+        this.drawVGs();
         console.log(response);
     }
 

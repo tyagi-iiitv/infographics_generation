@@ -92,77 +92,76 @@ def get_scaled_corners(corners):
     return (corners*dims).tolist()
 
 
-# Min-max normalization fo the rnakings
-def normalize(z):
-    z = np.array(z)
-    max_val = max(z)
-    min_val = min(z)
-    return (z - min_val)/(max_val - min_val)
-
-
-# Gives a ranking to see how uniformly spred the flow is
+# Gives a ranking to see how uniformly spread around
+# the dragged object, the flow is
 def get_uniformity(dragged_images, flow):
     if flow is not None:
-        flow = np.array(flow)
+        canvas_dims = session.get('canvas_dims')
+        dims = np.array([[canvas_dims['width'], canvas_dims['height']]])
+        flow = np.array(flow)/dims
         uniformity_scores = []
+        canvas_dims = session.get('canvas_dims')
         for dragged_image in dragged_images:
-            x = dragged_image['x']
-            y = dragged_image['y']
-            width = dragged_image['width']
-            height = dragged_image['height']
+            x = dragged_image['x']/canvas_dims['width']
+            y = dragged_image['y']/canvas_dims['height']
+            width = dragged_image['width']/canvas_dims['width']
+            height = dragged_image['height']/canvas_dims['height']
             box_center = np.array([(x + width)/2, (y + height)/2])
-            uniformity_score = np.std(abs(np.linalg.norm(flow - box_center, axis=1)), axis=0)
+            uniformity_score = np.mean(abs(np.linalg.norm(flow - box_center, axis=1)), axis=0)
             uniformity_scores.append(uniformity_score)
         if len(uniformity_scores) > 0:
-            squished_uniformity = normalize(uniformity_scores)
-            return float(np.mean(squished_uniformity))
-    return -1
+            # squished_uniformity = normalize(uniformity_scores)
+            # return (1 - float(np.mean(squished_uniformity)))
+            return (1 - float(np.mean(uniformity_scores)))
+    return 1
 
 
 # Gives a ranking to see if the flow is ovberlapping some dragged image
 def get_overlapping(dragged_images, flow):
     if flow is not None:
-        flow = np.array(flow)
+        canvas_dims = session.get('canvas_dims')
+        dims = np.array([[canvas_dims['width'], canvas_dims['height']]])
+        flow = np.array(flow)/dims
         for dragged_image in dragged_images:
-            x = dragged_image['x']
-            y = dragged_image['y']
-            width = dragged_image['width']
-            height = dragged_image['height']
+            x = dragged_image['x']/canvas_dims['width']
+            y = dragged_image['y']/canvas_dims['height']
+            width = dragged_image['width']/canvas_dims['width']
+            height = dragged_image['height']/canvas_dims['height']
             for point in flow:
                 if x < point[0] < x + width and y < point[1] < y + height:
-                    return 1
-    return 0
+                    return 0
+    return 1
 
 
 # Gives a ranking to see how far the flow is from the margins
 def get_margins(flow):
     if flow is not None:
-        flow = np.array(flow)
         canvas_dims = session.get('canvas_dims')
-        dims = np.array([canvas_dims['width'], canvas_dims['height']])
-        dist_from_margins = np.concatenate((dims - flow, flow), axis=1)
+        dims = np.array([[canvas_dims['width'], canvas_dims['height']]])
+        flow = np.array(flow)/dims
+        dist_from_margins = np.concatenate((np.array([1, 1]) - flow, flow), axis=1)
         min_margins = np.amin(dist_from_margins, axis=1)
-        squished_margins = normalize(min_margins)
-        margin_score = np.mean(squished_margins)
-        return float(margin_score)
-    return -1
+        # squished_margins = normalize(min_margins)
+        # squished_margins = min_margins
+        margin_score = np.mean(min_margins)
+        return (1 - float(margin_score))
+    return 1
 
 
 # Takes in all the three rankings and gives an overall ranking
 def get_overall_ranking(uniformity, overlapping, margins):
-    alpha = 0.33
-    beta = 0.33
-    return (1-beta-alpha)*uniformity + alpha*overlapping + beta*margins
+    alpha = 0.5
+    return overlapping*(alpha*uniformity + (1-alpha)*margins)
 
 
 # Gets flows, when no points detecetd in user-drawn flow
 def get_flows_for_empty_canvas(num_vg):
     match=[]
     for i, row in enumerate(flows):
-        flow_arr = np.array(row[1:3]).reshape(-1, 2)
+        flow_arr = np.array(row)[:, 1:3]
         if len(flow_arr) == num_vg:
             match.append(flow_arr.tolist())
-    return match[:10]
+    return match
 
 
 @app.route('/')
@@ -233,6 +232,12 @@ def layout():
         session['flow'] = corners
         session['closest_flows'] = closest_flows
 
+        # print(corners)
+        # print(len(closest_flows))
+        # print(get_uniformity(dragged_images, corners))
+        # print(get_overlapping(dragged_images, corners))
+        # print(get_margins(corners))
+
         # Ranking of the closest flows
         closest_flow_rankings = []
         for closest_flow in closest_flows:
@@ -242,8 +247,8 @@ def layout():
             overall_rank = get_overall_ranking(uniformity, overlapping, margins)
             closest_flow_rankings.append(overall_rank)
 
-        sorting_indices = np.argsort(closest_flow_rankings)
-        closest_flows = np.array(closest_flows)[sorting_indices].tolist()
+        sorting_indices = np.argsort(closest_flow_rankings)[::-1]
+        closest_flows = np.array(closest_flows)[sorting_indices].tolist()[:5]
         session["closest_flows"] = closest_flows
 
         # SVG string
@@ -254,7 +259,6 @@ def layout():
             'closestFlows': session.get('closest_flows'),
             'svg': session.get('svg'),
             'numVisGrps': session.get('num_vis_grps'),
-            'visGrpsInfo': session.get('vis_grps_info'),
         })
     elif request.method == 'GET':
         # Shows this on the page
