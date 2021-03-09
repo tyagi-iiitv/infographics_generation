@@ -113,7 +113,7 @@ def get_uniformity(dragged_images, flow):
             width = dragged_image['width']/canvas_dims['width']
             height = dragged_image['height']/canvas_dims['height']
             box_center = np.array([(x + width)/2, (y + height)/2])
-            uniformity_score = np.mean(abs(np.linalg.norm(flow - box_center, axis=1)), axis=0)
+            uniformity_score = np.var(abs(np.linalg.norm(flow - box_center, axis=1)), axis=0)
             uniformity_scores.append(uniformity_score)
         if len(uniformity_scores) > 0:
             return (1 - float(np.mean(uniformity_scores)))
