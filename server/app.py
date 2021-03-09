@@ -7,6 +7,7 @@ import re
 import cv2
 import numpy as np
 from annoy import AnnoyIndex
+from scipy.spatial import ConvexHull
 
 
 app = Flask(__name__)
@@ -83,13 +84,19 @@ def get_closest_flows(corners):
         return None
 
 
-# Scales the points to the canvas size
-def get_scaled_corners(corners):
-    corners = np.array(corners)
-    corners = corners.reshape(-1, 2)
+# Scales  up the points to the canvas size
+def scale_up_flow(flow):
+    flow = np.array(flow).reshape(-1, 2)
     canvas_dims = session.get('canvas_dims')
     dims = np.array([[canvas_dims['width'], canvas_dims['height']]])
-    return (corners*dims).tolist()
+    return (flow*dims).tolist()
+
+# Scales down the points to square of size 1
+def scale_down_flow(flow):
+    flow = np.array(flow).reshape(-1, 2)
+    canvas_dims = session.get('canvas_dims')
+    dims = np.array([[canvas_dims['width'], canvas_dims['height']]])
+    return (flow/dims).tolist()
 
 
 # Gives a ranking to see how uniformly spread around
@@ -97,8 +104,7 @@ def get_scaled_corners(corners):
 def get_uniformity(dragged_images, flow):
     if flow is not None:
         canvas_dims = session.get('canvas_dims')
-        dims = np.array([[canvas_dims['width'], canvas_dims['height']]])
-        flow = np.array(flow)/dims
+        flow = scale_down_flow(flow)
         uniformity_scores = []
         canvas_dims = session.get('canvas_dims')
         for dragged_image in dragged_images:
@@ -110,8 +116,6 @@ def get_uniformity(dragged_images, flow):
             uniformity_score = np.mean(abs(np.linalg.norm(flow - box_center, axis=1)), axis=0)
             uniformity_scores.append(uniformity_score)
         if len(uniformity_scores) > 0:
-            # squished_uniformity = normalize(uniformity_scores)
-            # return (1 - float(np.mean(squished_uniformity)))
             return (1 - float(np.mean(uniformity_scores)))
     return 1
 
@@ -120,8 +124,7 @@ def get_uniformity(dragged_images, flow):
 def get_overlapping(dragged_images, flow):
     if flow is not None:
         canvas_dims = session.get('canvas_dims')
-        dims = np.array([[canvas_dims['width'], canvas_dims['height']]])
-        flow = np.array(flow)/dims
+        flow = scale_down_flow(flow)
         for dragged_image in dragged_images:
             x = dragged_image['x']/canvas_dims['width']
             y = dragged_image['y']/canvas_dims['height']
@@ -133,25 +136,32 @@ def get_overlapping(dragged_images, flow):
     return 1
 
 
-# Gives a ranking to see how far the flow is from the margins
-def get_margins(flow):
+# Returns the coverage area of the points
+def get_coverage_area(dragged_images, flow):
     if flow is not None:
+        flow = np.array(scale_down_flow(flow))
         canvas_dims = session.get('canvas_dims')
-        dims = np.array([[canvas_dims['width'], canvas_dims['height']]])
-        flow = np.array(flow)/dims
-        dist_from_margins = np.concatenate((np.array([1, 1]) - flow, flow), axis=1)
-        min_margins = np.amin(dist_from_margins, axis=1)
-        # squished_margins = normalize(min_margins)
-        # squished_margins = min_margins
-        margin_score = np.mean(min_margins)
-        return (1 - float(margin_score))
-    return 1
+        for dragged_image in dragged_images:
+            x = dragged_image['x']/canvas_dims['width']
+            y = dragged_image['y']/canvas_dims['height']
+            flow = np.vstack((flow, np.array([x, y])))
+        try:
+            hull = ConvexHull(flow)
+            return hull.volume
+        except:
+            mini = np.amin(flow, axis=0)
+            maxi = np.amax(flow, axis=0)
+            return 1 - float(np.sum(mini) + np.sum(maxi))
+    return 0
 
 
 # Takes in all the three rankings and gives an overall ranking
-def get_overall_ranking(uniformity, overlapping, margins):
+def get_overall_ranking(dragged_images, closest_flow):
+    uniformity = get_uniformity(dragged_images, closest_flow)
+    overlapping = get_overlapping(dragged_images, closest_flow)
+    coverage = get_coverage_area(dragged_images, closest_flow)
     alpha = 0.5
-    return overlapping*(alpha*uniformity + (1-alpha)*margins)
+    return overlapping*(alpha*uniformity + (1-alpha)*coverage)
 
 
 # Gets flows, when no points detecetd in user-drawn flow
@@ -217,17 +227,17 @@ def layout():
         if corners is not None:
             # If corners are detected from the user-drawn flow,
             # scale them to canvas size, and get closest flows
-            corners = get_scaled_corners(corners)
+            corners = scale_up_flow(corners)
             closest_flows = get_closest_flows(corners_padded)
             if closest_flows is not None:
                 for i in range(len(closest_flows)):
-                    closest_flows[i] = get_scaled_corners(closest_flows[i])
+                    closest_flows[i] = scale_up_flow(closest_flows[i])
         else:
             # If corners are not detected, get all flows with same
             # number of visual groups as entered by the user and scale them
             closest_flows = get_flows_for_empty_canvas(session.get('num_vis_grps'))
             for i in range(len(closest_flows)):
-                closest_flows[i] = get_scaled_corners(closest_flows[i])
+                closest_flows[i] = scale_up_flow(closest_flows[i])
 
         session['flow'] = corners
         session['closest_flows'] = closest_flows
@@ -236,15 +246,12 @@ def layout():
         # print(len(closest_flows))
         # print(get_uniformity(dragged_images, corners))
         # print(get_overlapping(dragged_images, corners))
-        # print(get_margins(corners))
+        # print(get_coverage_area(dragged_images, corners))
 
         # Ranking of the closest flows
         closest_flow_rankings = []
         for closest_flow in closest_flows:
-            uniformity = get_uniformity(dragged_images, closest_flow)
-            overlapping = get_overlapping(dragged_images, closest_flow)
-            margins = get_margins(closest_flow)
-            overall_rank = get_overall_ranking(uniformity, overlapping, margins)
+            overall_rank = get_overall_ranking(dragged_images, closest_flow)
             closest_flow_rankings.append(overall_rank)
 
         sorting_indices = np.argsort(closest_flow_rankings)[::-1]
