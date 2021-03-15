@@ -3,6 +3,8 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import styles from './CanvasArea.module.scss';
+import * as d3 from 'd3';
+import { textwrap } from 'd3-textwrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -186,12 +188,30 @@ class CanvasArea extends React.Component {
     /*
     Adds the uploaded SVG image to the drawing area
     */
-    addVG(e, x, y) {
+    addVG(svg, x, y) {
         const canvas = this.draw_canvas.current;
         const ctx = canvas.getContext('2d');
 
         var img = new Image();
-        img.src = URL.createObjectURL(e);
+        // Previous method, using unprocessed svg
+        // img.src = URL.createObjectURL(
+        //     new Blob([svg], {
+        //         type: 'image/svg+xml;charset=utf-8',
+        //     })
+        // );
+
+        var parser = new DOMParser();
+        var svgWrapped = parser.parseFromString(svg, 'image/svg+xml');
+        var wrap = textwrap().bounds({ height: 200, width: 170 });
+        var svgd3 = d3.select(svgWrapped).select('#wrap');
+        svgd3.call(wrap);
+        var wrapped = svgWrapped.querySelector('svg').outerHTML;
+
+        img.src = URL.createObjectURL(
+            new Blob([wrapped], {
+                type: 'image/svg+xml;charset=utf-8',
+            })
+        );
 
         img.onload = () => {
             // Currently, setting all uploaded images to fixed width of 200px
@@ -294,9 +314,11 @@ class CanvasArea extends React.Component {
             draggedImages: draggedImages,
         });
         const data = response['data'];
-        const svg = new Blob([response.data.svg], {
-            type: 'image/svg+xml;charset=utf-8',
-        });
+        // const svg = new Blob([response.data.svg], {
+        // type: 'image/svg+xml;charset=utf-8',
+        // });
+        var svg = data.svg;
+
         if (data['flow'] !== null) {
             const flow = response.data.flow;
             flow.forEach((point) => {
