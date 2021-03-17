@@ -193,6 +193,7 @@ class CanvasArea extends React.Component {
         const ctx = canvas.getContext('2d');
 
         var img = new Image();
+        img.crossorigin = 'anonymous';
         // Previous method, using unprocessed svg
         // img.src = URL.createObjectURL(
         //     new Blob([svg], {
@@ -205,13 +206,17 @@ class CanvasArea extends React.Component {
         var wrap = textwrap().bounds({ height: 200, width: 170 });
         var svgd3 = d3.select(svgWrapped).select('#wrap');
         svgd3.call(wrap);
+        svgd3 = d3.select(svgWrapped).select('svg');
+        svgd3
+            .append('image')
+            .attr('xlink:href', 'https://github.com/thepushkarp.png')
+            .attr('width', 100)
+            .attr('height', 100)
+            .attr('x', 580)
+            .attr('y', 180);
         var wrapped = svgWrapped.querySelector('svg').outerHTML;
 
-        img.src = URL.createObjectURL(
-            new Blob([wrapped], {
-                type: 'image/svg+xml;charset=utf-8',
-            })
-        );
+        console.log(wrapped);
 
         img.onload = () => {
             // Currently, setting all uploaded images to fixed width of 200px
@@ -230,6 +235,12 @@ class CanvasArea extends React.Component {
             };
             this.vgs.push(newImg);
         };
+
+        img.src = URL.createObjectURL(
+            new Blob([wrapped], {
+                type: 'image/svg+xml;charset=utf-8',
+            })
+        );
     }
 
     /*
