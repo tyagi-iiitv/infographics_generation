@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import styles from './CanvasArea.module.scss';
 import * as d3 from 'd3';
-import { textwrap } from 'd3-textwrap';
+// import { textwrap } from 'd3-textwrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -202,11 +202,69 @@ class CanvasArea extends React.Component {
         // );
 
         var parser = new DOMParser();
-        var svgWrapped = parser.parseFromString(svg, 'image/svg+xml');
-        var wrap = textwrap().bounds({ height: 200, width: 170 });
-        var svgd3 = d3.select(svgWrapped).select('#wrap');
-        svgd3.call(wrap);
-        svgd3 = d3.select(svgWrapped).select('svg');
+        var svgNode = parser.parseFromString(svg, 'image/svg+xml');
+
+        function getTextWidth(text) {
+            // re-use canvas object for better performance
+            var canvas =
+                getTextWidth.canvas ||
+                (getTextWidth.canvas = document.createElement('canvas'));
+            var context = canvas.getContext('2d');
+            var metrics = context.measureText(text);
+            return metrics.width;
+        }
+
+        function wrap(text, width) {
+            text.each(function () {
+                var text = d3.select(this),
+                    words = text.text().split(/\s+/).reverse(),
+                    word,
+                    line = [],
+                    lineNumber = 0,
+                    lineHeight = 1.1, // ems
+                    x = text.attr('x'),
+                    y = text.attr('y'),
+                    dy = 0, //parseFloat(text.attr("dy")),
+                    tspan = text
+                        .text(null)
+                        .append('tspan')
+                        .attr('x', x)
+                        // .attr('y', y)
+                        .attr('dy', dy + 'em');
+                while ((word = words.pop())) {
+                    line.push(word);
+                    tspan.text(line.join(' '));
+                    if (getTextWidth(tspan.node().textContent) > width) {
+                        line.pop();
+                        tspan.text(line.join(' '));
+                        line = [word];
+                        tspan = text
+                            .append('tspan')
+                            .attr('x', x)
+                            // .attr('y', y)
+                            .attr('dy', lineHeight + dy + 'em')
+                            .text(word);
+                    }
+                }
+            });
+        }
+
+        // var wrap = textwrap().bounds({ height: 200, width: 170 }).method('tspans');
+        // var svgd3 = d3.select(svgNode).select('#wrap');
+        // svgd3.call(textWrap);
+        // svgd3.call(wrap, 30);
+
+        var svgd3 = d3.select(svgNode).select('svg');
+        svgd3
+            .append('text')
+            .attr('id', 'wrap')
+            .attr('x', 580)
+            .attr('y', 180)
+            .attr('style', 'font-size: 64')
+            .text(
+                'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
+            )
+            .call(wrap, 30);
         svgd3
             .append('image')
             .attr('xlink:href', 'https://github.com/thepushkarp.png')
@@ -214,9 +272,10 @@ class CanvasArea extends React.Component {
             .attr('height', 100)
             .attr('x', 580)
             .attr('y', 180);
-        var wrapped = svgWrapped.querySelector('svg').outerHTML;
 
-        console.log(wrapped);
+        var svgHTML = svgNode.querySelector('svg').outerHTML;
+
+        console.log(svgHTML);
 
         img.onload = () => {
             // Currently, setting all uploaded images to fixed width of 200px
@@ -237,7 +296,7 @@ class CanvasArea extends React.Component {
         };
 
         img.src = URL.createObjectURL(
-            new Blob([wrapped], {
+            new Blob([svgHTML], {
                 type: 'image/svg+xml;charset=utf-8',
             })
         );
