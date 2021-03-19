@@ -193,7 +193,6 @@ class CanvasArea extends React.Component {
         const ctx = canvas.getContext('2d');
 
         var img = new Image();
-        img.crossorigin = 'anonymous';
         // Previous method, using unprocessed svg
         // img.src = URL.createObjectURL(
         //     new Blob([svg], {
@@ -220,10 +219,10 @@ class CanvasArea extends React.Component {
                     words = text.text().split(/\s+/).reverse(),
                     word,
                     line = [],
-                    lineNumber = 0,
+                    // lineNumber = 0,
                     lineHeight = 1.1, // ems
                     x = text.attr('x'),
-                    y = text.attr('y'),
+                    // y = text.attr('y'),
                     dy = 0, //parseFloat(text.attr("dy")),
                     tspan = text
                         .text(null)
@@ -265,17 +264,27 @@ class CanvasArea extends React.Component {
                 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
             )
             .call(wrap, 30);
+
+        var linkImg = new Image();
+        linkImg.crossOrigin = 'Anonymous';
+        linkImg.src = 'https://avatars.githubusercontent.com/u/42088801?v=4';
+        linkImg.onload = () => {
+            localStorage.setItem('vg-image', this.getBase64Image(linkImg));
+            // console.log(linkImgDataURL);
+        };
+
         svgd3
-            .append('image')
-            .attr('xlink:href', 'https://github.com/thepushkarp.png')
-            .attr('width', 100)
-            .attr('height', 100)
+            .append('svg:image')
+            .attr('xlink:href', localStorage.getItem('vg-image'))
+            .attr('crossorigin', 'anonymous')
+            .attr('width', 300)
+            .attr('height', 300)
             .attr('x', 580)
             .attr('y', 180);
 
         var svgHTML = svgNode.querySelector('svg').outerHTML;
 
-        console.log(svgHTML);
+        // console.log(svgHTML);
 
         img.onload = () => {
             // Currently, setting all uploaded images to fixed width of 200px
@@ -319,6 +328,7 @@ class CanvasArea extends React.Component {
         }
         this.clickColor.push(curColor);
     }
+    downloadedImg;
 
     /*
     Redraws all the lines of the pen and eraser tool
@@ -350,9 +360,9 @@ class CanvasArea extends React.Component {
     */
     getBase64Image(img) {
         var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
         canvas.width = img.width;
         canvas.height = img.height;
-        var ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
         return canvas.toDataURL('image/png');
     }
