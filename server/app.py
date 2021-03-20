@@ -177,108 +177,97 @@ def get_flows_for_empty_canvas(num_vg):
     return match
 
 
+# Changes text of the SVG data
+def change_text(svg, new_text):
+    find_text = etree.ETXPath(f"//{SVGNS}text[@class='txt1']")
+    find_text(svg)[0].text = new_text
+    return etree.tostring(svg).decode("utf-8")
+
+
+# Changes labels of the SVG data
+def change_label(svg, new_label):
+    find_label = etree.ETXPath(f"//{SVGNS}text[@class='lbl1']")
+    find_label(svg)[0].text = new_label
+    return etree.tostring(svg).decode("utf-8")
+
+
 @app.route('/')
 def index():
     return '<h1>Infographics Generation</h1>'
 
 
-@app.route('/visgrps/', methods=['POST', 'GET'])
+@app.route('/visgrps/', methods=['POST'])
 def visgrps():
-    if request.method == 'POST':
-        # If API called
-
-        data = json.loads(request.data.decode('utf-8'))
-        num_vis_grps = data['numVisGrps']
-        vis_grps_info = data['visGrpsInfo']
-        session['num_vis_grps'] = num_vis_grps
-        session['vis_grps_info'] = vis_grps_info
-        return json.dumps({
-            'numVisGrps': num_vis_grps,
-            'visGrpsInfo': vis_grps_info,
-            })
-    elif request.method == 'GET':
-        # Shows this on the page
-
-        return json.dumps({
-            'numVisGrps': session.get('num_vis_grps'),
-            'visGrpsInfo': session.get('vis_grps_info'),
+    data = json.loads(request.data.decode('utf-8'))
+    num_vis_grps = data['numVisGrps']
+    vis_grps_info = data['visGrpsInfo']
+    session['num_vis_grps'] = num_vis_grps
+    session['vis_grps_info'] = vis_grps_info
+    return json.dumps({
+        'numVisGrps': num_vis_grps,
+        'visGrpsInfo': vis_grps_info,
         })
 
 
-@app.route('/layout/', methods=['POST', 'GET'])
+@app.route('/layout/', methods=['POST'])
 def layout():
-    if request.method == 'POST':
-        # If API called
+    # Get POST request from API call
+    data = json.loads(request.data.decode('utf-8'))
 
-        # Get POST request from API call
-        data = json.loads(request.data.decode('utf-8'))
+    # Save canvas simensions in sessions
+    session['canvas_dims'] = data['canvasDims']
 
-        # Save canvas simensions in sessions
-        session['canvas_dims'] = data['canvasDims']
+    # Get dragged images and remove the image elements
+    # to save space, as we don't need them right now
+    dragged_images = data['draggedImages']
+    for dragged_image in dragged_images:
+        del dragged_image['img']
+    # Save dragged image data in sesions
+    session['dragged_images'] = dragged_images
 
-        # Get dragged images and remove the image elements
-        # to save space, as we don't need them right now
-        dragged_images = data['draggedImages']
-        for dragged_image in dragged_images:
-            del dragged_image['img']
-        # Save dragged image data in sesions
-        session['dragged_images'] = dragged_images
+    # Get corners and padded corners from the flow that user has drawn
+    corners, corners_padded = get_corners_in_flow(data['flowImg'])
 
-        # Get corners and padded corners from the flow that user has drawn
-        corners, corners_padded = get_corners_in_flow(data['flowImg'])
-
-        if corners is not None:
-            # If corners are detected from the user-drawn flow,
-            # scale them to canvas size, and get closest flows
-            corners = scale_up_flow(corners)
-            closest_flows = get_closest_flows(corners_padded)
-            if closest_flows is not None:
-                for i in range(len(closest_flows)):
-                    closest_flows[i] = scale_up_flow(closest_flows[i])
-        else:
-            # If corners are not detected, get all flows with same
-            # number of visual groups as entered by the user and scale them
-            closest_flows = get_flows_for_empty_canvas(session.get('num_vis_grps'))
+    if corners is not None:
+        # If corners are detected from the user-drawn flow,
+        # scale them to canvas size, and get closest flows
+        corners = scale_up_flow(corners)
+        closest_flows = get_closest_flows(corners_padded)
+        if closest_flows is not None:
             for i in range(len(closest_flows)):
                 closest_flows[i] = scale_up_flow(closest_flows[i])
+    else:
+        # If corners are not detected, get all flows with same
+        # number of visual groups as entered by the user and scale them
+        closest_flows = get_flows_for_empty_canvas(session.get('num_vis_grps'))
+        for i in range(len(closest_flows)):
+            closest_flows[i] = scale_up_flow(closest_flows[i])
 
-        session['flow'] = corners
-        session['closest_flows'] = closest_flows
+    session['flow'] = corners
+    session['closest_flows'] = closest_flows
 
-        # Ranking of the closest flows
-        closest_flow_rankings = []
-        for closest_flow in closest_flows:
-            overall_rank = get_overall_ranking(dragged_images, closest_flow)
-            closest_flow_rankings.append(overall_rank)
+    # Ranking of the closest flows
+    closest_flow_rankings = []
+    for closest_flow in closest_flows:
+        overall_rank = get_overall_ranking(dragged_images, closest_flow)
+        closest_flow_rankings.append(overall_rank)
 
-        sorting_indices = np.argsort(closest_flow_rankings)[::-1]
-        closest_flows = np.array(closest_flows)[sorting_indices].tolist()[:5]
-        session['closest_flows'] = closest_flows
+    sorting_indices = np.argsort(closest_flow_rankings)[::-1]
+    closest_flows = np.array(closest_flows)[sorting_indices].tolist()[:5]
+    session['closest_flows'] = closest_flows
 
-        # SVG string
-        # session['svg'] = open('vg6.html').read()
-        # session['svg'] = '''<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 755 563"><script src="d3.js"></script><script src="d3plus.js"></script><defs><style>.color1{fill:#a1d13b;}</style></defs><path class="color1" d="M435.48,106,310.18,221.83c27.56,25.46,27.56,66.85.07,92.37s-72.44,25.45-99.89,0L131,387.49,235.44,484a7.88,7.88,0,0,1,0,11.62,9.27,9.27,0,0,1-4,2.06,6.15,6.15,0,0,0-1.64.21A36.65,36.65,0,0,0,210.36,507c-13.88,12.79-13.88,33.48,0,46.24s36.15,12.72,50,0a32.16,32.16,0,0,0,9.84-18v0a7.14,7.14,0,0,0,.27-1.53l.06-.06a7.52,7.52,0,0,1,2.21-3.59,9.32,9.32,0,0,1,12.5,0L435.51,669c73.92-74,119.24-172.83,119.24-281.49S509.42,180,435.48,106Z" transform="translate(-131 -106)"/><text class="lb1" x="220" y="350" font-size="180">L</text><image class="img1" x='580' y='180' href='https://github.com/thepushkarp.png' width='100' height='100'/><rect class="text-wrap" height="200" width="170" x="560" y="280" style="fill:none"/><text id="wrap" class="txt1">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</text><script>d3plus.textwrap().container(d3.select("#wrap")).draw();</script></svg>'''
-        session['svg'] = '''<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 855 563"><defs><style>.color1{fill:#a1d13b;}</style></defs><path class="color1" d="M435.48,106,310.18,221.83c27.56,25.46,27.56,66.85.07,92.37s-72.44,25.45-99.89,0L131,387.49,235.44,484a7.88,7.88,0,0,1,0,11.62,9.27,9.27,0,0,1-4,2.06,6.15,6.15,0,0,0-1.64.21A36.65,36.65,0,0,0,210.36,507c-13.88,12.79-13.88,33.48,0,46.24s36.15,12.72,50,0a32.16,32.16,0,0,0,9.84-18v0a7.14,7.14,0,0,0,.27-1.53l.06-.06a7.52,7.52,0,0,1,2.21-3.59,9.32,9.32,0,0,1,12.5,0L435.51,669c73.92-74,119.24-172.83,119.24-281.49S509.42,180,435.48,106Z" transform="translate(-131 -106)"/><text class="lb1" x="220" y="350" font-size="180">L</text></svg>'''
-        temp= '''<text id="wrap" class="txt1" x="560" y="280" style="font-size: 80">Dummy Text here</text>'''
+    # SVG string
+    # session['svg'] = open('vg6.html').read()
+    # session['svg'] = '''<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 755 563"><script src="d3.js"></script><script src="d3plus.js"></script><defs><style>.color1{fill:#a1d13b;}</style></defs><path class="color1" d="M435.48,106,310.18,221.83c27.56,25.46,27.56,66.85.07,92.37s-72.44,25.45-99.89,0L131,387.49,235.44,484a7.88,7.88,0,0,1,0,11.62,9.27,9.27,0,0,1-4,2.06,6.15,6.15,0,0,0-1.64.21A36.65,36.65,0,0,0,210.36,507c-13.88,12.79-13.88,33.48,0,46.24s36.15,12.72,50,0a32.16,32.16,0,0,0,9.84-18v0a7.14,7.14,0,0,0,.27-1.53l.06-.06a7.52,7.52,0,0,1,2.21-3.59,9.32,9.32,0,0,1,12.5,0L435.51,669c73.92-74,119.24-172.83,119.24-281.49S509.42,180,435.48,106Z" transform="translate(-131 -106)"/><text class="lb1" x="220" y="350" font-size="180">L</text><image class="img1" x='580' y='180' href='https://github.com/thepushkarp.png' width='100' height='100'/><rect class="text-wrap" height="200" width="170" x="560" y="280" style="fill:none"/><text id="wrap" class="txt1">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</text><script>d3plus.textwrap().container(d3.select("#wrap")).draw();</script></svg>'''
+    # temp= '''<text id="wrap" class="txt1" x="560" y="280" style="font-size: 80">Dummy Text here</text>'''
+    session['svg'] = '''<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 855 563"><defs><style>.color1{fill:#a1d13b;}</style></defs><path class="color1" d="M435.48,106,310.18,221.83c27.56,25.46,27.56,66.85.07,92.37s-72.44,25.45-99.89,0L131,387.49,235.44,484a7.88,7.88,0,0,1,0,11.62,9.27,9.27,0,0,1-4,2.06,6.15,6.15,0,0,0-1.64.21A36.65,36.65,0,0,0,210.36,507c-13.88,12.79-13.88,33.48,0,46.24s36.15,12.72,50,0a32.16,32.16,0,0,0,9.84-18v0a7.14,7.14,0,0,0,.27-1.53l.06-.06a7.52,7.52,0,0,1,2.21-3.59,9.32,9.32,0,0,1,12.5,0L435.51,669c73.92-74,119.24-172.83,119.24-281.49S509.42,180,435.48,106Z" transform="translate(-131 -106)"/><text class="lb1" x="220" y="350" font-size="180">L</text><text id='wrap' x='560' y='180' style='font-size: 64'>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</text></svg>'''
 
-        return json.dumps({
-            'flow': session.get('flow'),
-            'closestFlows': session.get('closest_flows'),
-            'svg': session.get('svg'),
-            'numVisGrps': session.get('num_vis_grps'),
-        })
-    elif request.method == 'GET':
-        # Shows this on the page
-
-        return json.dumps({
-            'flow': session.get('flow'),
-            'closestFlows': session.get('closest_flows'),
-            'canvasDims': session.get('canvas_dims'),
-            'draggedImages': session.get('dragged_images'),
-            'svg': session.get('svg'),
-            'numVisGrps': session.get('num_vis_grps'),
-            'visGrpsInfo': session.get('vis_grps_info'),
-        })
+    return json.dumps({
+        'flow': session.get('flow'),
+        'closestFlows': session.get('closest_flows'),
+        'svg': session.get('svg'),
+        'numVisGrps': session.get('num_vis_grps'),
+    })
 
 
 if __name__ == '__main__':

@@ -4,7 +4,6 @@ import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import styles from './CanvasArea.module.scss';
 import * as d3 from 'd3';
-// import { textwrap } from 'd3-textwrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -42,6 +41,8 @@ class CanvasArea extends React.Component {
         this.redrawPics = this.redrawPics.bind(this);
         this.drawVGs = this.drawVGs.bind(this);
         this.addPic = this.addPic.bind(this);
+        this.getTextWidth = this.getTextWidth.bind(this);
+        this.wrap = this.wrap.bind(this);
         this.addVG = this.addVG.bind(this);
         this.addClick = this.addClick.bind(this);
         this.redrawLines = this.redrawLines.bind(this);
@@ -186,6 +187,54 @@ class CanvasArea extends React.Component {
     }
 
     /*
+    Returns the width of text in pixels
+    */
+    getTextWidth(text) {
+        // re-use canvas object for better performance
+        var canvas =
+            this.getTextWidth.canvas ||
+            (this.getTextWidth.canvas = document.createElement('canvas'));
+        var context = canvas.getContext('2d');
+        var metrics = context.measureText(text);
+        return metrics.width;
+    }
+
+    /*
+    Wraps the text in svg using tspan
+    */
+    wrap(text, width) {
+        var words = text.text().split(/\s+/).reverse(),
+            word,
+            line = [],
+            // lineNumber = 0,
+            lineHeight = 1.1, // ems
+            x = text.attr('x'),
+            // y = text.attr('y'),
+            dy = 0, //parseFloat(text.attr("dy")),
+            tspan = text
+                .text(null)
+                .append('tspan')
+                .attr('x', x)
+                // .attr('y', y)
+                .attr('dy', dy + 'em');
+        while ((word = words.pop())) {
+            line.push(word);
+            tspan.text(line.join(' '));
+            if (this.getTextWidth(tspan.node().textContent) > width) {
+                line.pop();
+                tspan.text(line.join(' '));
+                line = [word];
+                tspan = text
+                    .append('tspan')
+                    .attr('x', x)
+                    // .attr('y', y)
+                    .attr('dy', lineHeight + dy + 'em')
+                    .text(word);
+            }
+        }
+    }
+
+    /*
     Adds the uploaded SVG image to the drawing area
     */
     addVG(svg, x, y) {
@@ -193,97 +242,31 @@ class CanvasArea extends React.Component {
         const ctx = canvas.getContext('2d');
 
         var img = new Image();
-        // Previous method, using unprocessed svg
-        // img.src = URL.createObjectURL(
-        //     new Blob([svg], {
-        //         type: 'image/svg+xml;charset=utf-8',
-        //     })
-        // );
 
         var parser = new DOMParser();
         var svgNode = parser.parseFromString(svg, 'image/svg+xml');
 
-        function getTextWidth(text) {
-            // re-use canvas object for better performance
-            var canvas =
-                getTextWidth.canvas ||
-                (getTextWidth.canvas = document.createElement('canvas'));
-            var context = canvas.getContext('2d');
-            var metrics = context.measureText(text);
-            return metrics.width;
-        }
-
-        function wrap(text, width) {
-            text.each(function () {
-                var text = d3.select(this),
-                    words = text.text().split(/\s+/).reverse(),
-                    word,
-                    line = [],
-                    // lineNumber = 0,
-                    lineHeight = 1.1, // ems
-                    x = text.attr('x'),
-                    // y = text.attr('y'),
-                    dy = 0, //parseFloat(text.attr("dy")),
-                    tspan = text
-                        .text(null)
-                        .append('tspan')
-                        .attr('x', x)
-                        // .attr('y', y)
-                        .attr('dy', dy + 'em');
-                while ((word = words.pop())) {
-                    line.push(word);
-                    tspan.text(line.join(' '));
-                    if (getTextWidth(tspan.node().textContent) > width) {
-                        line.pop();
-                        tspan.text(line.join(' '));
-                        line = [word];
-                        tspan = text
-                            .append('tspan')
-                            .attr('x', x)
-                            // .attr('y', y)
-                            .attr('dy', lineHeight + dy + 'em')
-                            .text(word);
-                    }
-                }
-            });
-        }
-
-        // var wrap = textwrap().bounds({ height: 200, width: 170 }).method('tspans');
-        // var svgd3 = d3.select(svgNode).select('#wrap');
-        // svgd3.call(textWrap);
-        // svgd3.call(wrap, 30);
-
         var svgd3 = d3.select(svgNode).select('svg');
-        svgd3
-            .append('text')
-            .attr('id', 'wrap')
-            .attr('x', 580)
-            .attr('y', 180)
-            .attr('style', 'font-size: 64')
-            .text(
-                'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
-            )
-            .call(wrap, 30);
+
+        svgd3.select('#wrap').call(this.wrap, 30);
 
         var linkImg = new Image();
         linkImg.crossOrigin = 'Anonymous';
         linkImg.src = 'https://avatars.githubusercontent.com/u/42088801?v=4';
         linkImg.onload = () => {
             localStorage.setItem('vg-image', this.getBase64Image(linkImg));
-            // console.log(linkImgDataURL);
         };
 
         svgd3
             .append('svg:image')
             .attr('xlink:href', localStorage.getItem('vg-image'))
             .attr('crossorigin', 'anonymous')
-            .attr('width', 300)
-            .attr('height', 300)
+            .attr('width', 150)
+            .attr('height', 150)
             .attr('x', 580)
-            .attr('y', 180);
+            .attr('y', 0);
 
         var svgHTML = svgNode.querySelector('svg').outerHTML;
-
         // console.log(svgHTML);
 
         img.onload = () => {
@@ -359,7 +342,10 @@ class CanvasArea extends React.Component {
     Returns Base 64 string of an image
     */
     getBase64Image(img) {
-        var canvas = document.createElement('canvas');
+        // re-use canvas object for better performance
+        var canvas =
+            this.getBase64Image.canvas ||
+            (this.getBase64Image.canvas = document.createElement('canvas'));
         var ctx = canvas.getContext('2d');
         canvas.width = img.width;
         canvas.height = img.height;
@@ -394,9 +380,6 @@ class CanvasArea extends React.Component {
             draggedImages: draggedImages,
         });
         const data = response['data'];
-        // const svg = new Blob([response.data.svg], {
-        // type: 'image/svg+xml;charset=utf-8',
-        // });
         var svg = data.svg;
 
         if (data['flow'] !== null) {
