@@ -75,14 +75,14 @@ class TextInput extends React.Component {
                     if (!('label' in element)) {
                         element.label = '';
                     }
-                    if (!('images' in element)) {
-                        element.images = [];
+                    if (!('image' in element)) {
+                        element.image = '';
                     }
-                    if (!('imagesAlt' in element)) {
-                        element.imagesAlt = [];
+                    if (!('imageAlt' in element)) {
+                        element.imageAlt = '';
                     }
                     if (!('text' in element)) {
-                        element.text = [];
+                        element.text = '';
                     }
                     info.push(element);
                     element = {};
@@ -90,32 +90,32 @@ class TextInput extends React.Component {
                 element.title = lines[i].substring(1, lines[i].length).trim();
                 // Label of the visual group
             } else if (lines[i].startsWith('##')) {
-                element.label = lines[i].substring(2, lines[i].length).trim();
+                if (!element.label) {
+                    element.label = lines[i].substring(2, lines[i].length).trim();
+                }
             } else if (lines[i].match(/!\[.*\]\(.*\)/i)) {
-                var imgAltText = lines[i].substring(
-                    lines[i].lastIndexOf('[') + 1,
-                    lines[i].lastIndexOf(']')
-                );
-                // Image Alt text
-                if (!('imagesAlt' in element)) {
-                    element.imagesAlt = [];
+                if (!element.image) {
+                    // Image alt text
+                    var imgAltText = lines[i].substring(
+                        lines[i].lastIndexOf('[') + 1,
+                        lines[i].lastIndexOf(']')
+                    );
+                    // Image link
+                    var imgLink = lines[i].substring(
+                        lines[i].lastIndexOf('(') + 1,
+                        lines[i].lastIndexOf(')')
+                    );
+                    if (imgLink !== '') {
+                        element.imageAlt = imgAltText;
+                        element.image = imgLink;
+                    }
                 }
-                element.imagesAlt.push(imgAltText);
-                var imgLink = lines[i].substring(
-                    lines[i].lastIndexOf('(') + 1,
-                    lines[i].lastIndexOf(')')
-                );
-                // Image link
-                if (!('images' in element)) {
-                    element.images = [];
-                }
-                element.images.push(imgLink);
                 // Body text
             } else {
                 if (!('text' in element)) {
-                    element.text = [];
+                    element.text = '';
                 }
-                element.text.push(lines[i]);
+                element.text += ` ${lines[i]}`;
             }
         }
         // Storing the last object
@@ -126,14 +126,14 @@ class TextInput extends React.Component {
             if (!('label' in element)) {
                 element.label = '';
             }
-            if (!('images' in element)) {
-                element.images = [];
+            if (!('image' in element)) {
+                element.image = '';
             }
-            if (!('imagesAlt' in element)) {
-                element.imagesAlt = [];
+            if (!('imageAlt' in element)) {
+                element.imageAlt = '';
             }
             if (!('text' in element)) {
-                element.text = [];
+                element.text = '';
             }
             info.push(element);
             element = {};
@@ -163,22 +163,18 @@ class TextInput extends React.Component {
             if (visGrp['text'].length > 0) {
                 renderedText += `<p>Text:</p>\n`;
                 renderedText += `<ul>\n`;
-                for (i = 0; i < visGrp['text'].length; i++) {
-                    renderedText += `<li>${visGrp['text'][i]}</li>\n`;
-                }
+                renderedText += `<li>${visGrp['text']}</li>\n`;
                 renderedText += `</ul>\n`;
             }
-            // Displays all the images as bullets
-            if (visGrp['images'].length > 0) {
+            // Displays the image
+            if (visGrp['image'] !== '') {
                 renderedText += `<p>Images:</p>\n`;
                 renderedText += `<ul>\n`;
-                for (i = 0; i < visGrp['images'].length; i++) {
-                    renderedText +=
-                        `<li><img\n` +
-                        `   src=${visGrp['images'][i]}\n` +
-                        `   alt='${visGrp['imagesAlt'][i]}'\n` +
-                        `   height=200px></li>\n`;
-                }
+                renderedText +=
+                    `<li><img\n` +
+                    `   src=${visGrp['image']}\n` +
+                    `   alt='${visGrp['imageAlt']}'\n` +
+                    `   height=200px></li>\n`;
                 renderedText += `</ul>\n`;
             }
             renderedText += `</div>\n`;
