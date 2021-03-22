@@ -11,6 +11,7 @@ import {
     faEraser,
     faTrash,
     faUpload,
+    faDownload,
     faExpand,
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -54,7 +55,7 @@ class CanvasArea extends React.Component {
         this.imgBelow = this.imgBelow.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
 
-        this.draw_canvas = React.createRef(); // Reference for the canvas area
+        this.dispCanvas = React.createRef(); // Reference for the canvas area
         this.imgForm = React.createRef(); // Reference for the upload image input
 
         this.imgs = []; // List of images uploaded by the user
@@ -78,7 +79,7 @@ class CanvasArea extends React.Component {
     Does not clears the data saved in memory, so can be redrawn.
     */
     undraw = () => {
-        const canvas = this.draw_canvas.current;
+        const canvas = this.dispCanvas.current;
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'white';
@@ -124,7 +125,7 @@ class CanvasArea extends React.Component {
     */
     setCanvasRes(width, height) {
         this.clearCanvasArea();
-        const canvas = this.draw_canvas.current;
+        const canvas = this.dispCanvas.current;
         canvas.width = width;
         canvas.height = height;
     }
@@ -133,7 +134,7 @@ class CanvasArea extends React.Component {
     Re-adds the uploaded draggable pictures to the canvas
     */
     redrawPics = () => {
-        const canvas = this.draw_canvas.current;
+        const canvas = this.dispCanvas.current;
         const ctx = canvas.getContext('2d');
         // Positions all the images to their past position
         for (const img of this.imgs) {
@@ -145,7 +146,7 @@ class CanvasArea extends React.Component {
     Adds the Visual Groups to the canvas
     */
     drawVGs = () => {
-        const canvas = this.draw_canvas.current;
+        const canvas = this.dispCanvas.current;
         const ctx = canvas.getContext('2d');
         // Positions all the VGs to their respective positions
         for (const vg of this.vgs) {
@@ -157,7 +158,7 @@ class CanvasArea extends React.Component {
     Adds the uploaded image to the drawing area
     */
     addPic(e) {
-        const canvas = this.draw_canvas.current;
+        const canvas = this.dispCanvas.current;
         const ctx = canvas.getContext('2d');
 
         var img = new Image();
@@ -238,7 +239,7 @@ class CanvasArea extends React.Component {
     Adds the uploaded SVG image to the drawing area
     */
     addVG(svg, imgLink, x, y) {
-        const canvas = this.draw_canvas.current;
+        const canvas = this.dispCanvas.current;
         const ctx = canvas.getContext('2d');
 
         var img = new Image();
@@ -266,6 +267,8 @@ class CanvasArea extends React.Component {
                 .attr('height', 150)
                 .attr('x', 580)
                 .attr('y', 0);
+
+            localStorage.removeItem('vg-item');
         }
 
         var svgHTML = svgNode.querySelector('svg').outerHTML;
@@ -319,7 +322,7 @@ class CanvasArea extends React.Component {
     Redraws all the lines of the pen and eraser tool
     */
     redrawLines = () => {
-        const canvas = this.draw_canvas.current;
+        const canvas = this.dispCanvas.current;
         const ctx = canvas.getContext('2d');
         ctx.lineJoin = 'round';
         ctx.lineWidth = 20; // Change for line thickness
@@ -359,7 +362,7 @@ class CanvasArea extends React.Component {
     Send flow image and dragged locations to server
     */
     async sendInfo() {
-        const canvas = this.draw_canvas.current;
+        const canvas = this.dispCanvas.current;
         this.undraw();
         this.redrawLines();
         const flowImg = canvas.toDataURL('image/png');
@@ -468,7 +471,7 @@ class CanvasArea extends React.Component {
     position to the memory and redraws the canvas.
     */
     onMouseMove(e) {
-        const canvas = this.draw_canvas.current;
+        const canvas = this.dispCanvas.current;
         const scaledCanvas = canvas.getBoundingClientRect();
         if (this.state.selectedTool === 'upload') {
             // Position of mouse pointer w.r.t the canvas
@@ -558,7 +561,7 @@ class CanvasArea extends React.Component {
     that tit can start drawing.
     */
     onMouseDown(e) {
-        const canvas = this.draw_canvas.current;
+        const canvas = this.dispCanvas.current;
         const scaledCanvas = canvas.getBoundingClientRect();
         if (this.state.selectedTool === 'upload') {
             const canX =
@@ -628,7 +631,7 @@ class CanvasArea extends React.Component {
             <div className={styles.canvasAreaContainer}>
                 <canvas
                     id="draw_canvas"
-                    ref={this.draw_canvas}
+                    ref={this.dispCanvas}
                     width="0"
                     height="0"
                     style={{
@@ -881,6 +884,30 @@ class CanvasArea extends React.Component {
                             <FontAwesomeIcon
                                 icon={faUpload}
                                 aria-label="Upload Image"
+                            />
+                        </Button>
+                        <Button
+                            size="medium"
+                            variant="contained"
+                            color="primary"
+                            className={styles.toolButton}
+                            onClick={() => {
+                                this.setState({
+                                    selectedTool: 'upload',
+                                });
+                                const canvas = this.dispCanvas.current;
+                                var canvasImg = canvas.toDataURL('image/png');
+                                var tmpLink = document.createElement('a');
+                                tmpLink.download = 'infographic.png';
+                                tmpLink.href = canvasImg;
+                                document.body.appendChild(tmpLink);
+                                tmpLink.click();
+                                document.body.removeChild(tmpLink);
+                            }}
+                        >
+                            <FontAwesomeIcon
+                                icon={faDownload}
+                                aria-label="Download Canvas"
                             />
                         </Button>
                         <Button
