@@ -237,7 +237,7 @@ class CanvasArea extends React.Component {
     /*
     Adds the uploaded SVG image to the drawing area
     */
-    addVG(svg, x, y) {
+    addVG(svg, imgLink, x, y) {
         const canvas = this.draw_canvas.current;
         const ctx = canvas.getContext('2d');
 
@@ -250,21 +250,23 @@ class CanvasArea extends React.Component {
 
         svgd3.select('#wrap').call(this.wrap, 30);
 
-        var linkImg = new Image();
-        linkImg.crossOrigin = 'Anonymous';
-        linkImg.src = 'https://avatars.githubusercontent.com/u/42088801?v=4';
-        linkImg.onload = () => {
-            localStorage.setItem('vg-image', this.getBase64Image(linkImg));
-        };
+        if (imgLink !== '') {
+            var linkImg = new Image();
+            linkImg.crossOrigin = 'Anonymous';
+            linkImg.src = imgLink;
+            linkImg.onload = () => {
+                localStorage.setItem('vg-image', this.getBase64Image(linkImg));
+            };
 
-        svgd3
-            .append('svg:image')
-            .attr('xlink:href', localStorage.getItem('vg-image'))
-            .attr('crossorigin', 'anonymous')
-            .attr('width', 150)
-            .attr('height', 150)
-            .attr('x', 580)
-            .attr('y', 0);
+            svgd3
+                .append('svg:image')
+                .attr('xlink:href', localStorage.getItem('vg-image'))
+                .attr('crossorigin', 'anonymous')
+                .attr('width', 150)
+                .attr('height', 150)
+                .attr('x', 580)
+                .attr('y', 0);
+        }
 
         var svgHTML = svgNode.querySelector('svg').outerHTML;
         // console.log(svgHTML);
@@ -379,19 +381,23 @@ class CanvasArea extends React.Component {
             flowImg: flowImg,
             draggedImages: draggedImages,
         });
+
         const data = response['data'];
-        var svg = data.svg;
+        var i,
+            svgs = data.svgs,
+            imgLinks = data.imgLinks,
+            numVisGrps = data.numVisGrps;
 
         if (data['flow'] !== null) {
             const flow = response.data.flow;
-            flow.forEach((point) => {
-                this.addVG(svg, point[0], point[1]);
-            });
+            for (i = 0; i < numVisGrps; i++) {
+                this.addVG(svgs[i], imgLinks[i], flow[i][0], flow[i][1]);
+            }
         } else {
             const flow = response.data.closestFlows[0];
-            flow.forEach((point) => {
-                this.addVG(svg, point[0], point[1]);
-            });
+            for (i = 0; i < numVisGrps; i++) {
+                this.addVG(svgs[i], imgLinks[i], flow[i][0], flow[i][1]);
+            }
         }
         this.drawVGs();
         console.log(response);
