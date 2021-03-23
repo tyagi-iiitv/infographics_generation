@@ -12,6 +12,8 @@
         "@testing-library/react": "^9.3.2",
         "@testing-library/user-event": "^7.1.2",
         "axios": "^0.21.1",
+        "d3": "^6.6.0",
+        "d3-textwrap": "^3.0.0",
         "file-saver": "^2.0.5",
         "konva": "^6.0.0",
         "node-sass": "^4.14.1",
