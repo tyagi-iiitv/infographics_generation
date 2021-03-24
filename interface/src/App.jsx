@@ -1,7 +1,8 @@
 import React from 'react';
 import { CanvasArea, TextInput, Gallery } from './components';
 import styles from './App.module.scss';
-import { Tabs, Tab, TabPanel, TabList } from 'react-tabs';
+import { Tabs, Tab, TabPane } from 'react-bootstrap';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 let urls = [
     'images/paris.jpg',
@@ -13,34 +14,18 @@ let urls = [
 class App extends React.Component {
     render() {
         return (
-            <Tabs defaultIndex={0}>
-                <TabList>
-                    <Tab>
-                        <button>Draw</button>
-                    </Tab>
-                    <Tab>
-                        <button>Recommend Layouts</button>
-                    </Tab>
-                    <Tab>
-                        <button>Recommend VGs</button>
-                    </Tab>
-                    <Tab>
-                        <button>Explore Connections</button>
-                    </Tab>
-                </TabList>
-                <TabPanel>
-                    <div className={styles.App}>
-                        <div className={styles.AppBody}>
-                            <div className={styles.leftContainer}>
-                                <CanvasArea />
-                            </div>
-                            <div className={styles.rightContainer}>
-                                <TextInput />
-                            </div>
+            <Tabs defaultActiveKey="Draw" id="tabs">
+                <Tab eventKey="Draw" title="Draw">
+                    <div className={styles.AppBody}>
+                        <div className={styles.leftContainer}>
+                            <CanvasArea />
+                        </div>
+                        <div className={styles.rightContainer}>
+                            <TextInput />
                         </div>
                     </div>
-                </TabPanel>
-                <TabPanel>
+                </Tab>
+                <Tab eventKey="VIF Recommendation" title="VIF Recommendation">
                     <div className={styles.App}>
                         <div className={styles.AppBody}>
                             <div className={styles.leftContainer}>
@@ -51,8 +36,8 @@ class App extends React.Component {
                             </div>
                         </div>
                     </div>
-                </TabPanel>
-                <TabPanel>
+                </Tab>
+                <Tab eventKey="VG Recommendation" title="VG Recommendation">
                     <div className={styles.App}>
                         <div className={styles.AppBody}>
                             <div className={styles.leftContainer}>
@@ -63,8 +48,8 @@ class App extends React.Component {
                             </div>
                         </div>
                     </div>
-                </TabPanel>
-                <TabPanel>
+                </Tab>
+                <Tab eventKey="Explore Connections" title="Explore Connections">
                     <div className={styles.App}>
                         <div className={styles.AppBody}>
                             <div className={styles.leftContainer}>
@@ -75,7 +60,7 @@ class App extends React.Component {
                             </div>
                         </div>
                     </div>
-                </TabPanel>
+                </Tab>
             </Tabs>
         );
     }
