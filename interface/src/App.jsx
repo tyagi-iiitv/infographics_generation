@@ -9,6 +9,10 @@ let urls = [
     'images/canary_islands.jpg',
     'images/indonesia.jpg',
     'images/la.jpg',
+    'images/paris.jpg',
+    'images/canary_islands.jpg',
+    'images/indonesia.jpg',
+    'images/la.jpg',
 ];
 
 class App extends React.Component {
@@ -28,10 +32,13 @@ class App extends React.Component {
                 <Tab eventKey="VIF Recommendation" title="VIF Recommendation">
                     <div className={styles.App}>
                         <div className={styles.AppBody}>
+                            <div className={styles.galleryContainer}>
+                                <Gallery imageUrls={urls} />
+                            </div>
                             <div className={styles.leftContainer}>
                                 <CanvasArea />
                             </div>
-                            <div className={styles.rightContainer}>
+                            <div className={styles.galleryContainer}>
                                 <Gallery imageUrls={urls} />
                             </div>
                         </div>
@@ -40,10 +47,13 @@ class App extends React.Component {
                 <Tab eventKey="VG Recommendation" title="VG Recommendation">
                     <div className={styles.App}>
                         <div className={styles.AppBody}>
+                            <div className={styles.galleryContainer}>
+                                <Gallery imageUrls={urls} />
+                            </div>
                             <div className={styles.leftContainer}>
                                 <CanvasArea />
                             </div>
-                            <div className={styles.rightContainer}>
+                            <div className={styles.galleryContainer}>
                                 <Gallery imageUrls={urls} />
                             </div>
                         </div>
@@ -52,10 +62,13 @@ class App extends React.Component {
                 <Tab eventKey="Explore Connections" title="Explore Connections">
                     <div className={styles.App}>
                         <div className={styles.AppBody}>
+                            <div className={styles.galleryContainer}>
+                                <Gallery imageUrls={urls} />
+                            </div>
                             <div className={styles.leftContainer}>
                                 <CanvasArea />
                             </div>
-                            <div className={styles.rightContainer}>
+                            <div className={styles.galleryContainer}>
                                 <Gallery imageUrls={urls} />
                             </div>
                         </div>
