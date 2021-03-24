@@ -245,7 +245,6 @@ def layout():
         for i in range(len(closest_flows)):
             closest_flows[i] = scale_up_flow(closest_flows[i])
 
-    session['flow'] = corners
     session['closest_flows'] = closest_flows
 
     # Ranking of the closest flows
@@ -276,7 +275,6 @@ def layout():
         img_links.append(vis_grps_info[i].get('image'))
 
     return json.dumps({
-        'flow': session.get('flow'),
         'closestFlows': session.get('closest_flows'),
         'numVisGrps': session.get('num_vis_grps'),
         'svgs': svgs,
