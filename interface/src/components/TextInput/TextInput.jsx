@@ -47,6 +47,7 @@ class TextInput extends React.Component {
     */
     async handleChangeText(e) {
         var text = e.target.value;
+        console.log(text);
         // Get a list of lines
         var lines = text.split('\n');
         var i;
