@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styles from './Gallery.module.scss';
 
 /**
  * Given a DOM element, searches it for <img> tags and checks if all of them
@@ -47,6 +48,7 @@ class Gallery extends React.Component {
                     src={imageUrl}
                     onLoad={this.handleImageChange}
                     onError={this.handleImageChange}
+                    className={styles.images}
                 />
             </div>
         );
@@ -55,13 +57,13 @@ class Gallery extends React.Component {
     render() {
         return (
             <div
-                className="gallery"
+                className={styles.gallery}
                 ref={(element) => {
                     this.galleryElement = element;
                 }}
             >
-                {this.renderSpinner()}
-                <div className="images">
+                {/* {this.renderSpinner()} */}
+                <div className={styles.images}>
                     {this.props.imageUrls.map((imageUrl) =>
                         this.renderImage(imageUrl)
                     )}

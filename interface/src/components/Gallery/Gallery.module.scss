@@ -1,0 +1,18 @@
+.gallery {
+    width: 100%;
+    height: 100%;
+    border-width: 2px;
+    padding: 2px;
+    overflow: scroll;
+    scroll-behavior: auto;
+    display: flex;
+    flex-direction: column;
+    border-style: solid;
+    border-color: white;
+    object-fit: contain;
+}
+
+.images {
+    width: 100%;
+    padding: 5px;
+}

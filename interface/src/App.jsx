@@ -3,10 +3,10 @@ import { CanvasArea, TextInput, Gallery } from './components';
 import styles from './App.module.scss';
 
 let urls = [
+    'images/paris.jpg',
     'images/canary_islands.jpg',
     'images/indonesia.jpg',
     'images/la.jpg',
-    'images/paris.jpg',
 ];
 
 class App extends React.Component {
