@@ -1,7 +1,7 @@
 import React from 'react';
 import { CanvasArea, TextInput, Gallery } from './components';
 import styles from './App.module.scss';
-import { Tabs, Tab, Panel } from '@bumaga/tabs';
+import { Tabs, Tab, TabPanel, TabList } from 'react-tabs';
 
 let urls = [
     'images/paris.jpg',
@@ -13,8 +13,8 @@ let urls = [
 class App extends React.Component {
     render() {
         return (
-            <Tabs>
-                <div>
+            <Tabs defaultIndex={0}>
+                <TabList>
                     <Tab>
                         <button>Draw</button>
                     </Tab>
@@ -27,8 +27,8 @@ class App extends React.Component {
                     <Tab>
                         <button>Explore Connections</button>
                     </Tab>
-                </div>
-                <Panel>
+                </TabList>
+                <TabPanel>
                     <div className={styles.App}>
                         <div className={styles.AppBody}>
                             <div className={styles.leftContainer}>
@@ -39,8 +39,8 @@ class App extends React.Component {
                             </div>
                         </div>
                     </div>
-                </Panel>
-                <Panel>
+                </TabPanel>
+                <TabPanel>
                     <div className={styles.App}>
                         <div className={styles.AppBody}>
                             <div className={styles.leftContainer}>
@@ -51,8 +51,8 @@ class App extends React.Component {
                             </div>
                         </div>
                     </div>
-                </Panel>
-                <Panel>
+                </TabPanel>
+                <TabPanel>
                     <div className={styles.App}>
                         <div className={styles.AppBody}>
                             <div className={styles.leftContainer}>
@@ -63,8 +63,8 @@ class App extends React.Component {
                             </div>
                         </div>
                     </div>
-                </Panel>
-                <Panel>
+                </TabPanel>
+                <TabPanel>
                     <div className={styles.App}>
                         <div className={styles.AppBody}>
                             <div className={styles.leftContainer}>
@@ -75,7 +75,7 @@ class App extends React.Component {
                             </div>
                         </div>
                     </div>
-                </Panel>
+                </TabPanel>
             </Tabs>
         );
     }
