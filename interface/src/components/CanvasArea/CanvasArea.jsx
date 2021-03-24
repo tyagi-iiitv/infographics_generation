@@ -386,22 +386,16 @@ class CanvasArea extends React.Component {
         });
 
         const data = response['data'];
-        var i,
-            svgs = data.svgs,
+        var svgs = data.svgs,
             imgLinks = data.imgLinks,
             numVisGrps = data.numVisGrps;
 
-        if (data['flow'] !== null) {
-            const flow = response.data.flow;
-            for (i = 0; i < numVisGrps; i++) {
-                this.addVG(svgs[i], imgLinks[i], flow[i][0], flow[i][1]);
-            }
-        } else {
-            const flow = response.data.closestFlows[0];
-            for (i = 0; i < numVisGrps; i++) {
-                this.addVG(svgs[i], imgLinks[i], flow[i][0], flow[i][1]);
-            }
+        // Currently displaying the closest flow. There are a total of 5 nearest flows
+        const flow = response.data.closestFlows[0];
+        for (var i = 0; i < numVisGrps; i++) {
+            this.addVG(svgs[i], imgLinks[i], flow[i][0], flow[i][1]);
         }
+
         this.drawVGs();
         console.log(response);
     }
