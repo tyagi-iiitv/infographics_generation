@@ -12,10 +12,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { style } from 'd3-selection';
 
 let urls = [
-    'images/vg.svg',
     'images/canary_islands.jpg',
     'images/indonesia.jpg',
     'images/la.jpg',
+    'images/vg.svg',
     'images/paris.jpg',
 ];
 
@@ -103,11 +103,11 @@ class App extends React.Component {
                     </div>
                 </Tab>
                 <Tab eventKey="Recommendations" title="Recommendations">
-                    <div className={styles.galleryContainer}>
+                    {/* <div className={styles.galleryContainer}>
                         <GalleryView photos={photos} />
-                    </div>
-                    <div className={styles.galleryContainer}>
-                        <ImagePicker images={urls} />
+                    </div> */}
+                    <div className={styles.leftContainer}>
+                        <ImagePicker />
                     </div>
                 </Tab>
             </Tabs>

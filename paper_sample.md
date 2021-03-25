@@ -27,3 +27,13 @@ Indonesia has some of the world's shortest people
 ## 6
 Indonesia has some of the world's shortest people
 ![](images/indonesia.jpg)
+
+# Indonesia
+## 7
+Indonesia has some of the world's shortest people
+![](images/indonesia.jpg)
+
+# Indonesia
+## 8
+Indonesia has some of the world's shortest people
+![](images/indonesia.jpg)

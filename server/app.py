@@ -9,6 +9,7 @@ import numpy as np
 from annoy import AnnoyIndex
 from scipy.spatial import ConvexHull
 from lxml import etree
+import os
 
 
 app = Flask(__name__)
@@ -18,6 +19,17 @@ app.secret_key = 'info'
 flows = np.load('flows.npy', allow_pickle=True)
 
 SVGNS = 'http://www.w3.org/2000/svg'
+
+def get_vf_image(flow, height, width):
+    print(flow)
+    black = np.zeros((height, width, 3), np.uint8)
+    for i in range(len(flow)):
+        cv2.circle(black, (int(flow[i][0]), int(flow[i][1])), 5, (0, 0, 255), -1)
+
+    for i in range(len(flow) - 1):
+        cv2.line(black, (int(flow[i][0]), int(flow[i][1])), (int(flow[i + 1][0]), int(flow[i + 1][1])), (0, 0, 255), 30)
+    
+    return black
 
 # Converts a abse64 image string to a numpy image
 def base64_img_to_np(img_str):
@@ -69,7 +81,7 @@ def get_corners_in_flow(flow_img):
 def get_closest_flows(corners):
     u = AnnoyIndex(500, 'euclidean')
     u.load('flows.ann')
-    closest_flow_indexes = u.get_nns_by_vector(corners, 5, search_k=-1, include_distances=False)
+    closest_flow_indexes = u.get_nns_by_vector(corners, 25, search_k=-1, include_distances=False)
     closest_flows = []
     for index in closest_flow_indexes:
         points = np.array(u.get_item_vector(index))
@@ -254,7 +266,7 @@ def set_layout():
         closest_flow_rankings.append(overall_rank)
 
     sorting_indices = np.argsort(closest_flow_rankings)[::-1]
-    closest_flows = np.array(closest_flows)[sorting_indices].tolist()[:5]
+    closest_flows = np.array(closest_flows)[sorting_indices].tolist()[:50]
     session['closest_flows'] = closest_flows
 
     # SVG string
@@ -277,6 +289,12 @@ def set_layout():
     session['svgs'] = svgs
     session['img_links'] = img_links
 
+    # print(session.get('canvas_dims')['width'])
+    # # Creating VIF flow images and saving in the frontend directory
+    # for i,flow in enumerate(session.get('closest_flows')):
+    #     image = get_vf_image(flow, session.get('canvas_dims')['height'], session.get('canvas_dims')['width'])
+    #     cv2.imwrite('../interface/public/flowImages/flow_'+str(i)+'.jpg', image)
+
     return json.dumps({
         'closestFlows': session.get('closest_flows'),
         'numVisGrps': session.get('num_vis_grps'),
@@ -296,5 +314,4 @@ def get_layout():
 
 
 if __name__ == '__main__':
-    print(len(flows))
     app.run(debug=True, port=5000)

@@ -2,6 +2,13 @@ import React, { Component } from 'react';
 import ImagePicker from 'react-image-picker';
 import 'react-image-picker/dist/index.css';
 
+let imgUrls = [
+    'flowImages/flow_0.jpg',
+    'flowImages/flow_1.jpg',
+    'flowImages/flow_2.jpg',
+    'flowImages/flow_3.jpg',
+    'flowImages/flow_4.jpg',
+];
 export default class ImageSelect extends Component {
     constructor(props) {
         super(props);
@@ -16,7 +23,7 @@ export default class ImageSelect extends Component {
         return (
             <div>
                 <ImagePicker
-                    images={this.props.images.map((image, i) => ({
+                    images={imgUrls.map((image, i) => ({
                         src: image,
                         value: i,
                     }))}
