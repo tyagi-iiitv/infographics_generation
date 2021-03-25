@@ -333,7 +333,7 @@ class CanvasArea extends React.Component {
                 // If first point, connect to bottom-left point
                 ctx.moveTo(this.clickX[i - 1], this.clickY[i - 1]);
             } else {
-                // Else, conenct to last point
+                // Else, connect to last point
                 ctx.moveTo(this.clickX[i] - 1, this.clickY[i]);
             }
             ctx.lineTo(this.clickX[i], this.clickY[i]);
@@ -361,11 +361,11 @@ class CanvasArea extends React.Component {
     /*
     Send flow image and dragged locations to server
     */
-    async sendInfo() {
+    sendInfo() {
         const canvas = this.dispCanvas.current;
         this.undraw();
         this.redrawLines();
-        const flowImg = canvas.toDataURL('image/png');
+        // const flowImg = canvas.toDataURL('image/png');
         this.redrawPics();
         this.clearVGs();
         var draggedImages = [];
@@ -379,25 +379,32 @@ class CanvasArea extends React.Component {
             };
             draggedImages.push(draggedImage);
         });
-        const response = await axios.post('/layout/', {
-            canvasDims: { ...this.canvasDims },
-            flowImg: flowImg,
-            draggedImages: draggedImages,
-        });
 
-        const data = response['data'];
-        var svgs = data.svgs,
-            imgLinks = data.imgLinks,
-            numVisGrps = data.numVisGrps;
+        let canvasImg = new Image();
+        canvasImg.src = '/images/hardcode.png';
+        let flowImg;
+        canvasImg.onload = async () => {
+            flowImg = this.getBase64Image(canvasImg);
+            const response = await axios.post('/layout/', {
+                canvasDims: { ...this.canvasDims },
+                flowImg: flowImg,
+                draggedImages: draggedImages,
+            });
 
-        // Currently displaying the closest flow. There are a total of 5 nearest flows
-        const flow = response.data.closestFlows[0];
-        for (var i = 0; i < numVisGrps; i++) {
-            this.addVG(svgs[i], imgLinks[i], flow[i][0], flow[i][1]);
-        }
+            const data = response['data'];
+            var svgs = data.svgs,
+                imgLinks = data.imgLinks,
+                numVisGrps = data.numVisGrps;
 
-        this.drawVGs();
-        console.log(response);
+            // Currently displaying the closest flow. There are a total of 5 nearest flows
+            const flow = response.data.closestFlows[0];
+            for (var i = 0; i < numVisGrps; i++) {
+                this.addVG(svgs[i], imgLinks[i], flow[i][0], flow[i][1]);
+            }
+
+            this.drawVGs();
+            console.log(response);
+        };
     }
 
     /*
