@@ -9,6 +9,8 @@ class Generate extends React.Component {
             flows: null,
             canvasDims: null,
             svgs: null,
+            numVisGrps: null,
+            imgLinks: null,
         };
     }
 
@@ -24,6 +26,8 @@ class Generate extends React.Component {
             </div>
         );
     }
+
+    componentWillMount() {}
 
     render() {
         return (

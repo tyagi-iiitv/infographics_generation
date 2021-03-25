@@ -73,9 +73,20 @@ let photos = [
 ];
 
 class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            flows: null,
+        };
+        this.callbackFromChild = this.callbackFromChild.bind(this);
+    }
+
+    callbackFromChild(dataFromChild) {
+        this.setState(dataFromChild, () => console.log(this.state));
+    }
     render() {
         return (
-            <Tabs defaultActiveKey="Recommendations" id="tabs">
+            <Tabs defaultActiveKey="Draw" id="tabs">
                 <Tab eventKey="View" title="View">
                     <div className={styles.ViewBody}>
                         <Generate imageUrls={urls} />
@@ -84,7 +95,7 @@ class App extends React.Component {
                 <Tab eventKey="Draw" title="Draw">
                     <div className={styles.AppBody}>
                         <div className={styles.leftContainer}>
-                            <CanvasArea />
+                            <CanvasArea callbackFromChild={this.callbackFromChild} />
                         </div>
                         <div className={styles.rightContainer}>
                             <TextInput />

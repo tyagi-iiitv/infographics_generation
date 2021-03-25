@@ -17,3 +17,13 @@ Canary Islands are named after dogs
 ## 4
 Indonesia has some of the world's shortest people
 ![](images/indonesia.jpg)
+
+# Indonesia
+## 5
+Indonesia has some of the world's shortest people
+![](images/indonesia.jpg)
+
+# Indonesia
+## 6
+Indonesia has some of the world's shortest people
+![](images/indonesia.jpg)
