@@ -212,7 +212,7 @@ def visgrps():
 
 
 @app.route('/layout/', methods=['POST'])
-def layout():
+def set_layout():
     # Get POST request from API call
     data = json.loads(request.data.decode('utf-8'))
 
@@ -274,11 +274,24 @@ def layout():
         svgs.append(curr_svg)
         img_links.append(vis_grps_info[i].get('image'))
 
+    session['svgs'] = svgs
+    session['img_links'] = img_links
+
     return json.dumps({
         'closestFlows': session.get('closest_flows'),
         'numVisGrps': session.get('num_vis_grps'),
-        'svgs': svgs,
-        'imgLinks': img_links
+        'svgs': session.get('svgs'),
+        'imgLinks': session.get('img_links')
+    })
+
+
+@app.route('/layout/', methods=['GET'])
+def get_layout():
+    return json.dumps({
+        'closestFlows': session.get('closest_flows'),
+        'numVisGrps': session.get('num_vis_grps'),
+        'svgs': session.get('svgs'),
+        'imgLinks': session.get('img_links')
     })
 
 
