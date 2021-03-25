@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import Gallery from 'react-photo-gallery';
 import Carousel, { Modal, ModalGateway } from 'react-images';
+import { StylesProvider } from '@material-ui/styles';
+import styles from './GalleryView.module.scss';
 
 export default function GalleryView(props) {
     const [currentImage, setCurrentImage] = useState(0);
@@ -17,7 +19,7 @@ export default function GalleryView(props) {
     };
 
     return (
-        <div>
+        <div className={styles.fullGallery}>
             <Gallery photos={props.photos} onClick={openLightbox} />
             <ModalGateway>
                 {viewerIsOpen ? (

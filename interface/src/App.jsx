@@ -1,22 +1,18 @@
 import React from 'react';
-import { CanvasArea, TextInput, Gallery, GalleryView } from './components';
+import { CanvasArea, TextInput, Generate, GalleryView } from './components';
 import styles from './App.module.scss';
 import { Tabs, Tab, TabPane } from 'react-bootstrap';
-import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { style } from 'd3-selection';
 
-let urls = [
-    'images/paris.jpg',
-    'images/canary_islands.jpg',
-    'images/indonesia.jpg',
-    'images/la.jpg',
-    'images/paris.jpg',
-    'images/canary_islands.jpg',
-    'images/indonesia.jpg',
-    'images/la.jpg',
-];
+let urls = ['images/vg.svg'];
 
 let photos = [
+    {
+        src: 'images/vg.svg',
+        width: 4,
+        height: 3,
+    },
     {
         src: 'https://source.unsplash.com/2ShvY8Lf6l0/800x599',
         width: 4,
@@ -67,7 +63,12 @@ let photos = [
 class App extends React.Component {
     render() {
         return (
-            <Tabs defaultActiveKey="Draw" id="tabs">
+            <Tabs defaultActiveKey="View" id="tabs">
+                <Tab eventKey="View" title="View">
+                    <div className={styles.ViewBody}>
+                        <Generate imageUrls={urls} />
+                    </div>
+                </Tab>
                 <Tab eventKey="Draw" title="Draw">
                     <div className={styles.AppBody}>
                         <div className={styles.leftContainer}>
@@ -78,37 +79,10 @@ class App extends React.Component {
                         </div>
                     </div>
                 </Tab>
-                <Tab eventKey="VIF Recommendation" title="VIF Recommendation">
-                    <div className={styles.App}>
-                        <div className={styles.AppBody}>
-                            <div className={styles.galleryContainer}>
-                                <Gallery imageUrls={urls} />
-                            </div>
-                            <div className={styles.leftContainer}>
-                                <CanvasArea />
-                            </div>
-                            <div className={styles.galleryContainer}>
-                                <Gallery imageUrls={urls} />
-                            </div>
-                        </div>
-                    </div>
-                </Tab>
-                <Tab eventKey="VG Recommendation" title="VG Recommendation">
-                    <div className={styles.App}>
-                        <div className={styles.AppBody}>
-                            <div className={styles.galleryContainer}>
-                                <Gallery imageUrls={urls} />
-                            </div>
-                            <div className={styles.leftContainer}>
-                                <CanvasArea />
-                            </div>
-                            <div className={styles.galleryContainer}>
-                                <Gallery imageUrls={urls} />
-                            </div>
-                        </div>
-                    </div>
-                </Tab>
-                <Tab eventKey="Explore Connections" title="Explore Connections">
+                <Tab eventKey="Recommendations" title="Recommendations">
+                    <GalleryView photos={photos} />
+                    <GalleryView photos={photos} />
+                    <GalleryView photos={photos} />
                     <GalleryView photos={photos} />
                 </Tab>
             </Tabs>

@@ -216,7 +216,7 @@ def layout():
     # Get POST request from API call
     data = json.loads(request.data.decode('utf-8'))
 
-    # Save canvas simensions in sessions
+    # Save canvas dimensions in sessions
     session['canvas_dims'] = data['canvasDims']
 
     # Get dragged images and remove the image elements
