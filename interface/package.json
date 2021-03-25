@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@bumaga/tabs": "^0.2.0",
         "@fortawesome/fontawesome-svg-core": "^1.2.32",
         "@fortawesome/free-regular-svg-icons": "^5.15.1",
         "@fortawesome/free-solid-svg-icons": "^5.15.1",
@@ -12,15 +13,21 @@
         "@testing-library/react": "^9.3.2",
         "@testing-library/user-event": "^7.1.2",
         "axios": "^0.21.1",
+        "bootstrap": "^4.6.0",
         "d3": "^6.6.0",
         "d3-textwrap": "^3.0.0",
         "file-saver": "^2.0.5",
         "konva": "^6.0.0",
         "node-sass": "^4.14.1",
         "react": "^16.13.1",
+        "react-bootstrap": "^1.5.2",
         "react-dom": "^16.13.1",
+        "react-image-gallery": "^1.0.9",
+        "react-images": "1.0.0",
         "react-konva": "^16.13.0-3",
-        "react-scripts": "3.4.1"
+        "react-photo-gallery": "^8.0.0",
+        "react-scripts": "3.4.1",
+        "react-tabs": "^3.2.1"
     },
     "scripts": {
         "start": "react-scripts start",
