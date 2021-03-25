@@ -1,5 +1,6 @@
 ### Todo list
 
+- Fix three tasks for the video
 - See that the information fits each svg
 - Scale SVG based on layout
 - Ranking of SVGs based on VIF layouts

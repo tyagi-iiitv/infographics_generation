@@ -1,11 +1,23 @@
 import React from 'react';
-import { CanvasArea, TextInput, Generate, GalleryView } from './components';
+import {
+    CanvasArea,
+    TextInput,
+    Generate,
+    GalleryView,
+    ImagePicker,
+} from './components';
 import styles from './App.module.scss';
 import { Tabs, Tab, TabPane } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { style } from 'd3-selection';
 
-let urls = ['images/vg.svg'];
+let urls = [
+    'images/vg.svg',
+    'images/canary_islands.jpg',
+    'images/indonesia.jpg',
+    'images/la.jpg',
+    'images/paris.jpg',
+];
 
 let photos = [
     {
@@ -63,7 +75,7 @@ let photos = [
 class App extends React.Component {
     render() {
         return (
-            <Tabs defaultActiveKey="View" id="tabs">
+            <Tabs defaultActiveKey="Recommendations" id="tabs">
                 <Tab eventKey="View" title="View">
                     <div className={styles.ViewBody}>
                         <Generate imageUrls={urls} />
@@ -80,10 +92,12 @@ class App extends React.Component {
                     </div>
                 </Tab>
                 <Tab eventKey="Recommendations" title="Recommendations">
-                    <GalleryView photos={photos} />
-                    <GalleryView photos={photos} />
-                    <GalleryView photos={photos} />
-                    <GalleryView photos={photos} />
+                    <div className={styles.galleryContainer}>
+                        <GalleryView photos={photos} />
+                    </div>
+                    <div className={styles.galleryContainer}>
+                        <ImagePicker images={urls} />
+                    </div>
                 </Tab>
             </Tabs>
         );

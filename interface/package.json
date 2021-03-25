@@ -23,6 +23,7 @@
         "react-bootstrap": "^1.5.2",
         "react-dom": "^16.13.1",
         "react-image-gallery": "^1.0.9",
+        "react-image-picker": "^1.1.1",
         "react-images": "1.0.0",
         "react-konva": "^16.13.0-3",
         "react-photo-gallery": "^8.0.0",

@@ -278,7 +278,8 @@ def layout():
         'closestFlows': session.get('closest_flows'),
         'numVisGrps': session.get('num_vis_grps'),
         'svgs': svgs,
-        'imgLinks': img_links
+        'imgLinks': img_links,
+        'canvasDims': session['canvas_dims'],
     })
 
 
