@@ -2,7 +2,7 @@ import React from 'react';
 import {
     CanvasArea,
     TextInput,
-    Generate,
+    GenerateSVG,
     GalleryView,
     ImagePicker,
 } from './components';
@@ -86,10 +86,10 @@ class App extends React.Component {
     }
     render() {
         return (
-            <Tabs defaultActiveKey="Draw" id="tabs">
+            <Tabs defaultActiveKey="View" id="tabs">
                 <Tab eventKey="View" title="View">
                     <div className={styles.ViewBody}>
-                        <Generate imageUrls={urls} />
+                        <GenerateSVG />
                     </div>
                 </Tab>
                 <Tab eventKey="Draw" title="Draw">

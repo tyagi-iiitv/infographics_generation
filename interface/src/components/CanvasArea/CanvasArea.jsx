@@ -382,9 +382,9 @@ class CanvasArea extends React.Component {
             draggedImages.push(draggedImage);
         });
         const response = await axios.post('/layout/', {
-            canvasDims: canvas_dims2,
-            flowImg: flow_img2,
-            draggedImages: dragged_image2,
+            canvasDims: canvas_dims,
+            flowImg: flow_img,
+            draggedImages: dragged_image,
         });
         // console.log({ ...this.canvasDims }, flowImg, draggedImages);
         // const response = await axios.post('/layout/', {
