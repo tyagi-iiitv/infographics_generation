@@ -1,16 +1,19 @@
 import React from 'react';
 import styles from './GenerateSVG.module.scss';
 import * as d3 from 'd3';
+import { flows1 } from '../../input_flows';
 
 class GenerateSVG extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             canvasDims: { width: 1280, height: 960 },
+            flow: flows1[1],
+            vg: 'svgImages/svg1.svg',
         };
     }
     componentDidMount() {
-        generateSVG(this.state.canvasDims.width, this.state.canvasDims.height);
+        generateSVG(this.state.vg, this.state.flow);
     }
 
     render() {
@@ -25,38 +28,40 @@ class GenerateSVG extends React.Component {
     }
 }
 
-async function generateSVG(width, boxHeight) {
+async function generateSVG(vg, flow) {
     let svg = d3.select('svg');
-    let divsvg = svg.node(0);
-    await d3.xml('images/vg.svg').then((data) => {
-        divsvg.append(data.documentElement);
-    });
-    // let nodes = [];
-    // nodes.push([width / 2, boxHeight / 1.5]);
-    // nodes.push([width / 4, boxHeight / 3]);
 
-    // // Append the nodes to the svg element
-    // for (let i = 0; i < nodes.length; i++) {
-    //     svg
-    //     .append('circle')
-    //     .attr('cx', nodes[i][0])
-    //     .attr('cy', nodes[i][1])
-    //     .attr('r', 20)
-    //     .style('fill', 'green');
-    // }
+    // DRAWING THE FLOW
+    svg.selectAll('line')
+        .data(flow)
+        .enter()
+        .append('g')
+        .each(function (d, i) {
+            d3.select(this)
+                .selectAll('line')
+                .enter()
+                .append('line')
+                .attr('x1', d[i][0])
+                .attr('x2', d[i + 1][0])
+                .attr('y1', d[i][1])
+                .attr('y2', d[i + 1][1])
+                .style('stroke', 'red')
+                .style('stroke-width', 10);
+        });
 
-    // // Create a horizontal link from the first node to the second
-    // const link = d3.linkHorizontal()({
-    //     source: nodes[0],
-    //     target: nodes[1]
+    // svg.append('line')
+    //     .style("stroke", "red")
+    //     .style("stroke-width", 10)
+    //     .attr('x1', flow[0][0])
+    //     .attr('x2', flow[1][0])
+    //     .attr('y1', flow[0][1])
+    //     .attr('y2', flow[1][1])
+
+    // LOADING AN SVG IMAGE
+    // let divsvg = svg.node(0);
+    // await d3.xml(vg).then((data) => {
+    //     divsvg.append(data.documentElement);
     // });
-
-    // // Append the link to the svg element
-    // svg
-    //     .append('path')
-    //     .attr('d', link)
-    //     .attr('stroke', 'black')
-    //     .attr('fill', 'none');
 
     return svg.node();
 }
