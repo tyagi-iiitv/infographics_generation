@@ -9,7 +9,7 @@ class GenerateSVG extends React.Component {
         this.state = {
             canvasDims: { width: 1280, height: 960 },
             flow: flows1[1],
-            vg: 'svgImages/svg1.svg',
+            vg: 'svgImages/vg16.svg',
         };
     }
     componentDidMount() {
@@ -31,6 +31,13 @@ class GenerateSVG extends React.Component {
 async function generateSVG(vg, flow) {
     let svg = d3.select('svg');
 
+    // Adding VGs at certain locations on the final svg
+    svg.append('g')
+        .append('svg:image')
+        .attr('xlink:href', vg)
+        .attr('x', flow[0][0])
+        .attr('y', flow[0][1]);
+
     // Generating Lines
     let lines = [];
     for (let i = 0; i < flow.length - 1; i++) {
@@ -38,10 +45,10 @@ async function generateSVG(vg, flow) {
     }
 
     // DRAWING THE LINES
-    svg.selectAll('line')
+    svg.append('g')
+        .selectAll('line')
         .data(lines)
         .enter()
-        .append('g')
         .append('line')
         .style('stroke', 'red')
         .style('stroke-width', 10)
