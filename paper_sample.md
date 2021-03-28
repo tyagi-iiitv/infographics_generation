@@ -18,10 +18,10 @@ Canary Islands are named after dogs
 Indonesia has some of the world's shortest people
 ![](images/indonesia.jpg)
 
-# Indonesia
+# Nepal
 ## 5
-Indonesia has some of the world's shortest people
-![](images/indonesia.jpg)
+Mount Everest is bigger than the last time it was measured
+![](images/nepal.jpg)
 
 # Indonesia
 ## 6

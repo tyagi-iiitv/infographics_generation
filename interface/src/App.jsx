@@ -77,6 +77,7 @@ class App extends React.Component {
         super(props);
         this.state = {
             flows: null,
+            textInfo: null,
         };
         this.callbackFromChild = this.callbackFromChild.bind(this);
     }
@@ -89,7 +90,7 @@ class App extends React.Component {
             <Tabs defaultActiveKey="View" id="tabs">
                 <Tab eventKey="View" title="View">
                     <div className={styles.ViewBody}>
-                        <GenerateSVG />
+                        <GenerateSVG textInfo={this.state.textInfo} />
                     </div>
                 </Tab>
                 <Tab eventKey="Draw" title="Draw">
@@ -98,7 +99,7 @@ class App extends React.Component {
                             <CanvasArea callbackFromChild={this.callbackFromChild} />
                         </div>
                         <div className={styles.rightContainer}>
-                            <TextInput />
+                            <TextInput callbackFromChild={this.callbackFromChild} />
                         </div>
                     </div>
                 </Tab>

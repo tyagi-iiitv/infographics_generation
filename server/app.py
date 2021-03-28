@@ -134,7 +134,7 @@ def get_uniformity(dragged_images, flow):
     return 1
 
 
-# Gives a ranking to see if the flow is ovberlapping some dragged image
+# Gives a ranking to see if the flow is overlapping some dragged image
 def get_overlapping(dragged_images, flow):
     if flow is not None:
         canvas_dims = session.get('canvas_dims')
