@@ -8,8 +8,8 @@ class GenerateSVG extends React.Component {
         super(props);
         this.state = {
             canvasDims: { width: 1280, height: 960 },
-            flow: flows1[1],
-            vg: 'svgImages/vg16.svg',
+            flow: flows1[20],
+            vg: 'svgImages/vg2.svg',
         };
     }
     componentDidMount() {
@@ -31,12 +31,18 @@ class GenerateSVG extends React.Component {
 async function generateSVG(vg, flow) {
     let svg = d3.select('svg');
 
+    // Scale the figure with the width parameter
+    let scale = 200;
+
     // Adding VGs at certain locations on the final svg
-    svg.append('g')
-        .append('svg:image')
-        .attr('xlink:href', vg)
-        .attr('x', flow[0][0])
-        .attr('y', flow[0][1]);
+    for (let i = 0; i < flow.length; i++) {
+        svg.append('g')
+            .append('svg:image')
+            .attr('xlink:href', vg)
+            .attr('width', scale)
+            .attr('x', flow[i][0] - scale / 2)
+            .attr('y', flow[i][1] - scale / 2);
+    }
 
     // Generating Lines
     let lines = [];
