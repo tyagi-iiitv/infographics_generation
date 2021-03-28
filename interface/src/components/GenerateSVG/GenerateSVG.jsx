@@ -31,23 +31,33 @@ class GenerateSVG extends React.Component {
 async function generateSVG(vg, flow) {
     let svg = d3.select('svg');
 
-    // DRAWING THE FLOW
+    // Generating Lines
+    let lines = [];
+    for (let i = 0; i < flow.length - 1; i++) {
+        lines.push([flow[i][0], flow[i][1], flow[i + 1][0], flow[i + 1][1]]);
+    }
+
+    // DRAWING THE LINES
     svg.selectAll('line')
-        .data(flow)
+        .data(lines)
         .enter()
         .append('g')
-        .each(function (d, i) {
-            d3.select(this)
-                .selectAll('line')
-                .enter()
-                .append('line')
-                .attr('x1', d[i][0])
-                .attr('x2', d[i + 1][0])
-                .attr('y1', d[i][1])
-                .attr('y2', d[i + 1][1])
-                .style('stroke', 'red')
-                .style('stroke-width', 10);
+        .append('line')
+        .style('stroke', 'red')
+        .style('stroke-width', 10)
+        .attr('x1', function (d) {
+            return d[0];
+        })
+        .attr('x2', function (d) {
+            return d[2];
+        })
+        .attr('y1', function (d) {
+            return d[1];
+        })
+        .attr('y2', function (d) {
+            return d[3];
         });
+    // console.log(svg)
 
     // svg.append('line')
     //     .style("stroke", "red")
