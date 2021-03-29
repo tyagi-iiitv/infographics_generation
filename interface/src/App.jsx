@@ -19,56 +19,532 @@ let urls = [
     'images/paris.jpg',
 ];
 
+let vgs = [
+    'images/visualgroups/3446.jpg',
+    'images/visualgroups/3447.jpg',
+    'images/visualgroups/3448.jpg',
+    'images/visualgroups/3449.jpg',
+    'images/visualgroups/3450.jpg',
+    'images/visualgroups/3451.jpg',
+    'images/visualgroups/3452.jpg',
+    'images/visualgroups/3453.jpg',
+    'images/visualgroups/3454.jpg',
+    'images/visualgroups/3455.jpg',
+];
+
+let layout = [
+    'images/layouts/3456.jpg',
+    'images/layouts/3457.jpg',
+    'images/layouts/3458.jpg',
+    'images/layouts/3459.jpg',
+    'images/layouts/3460.jpg',
+    'images/layouts/3461.jpg',
+    'images/layouts/3462.jpg',
+    'images/layouts/3463.jpg',
+    'images/layouts/3464.jpg',
+    'images/layouts/3465.jpg',
+];
+
 let photos = [
     {
-        src: 'images/vg.svg',
-        width: 4,
-        height: 3,
+        src: 'images/gallery/3466.jpg',
+        width: 1,
+        height: 4,
     },
     {
-        src: 'https://source.unsplash.com/2ShvY8Lf6l0/800x599',
-        width: 4,
-        height: 3,
-    },
-    {
-        src: 'https://source.unsplash.com/Dm-qxdynoEc/800x799',
+        src: 'images/gallery/3467.jpg',
         width: 1,
         height: 1,
     },
     {
-        src: 'https://source.unsplash.com/qDkso9nvCg0/600x799',
-        width: 3,
-        height: 4,
+        src: 'images/gallery/3468.jpg',
+        width: 1,
+        height: 1,
     },
     {
-        src: 'https://source.unsplash.com/iecJiKe_RNg/600x799',
-        width: 3,
-        height: 4,
+        src: 'images/gallery/3469.jpg',
+        width: 1,
+        height: 1,
     },
     {
-        src: 'https://source.unsplash.com/epcsn8Ed8kY/600x799',
-        width: 3,
-        height: 4,
+        src: 'images/gallery/3470.jpg',
+        width: 1,
+        height: 1,
     },
     {
-        src: 'https://source.unsplash.com/NQSWvyVRIJk/800x599',
-        width: 4,
-        height: 3,
+        src: 'images/gallery/3471.jpg',
+        width: 1,
+        height: 1,
     },
     {
-        src: 'https://source.unsplash.com/zh7GEuORbUw/600x799',
-        width: 3,
-        height: 4,
+        src: 'images/gallery/3472.jpg',
+        width: 1,
+        height: 1,
     },
     {
-        src: 'https://source.unsplash.com/PpOHJezOalU/800x599',
-        width: 4,
-        height: 3,
+        src: 'images/gallery/3473.jpg',
+        width: 1,
+        height: 1,
     },
     {
-        src: 'https://source.unsplash.com/I1ASdgphUH4/800x599',
-        width: 4,
-        height: 3,
+        src: 'images/gallery/3474.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3475.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3476.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3477.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3478.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3479.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3480.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3481.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3482.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3483.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3484.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3485.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3486.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3487.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3488.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3489.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3490.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3491.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3492.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3493.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3494.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3495.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3496.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3497.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3498.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3499.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3500.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3501.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3502.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3503.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3504.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3505.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3506.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3507.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3508.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3509.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3510.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3511.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3512.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3513.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3514.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3515.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3516.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3517.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3518.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3519.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3520.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3521.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3522.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3523.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3524.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3525.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3526.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3527.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3528.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3529.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3530.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3531.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3532.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3533.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3534.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3535.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3536.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3537.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3538.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3539.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3540.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3541.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3542.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3543.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3544.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3545.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3546.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3547.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3548.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3549.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3550.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3551.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3552.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3553.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3554.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3555.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3556.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3557.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3558.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3559.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3560.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3561.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3562.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3563.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3564.jpg',
+        width: 1,
+        height: 1,
+    },
+    {
+        src: 'images/gallery/3565.jpg',
+        width: 1,
+        height: 1,
     },
 ];
 
@@ -92,11 +568,16 @@ class App extends React.Component {
                     </div>
                 </Tab>
                 <Tab eventKey="Recommendations" title="Recommendations">
-                    <div className={styles.galleryContainer}>
-                        <GalleryView photos={photos} />
-                    </div>
-                    <div className={styles.galleryContainer}>
-                        <ImagePicker images={urls} />
+                    <div className={styles.recommendationContainer}>
+                        <div className={styles.vgContainer}>
+                            <ImagePicker images={vgs} />
+                        </div>
+                        <div className={styles.ltContainer}>
+                            <ImagePicker images={layout} />
+                        </div>
+                        <div className={styles.galleryContainer}>
+                            <GalleryView photos={photos} />
+                        </div>
                     </div>
                 </Tab>
             </Tabs>

@@ -35,9 +35,30 @@
     justify-content: center;
 }
 
-.galleryContainer {
-    width: 20%;
+.vgContainer {
+    width: 10%;
     height: 100%;
     display: flex;
     flex-direction: column;
+}
+
+.ltContainer {
+    width: 10%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.galleryContainer {
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.recommendationContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
 }
