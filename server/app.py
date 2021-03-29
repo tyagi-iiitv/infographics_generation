@@ -1,4 +1,4 @@
-from flask import Flask, request, session
+from flask import Flask, request, session, send_from_directory
 import pandas as pd
 import numpy as np
 import json
@@ -221,6 +221,18 @@ def visgrps():
         'numVisGrps': num_vis_grps,
         'visGrpsInfo': vis_grps_info,
         })
+
+@app.route('/save-vg', methods=['POST'])
+def save_vg():
+    data = json.loads(request.data.decode('utf-8'))
+    f = open('vg_svgs/vg.svg', 'w')
+    f.write(data['vgCode'])
+    f.close()
+    return "OK"
+
+@app.route('/get-vg/<path:path>', methods=['GET'])
+def get_image(path):
+    return send_from_directory('vg_svgs', path, as_attachment=True)
 
 
 @app.route('/layout/', methods=['POST'])
