@@ -232,7 +232,7 @@ def save_vg():
 
 @app.route('/get-vg/<path:path>', methods=['GET'])
 def get_image(path):
-    return send_from_directory('vg_svgs', path, as_attachment=True)
+    return send_from_directory('svgImages', path, as_attachment=True)
 
 
 @app.route('/layout/', methods=['POST'])

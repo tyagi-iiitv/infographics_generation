@@ -17,11 +17,12 @@ export function wrap(text, width) {
                 .attr('x', x)
                 .attr('y', y)
                 .attr('dy', dy + 'em');
+
         words.pop();
         while ((word = words.pop())) {
-            console.log('here');
             line.push(word);
             tspan.text(line.join(' '));
+            console.log(tspan.node().textContent);
             if (tspan.node().getComputedTextLength() > width) {
                 line.pop();
                 tspan.text(line.join(' '));
