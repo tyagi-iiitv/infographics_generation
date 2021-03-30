@@ -10,15 +10,24 @@ export default class ImageSelect extends Component {
         };
     }
     onPickImages(images) {
-        this.setState({ images });
+        this.setState({ images }, () =>
+            this.props.callbackFromChild(
+                this.props.type === 'vgs'
+                    ? { vg_images: this.state.images }
+                    : { layout_images: this.state.images },
+                'images'
+            )
+        );
     }
     render() {
+        // console.log(this.state.images)
+        // console.log("hi")
         return (
             <div>
                 <ImagePicker
                     images={this.props.images.map((image, i) => ({
-                        src: image,
-                        value: i,
+                        src: image.src,
+                        value: image.key,
                     }))}
                     onPick={this.onPickImages.bind(this)}
                     multiple

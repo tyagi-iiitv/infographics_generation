@@ -20,36 +20,37 @@ let urls = [
 ];
 
 let vgs = [
-    'images/visualgroups/3446.jpg',
-    'images/visualgroups/3447.jpg',
-    'images/visualgroups/3448.jpg',
-    'images/visualgroups/3449.jpg',
-    'images/visualgroups/3450.jpg',
-    'images/visualgroups/3451.jpg',
-    'images/visualgroups/3452.jpg',
-    'images/visualgroups/3453.jpg',
-    'images/visualgroups/3454.jpg',
-    'images/visualgroups/3455.jpg',
+    { src: 'images/visualgroups/3446.jpg', key: 3446 },
+    { src: 'images/visualgroups/3447.jpg', key: 3447 },
+    // 'images/visualgroups/3448.jpg',
+    // 'images/visualgroups/3449.jpg',
+    // 'images/visualgroups/3450.jpg',
+    // 'images/visualgroups/3451.jpg',
+    // 'images/visualgroups/3452.jpg',
+    // 'images/visualgroups/3453.jpg',
+    // 'images/visualgroups/3454.jpg',
+    // 'images/visualgroups/3455.jpg',
 ];
 
 let layout = [
-    'images/layouts/3456.jpg',
-    'images/layouts/3457.jpg',
-    'images/layouts/3458.jpg',
-    'images/layouts/3459.jpg',
-    'images/layouts/3460.jpg',
-    'images/layouts/3461.jpg',
-    'images/layouts/3462.jpg',
-    'images/layouts/3463.jpg',
-    'images/layouts/3464.jpg',
-    'images/layouts/3465.jpg',
+    { src: 'images/layouts/3456.jpg', key: 3456 },
+    // 'images/layouts/3457.jpg',
+    // 'images/layouts/3458.jpg',
+    // 'images/layouts/3459.jpg',
+    // 'images/layouts/3460.jpg',
+    // 'images/layouts/3461.jpg',
+    // 'images/layouts/3462.jpg',
+    // 'images/layouts/3463.jpg',
+    // 'images/layouts/3464.jpg',
+    // 'images/layouts/3465.jpg',
 ];
 
 let photos = [
     {
         src: 'images/gallery/3466.jpg',
         width: 1,
-        height: 4,
+        height: 1,
+        // key: 3466,
     },
     {
         src: 'images/gallery/3467.jpg',
@@ -549,6 +550,36 @@ let photos = [
 ];
 
 class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            vg_images: null,
+            layout_images: null,
+            combine_images: null,
+        };
+        this.callbackFromChild = this.callbackFromChild.bind(this);
+    }
+
+    makeCombinedArray = () => {
+        let combine_images = [];
+        const { layout_images, vg_images } = this.state;
+        if (vg_images !== null && layout_images !== null) {
+            vg_images.map((vg_image) => {
+                layout_images.map((layout_image) => {
+                    combine_images.push(`${vg_image.value}_${layout_image.value}`);
+                });
+            });
+        }
+        this.setState({ combine_images });
+    };
+
+    callbackFromChild(dataFromChild, type) {
+        if (type === 'images') {
+            this.setState(dataFromChild, () => this.makeCombinedArray());
+        } else {
+            this.setState(dataFromChild);
+        }
+    }
     render() {
         return (
             <Tabs defaultActiveKey="Recommendations" id="tabs">
@@ -569,14 +600,25 @@ class App extends React.Component {
                 </Tab>
                 <Tab eventKey="Recommendations" title="Recommendations">
                     <div className={styles.recommendationContainer}>
-                        <div className={styles.vgContainer}>
-                            <ImagePicker images={vgs} />
-                        </div>
                         <div className={styles.ltContainer}>
-                            <ImagePicker images={layout} />
+                            <ImagePicker
+                                type="layout"
+                                images={layout}
+                                callbackFromChild={this.callbackFromChild}
+                            />
+                        </div>
+                        <div className={styles.vgContainer}>
+                            <ImagePicker
+                                type="vgs"
+                                images={vgs}
+                                callbackFromChild={this.callbackFromChild}
+                            />
                         </div>
                         <div className={styles.galleryContainer}>
-                            <GalleryView photos={photos} />
+                            <GalleryView
+                                photos={photos}
+                                combine_images={this.state.combine_images}
+                            />
                         </div>
                     </div>
                 </Tab>

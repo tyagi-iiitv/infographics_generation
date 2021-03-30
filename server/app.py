@@ -6,7 +6,7 @@ import base64
 import re
 import cv2
 import numpy as np
-from annoy import AnnoyIndex
+# from annoy import AnnoyIndex
 from scipy.spatial import ConvexHull
 from lxml import etree
 
@@ -66,24 +66,24 @@ def get_corners_in_flow(flow_img):
 
 
 # Gets closest flow from the user-drawn flow
-def get_closest_flows(corners):
-    u = AnnoyIndex(500, 'euclidean')
-    u.load('flows.ann')
-    closest_flow_indexes = u.get_nns_by_vector(corners, 5, search_k=-1, include_distances=False)
-    closest_flows = []
-    for index in closest_flow_indexes:
-        points = np.array(u.get_item_vector(index))
-        points = points[np.nonzero(points)[0]].reshape(-1, 2)
-        closest_flows.append(points.tolist())
-    num_vis_grps = session.get('num_vis_grps')
-    for i in reversed(range(len(closest_flows))):
-        closest_flow = closest_flows[i]
-        if len(closest_flow) != num_vis_grps:
-            del closest_flows[i]
-    if len(closest_flows) > 0:
-        return closest_flows
-    else:
-        return None
+# def get_closest_flows(corners):
+#     u = AnnoyIndex(500, 'euclidean')
+#     u.load('flows.ann')
+#     closest_flow_indexes = u.get_nns_by_vector(corners, 5, search_k=-1, include_distances=False)
+#     closest_flows = []
+#     for index in closest_flow_indexes:
+#         points = np.array(u.get_item_vector(index))
+#         points = points[np.nonzero(points)[0]].reshape(-1, 2)
+#         closest_flows.append(points.tolist())
+#     num_vis_grps = session.get('num_vis_grps')
+#     for i in reversed(range(len(closest_flows))):
+#         closest_flow = closest_flows[i]
+#         if len(closest_flow) != num_vis_grps:
+#             del closest_flows[i]
+#     if len(closest_flows) > 0:
+#         return closest_flows
+#     else:
+#         return None
 
 
 # Scales  up the points to the canvas size
@@ -234,7 +234,8 @@ def layout():
         # If corners are detected from the user-drawn flow,
         # scale them to canvas size, and get closest flows
         corners = scale_up_flow(corners)
-        closest_flows = get_closest_flows(corners_padded)
+        # closest_flows = get_closest_flows(corners_padded)
+        closest_flows = []
         if closest_flows is not None:
             for i in range(len(closest_flows)):
                 closest_flows[i] = scale_up_flow(closest_flows[i])

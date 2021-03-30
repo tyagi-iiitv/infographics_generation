@@ -18,6 +18,7 @@ export default function GalleryView(props) {
         setViewerIsOpen(false);
     };
 
+    console.log(props.combine_images);
     return (
         <div className={styles.fullGallery}>
             <Gallery photos={props.photos} onClick={openLightbox} />
