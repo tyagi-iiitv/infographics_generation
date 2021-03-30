@@ -231,9 +231,12 @@ def save_vg():
     return "OK"
 
 @app.route('/get-vg/<path:path>', methods=['GET'])
-def get_image(path):
-    return send_from_directory('rawVGs', path, as_attachment=True)
+def get_vg(path):
+    return send_from_directory('svgImages', path, as_attachment=True)
 
+@app.route('/images/<path:path>', methods=['GET'])
+def get_image(path):
+    return send_from_directory('images', path, as_attachment=True)
 
 @app.route('/layout/', methods=['POST'])
 def set_layout():

@@ -6,6 +6,11 @@
 
 // Best VGs for each flow index
 /*
+
+VGs 1-8 -> for flows 1
+VGs 9-16 -> for flows 2
+VGs 17-25 -> for flows 3
+
 flow1[1] 
 flow1[3] 
 flow1[21] 
