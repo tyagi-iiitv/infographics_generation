@@ -117,7 +117,7 @@ async function generateSVG(vg, flow, width, height) {
         svg.select(`#vg${i}`).select('style').text(input4[i].color);
     }
 
-    console.log(svg.node());
+    // console.log(svg.node());
 }
 
 export default GenerateSVG;
