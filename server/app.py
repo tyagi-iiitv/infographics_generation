@@ -304,6 +304,7 @@ def set_layout():
     session['svgs'] = svgs
     session['img_links'] = img_links
 
+
     # print(session.get('canvas_dims')['width'])
     # # Creating VIF flow images and saving in the frontend directory
     # for i,flow in enumerate(session.get('closest_flows')):
