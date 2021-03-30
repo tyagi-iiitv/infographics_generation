@@ -13,7 +13,7 @@ class GenerateSVG extends React.Component {
         this.state = {
             canvasDims: { width: 1280, height: 960 },
             flow: flows1[1],
-            vg: 'get-vg/vg10.svg',
+            vg: 'get-vg/vg1.svg',
             pivot: null,
             background: 'images/background.jpg',
             textInfo: this.props.textInfo,
@@ -176,27 +176,6 @@ async function generateSVG(
         lines.push([flow[i][0], flow[i][1], flow[i + 1][0], flow[i + 1][1]]);
     }
 
-    // DRAWING THE LINES
-    svg.append('g')
-        .selectAll('line')
-        .data(lines)
-        .enter()
-        .append('line')
-        .style('stroke', 'red')
-        .style('stroke-width', 10)
-        .attr('x1', function (d) {
-            return d[0];
-        })
-        .attr('x2', function (d) {
-            return d[2];
-        })
-        .attr('y1', function (d) {
-            return d[1];
-        })
-        .attr('y2', function (d) {
-            return d[3];
-        });
-
     let scale = 200;
     for (let i = 0; i < flow.length; i++) {
         svg.append('svg')
@@ -206,8 +185,6 @@ async function generateSVG(
             .attr('x', flow[i][0] - scale / 2)
             .attr('y', flow[i][1] - scale / 2)
             .html(vg);
-
-        console.log(svg.select(`#vg${i}`).html());
 
         let textBoxWidth = svg.select(`#vg${i}`).select('.text-wrap').attr('width');
 
@@ -235,7 +212,10 @@ async function generateSVG(
             });
 
         //Change color of SVGs
-        svg.select(`#vg${i}`).select('style').text(input4[i].color);
+        let orgStyle = svg.select(`#vg${i}`).select('style').text();
+        svg.select(`#vg${i}`)
+            .select('style')
+            .text(orgStyle + input4[i].color);
     }
 
     // let scaleVG = 250;
