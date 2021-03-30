@@ -22,7 +22,7 @@ export function wrap(text, width) {
         while ((word = words.pop())) {
             line.push(word);
             tspan.text(line.join(' '));
-            console.log(tspan.node().textContent);
+            // console.log(tspan.node().textContent);
             if (tspan.node().getComputedTextLength() > width) {
                 line.pop();
                 tspan.text(line.join(' '));

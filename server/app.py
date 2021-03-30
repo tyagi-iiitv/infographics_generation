@@ -28,7 +28,7 @@ def get_vf_image(flow, height, width):
 
     for i in range(len(flow) - 1):
         cv2.line(black, (int(flow[i][0]), int(flow[i][1])), (int(flow[i + 1][0]), int(flow[i + 1][1])), (0, 0, 255), 30)
-    
+
     return black
 
 # Converts a abse64 image string to a numpy image
@@ -231,9 +231,12 @@ def save_vg():
     return "OK"
 
 @app.route('/get-vg/<path:path>', methods=['GET'])
-def get_image(path):
+def get_vg(path):
     return send_from_directory('svgImages', path, as_attachment=True)
 
+@app.route('/images/<path:path>', methods=['GET'])
+def get_image(path):
+    return send_from_directory('images', path, as_attachment=True)
 
 @app.route('/layout/', methods=['POST'])
 def set_layout():
