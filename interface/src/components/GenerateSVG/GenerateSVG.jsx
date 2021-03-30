@@ -13,7 +13,7 @@ class GenerateSVG extends React.Component {
         this.state = {
             canvasDims: { width: 1280, height: 960 },
             flow: flows1[1],
-            vg: 'get-vg/vg1.svg',
+            vg: 'get-vg/vg10.svg',
             pivot: null,
             background: 'images/background.jpg',
             textInfo: this.props.textInfo,
