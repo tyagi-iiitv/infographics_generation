@@ -3,6 +3,18 @@
 // flows1 = [1,3,20,21,35] - 4 VGs
 // flows2 = [0,1,2,3,4,7] - 5 VGs
 // flows3 = [0,3,4,8,13] - 5 VGs
+
+// Best VGs for each flow index
+/*
+flow1[1] 
+flow1[3] 
+flow1[21] 
+
+
+
+
+
+*/
 let flows1 = [
     [
         [163.22500000000002, 119.21875],
