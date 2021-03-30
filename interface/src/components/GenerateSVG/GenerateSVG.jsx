@@ -106,17 +106,15 @@ async function generateSVG(vg, flow, width, height) {
         // Insert image
         svg.select(`#vg${i}`).select('.img1').attr('href', input4[i].image);
 
-        // console.log(svg.selectAll('color-1'));
-        let cl = svg.selectAll('color-1');
-
-        for (let j = 0; j < cl.length; j++) {
-            cl[j].attr('class', `color-1${j}`);
-        }
+        // Change class for each svg element
+        svg.selectAll('.color-1')
+            .nodes()
+            .forEach((node) => {
+                d3.select(node).attr('class', `color-1${i}`);
+            });
 
         //Change color of SVGs
         svg.select(`#vg${i}`).select('style').text(input4[i].color);
-
-        // svg.select(`#vg${i}`).select('color-1').style("fill", "#ffffb3;");;
     }
 
     console.log(svg.node());
