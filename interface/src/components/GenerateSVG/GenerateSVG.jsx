@@ -12,7 +12,7 @@ class GenerateSVG extends React.Component {
         super(props);
         this.state = {
             canvasDims: { width: 1280, height: 960 },
-            flow: flows1[1],
+            flow: flows1[3],
             vg: 'get-vg/vg1.svg',
             textInfo: this.props.textInfo,
         };
@@ -43,6 +43,37 @@ class GenerateSVG extends React.Component {
 async function generateSVG(vg, flow, width, height) {
     let svg = d3.select('svg');
 
+    // Defining lines, angles and centers to insert connections
+    let lines = [];
+    let angles = [];
+    let centers = [];
+    for (let i = 0; i < flow.length - 1; i++) {
+        lines.push([flow[i][0], flow[i][1], flow[i + 1][0], flow[i + 1][1]]);
+        angles.push(
+            Math.atan2(flow[i + 1][1] - flow[i][1], flow[i + 1][0] - flow[i][0]) *
+                (180 / Math.PI) +
+                180
+        );
+        centers.push([
+            (flow[i][0] + flow[i + 1][0]) / 2,
+            (flow[i][1] + flow[i + 1][1]) / 2,
+        ]);
+    }
+
+    // Generating last angle and center
+    centers.push([
+        (flow[flow.length - 1][0] + flow[0][0]) / 2,
+        (flow[flow.length - 1][1] + flow[0][1]) / 2,
+    ]);
+    angles.push(
+        Math.atan2(
+            flow[0][1] - flow[flow.length - 1][1],
+            flow[0][0] - flow[flow.length - 1][0]
+        ) *
+            (180 / Math.PI) +
+            180
+    );
+
     // Insert background image
     svg.append('image')
         .attr('x', 0)
@@ -52,7 +83,7 @@ async function generateSVG(vg, flow, width, height) {
         .attr('preserveAspectRatio', 'none')
         .attr('href', 'images/background.jpg');
 
-    let scale = 300;
+    let scale = 180;
     for (let i = 0; i < flow.length; i++) {
         svg.append('g')
             .append('svg:image')
@@ -60,6 +91,27 @@ async function generateSVG(vg, flow, width, height) {
             .attr('width', scale)
             .attr('x', flow[i][0] - scale / 2)
             .attr('y', flow[i][1] - scale / 2);
+    }
+
+    for (let i = 0; i < centers.length; i++) {
+        svg.append('g')
+            .append('svg:image')
+            .attr('xlink:href', 'connections/three-dots.svg')
+            .attr('width', scale)
+            .attr('x', centers[i][0] - scale / 2)
+            .attr('y', centers[i][1] - scale / 2)
+            .attr('transform', function () {
+                console.log(angles[i]);
+                return (
+                    'rotate(' +
+                    angles[i] +
+                    ',' +
+                    centers[i][0] +
+                    ',' +
+                    centers[i][1] +
+                    ')'
+                );
+            });
     }
 
     return svg.node();
