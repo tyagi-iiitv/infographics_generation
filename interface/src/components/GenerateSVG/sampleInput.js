@@ -6,6 +6,7 @@ let input4 = [
             ' The entire world population could fit inside LA, if everyone stands shoulder to shoulder',
         imageAlt: '',
         image: 'images/la.jpg',
+        color: '.color-10{fill:#8dd3c7;}',
     },
     {
         label: 'France',
@@ -13,6 +14,7 @@ let input4 = [
         text: ' More people visit France than any other country',
         imageAlt: '',
         image: 'images/paris.jpg',
+        color: '.color-11{fill:#ffffb3;}',
     },
     {
         label: 'Canary Islands',
@@ -20,6 +22,7 @@ let input4 = [
         text: ' Canary Islands are named after dogs',
         imageAlt: '',
         image: 'images/canary_islands.jpg',
+        color: '.color-12{fill:#bebada;}',
     },
     {
         label: 'Indonesia',
@@ -27,6 +30,7 @@ let input4 = [
         text: " Indonesia has some of the world's shortest people",
         imageAlt: '',
         image: 'images/indonesia.jpg',
+        color: '.color-13{fill:#fb8072;}',
     },
 ];
 
@@ -38,6 +42,7 @@ let input5 = [
             ' The entire world population could fit inside LA, if everyone stands shoulder to shoulder',
         imageAlt: '',
         image: 'images/la.jpg',
+        color: '.color1{fill:#8dd3c7;}',
     },
     {
         label: 'France',
@@ -45,6 +50,7 @@ let input5 = [
         text: ' More people visit France than any other country',
         imageAlt: '',
         image: 'images/paris.jpg',
+        color: '.color1{fill:#ffffb3;}',
     },
     {
         label: 'Canary Islands',
@@ -52,6 +58,7 @@ let input5 = [
         text: ' Canary Islands are named after dogs',
         imageAlt: '',
         image: 'images/canary_islands.jpg',
+        color: '.color1{fill:#bebada;}',
     },
     {
         label: 'Indonesia',
@@ -59,6 +66,7 @@ let input5 = [
         text: " Indonesia has some of the world's shortest people",
         imageAlt: '',
         image: 'images/indonesia.jpg',
+        color: '.color1{fill:#fb8072;}',
     },
     {
         label: 'Nepal',
@@ -66,6 +74,7 @@ let input5 = [
         text: ' Mount Everest is bigger than the last time it was measured',
         imageAlt: '',
         image: 'images/nepal.jpg',
+        color: '.color1{fill:#80b1d3;}',
     },
 ];
 
