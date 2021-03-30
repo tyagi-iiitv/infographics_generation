@@ -4,6 +4,8 @@ import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import styles from './CanvasArea.module.scss';
 import * as d3 from 'd3';
+import { canvas_dims, flow_img, dragged_image } from './input1';
+import { canvas_dims2, flow_img2, dragged_image2 } from './input2';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -380,12 +382,20 @@ class CanvasArea extends React.Component {
             draggedImages.push(draggedImage);
         });
         const response = await axios.post('/layout/', {
-            canvasDims: { ...this.canvasDims },
-            flowImg: flowImg,
-            draggedImages: draggedImages,
+            canvasDims: canvas_dims,
+            flowImg: flow_img,
+            draggedImages: dragged_image,
         });
+        // console.log({ ...this.canvasDims }, flowImg, draggedImages);
+        // const response = await axios.post('/layout/', {
+        //     canvasDims: { ...this.canvasDims },
+        //     flowImg: flowImg,
+        //     draggedImages: draggedImages,
+        // });
 
         const data = response['data'];
+        console.log(data);
+        // this.props.callbackFromChild({ flows: data.closestFlows });
         var svgs = data.svgs,
             imgLinks = data.imgLinks,
             numVisGrps = data.numVisGrps;
@@ -397,7 +407,6 @@ class CanvasArea extends React.Component {
         }
 
         this.drawVGs();
-        console.log(response);
     }
 
     /*

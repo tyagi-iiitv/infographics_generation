@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './Generate.module.scss';
+import styles from './Gallery.module.scss';
 
-class Generate extends React.Component {
+class Gallery extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             flows: null,
             canvasDims: null,
-            svgs: null,
+            numVisGrps: null,
+            imgLinks: null,
         };
     }
 
@@ -24,6 +25,8 @@ class Generate extends React.Component {
             </div>
         );
     }
+
+    componentWillMount() {}
 
     render() {
         return (
@@ -44,4 +47,4 @@ class Generate extends React.Component {
     }
 }
 
-export default Generate;
+export default Gallery;
