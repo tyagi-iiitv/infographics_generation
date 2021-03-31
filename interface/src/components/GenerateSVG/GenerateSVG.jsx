@@ -27,45 +27,46 @@ class GenerateSVG extends React.Component {
     }
 
     componentDidMount() {
-        fetch(this.state.vg)
-            .then((r) => r.text())
-            .then((t) => {
-                this.setState({
-                    vg: t,
-                });
+        // let connections = ['arrow3', 'glasses'];
+        let connections = ['minus-line', 'three-dots'];
+        let connectionTypes = ['none', 'regular', 'alternate'];
 
-                let connections = ['arrow3', 'glasses', 'minus-line', 'three-dots'],
-                    connectionTypes = ['regular', 'alternate'];
+        // Looping over Visual Elements
+        for (var vgIdx = 1; vgIdx < 16; vgIdx += 2) {
+            let vgFile = `svgImages/vg${vgIdx}.svg`;
+            fetch(vgFile)
+                .then((r) => r.text())
+                .then((vg) => {
+                    // Looping over connection types
+                    for (var connectionStr of connections) {
+                        let connection = `connections/${connectionStr}.svg`;
 
-                // Looping over 3 use cases
-                for (var useCase = 1; useCase < 4; useCase++) {
-                    let input, colours;
-                    if (useCase === 1) {
-                        input = input4;
-                        colours = colours4;
-                    } else {
-                        input = input5;
-                        colours = colours5;
-                    }
-                    // Looping over the best flows in each flow
-                    for (var bestFlowIdx of indices[useCase - 1]) {
-                        // Looping over connection types
-                        for (var connectionType of connectionTypes) {
-                            // Looping over colours
-                            // for (
-                            //     var colourIdx = 0;
-                            //     colourIdx < colours.length;
-                            //     colourIdx++
-                            // )
-                            // Using only one colour
-                            for (var colourIdx = 0; colourIdx < 1; colourIdx++) {
-                                // Looping over Visual Elements
-                                for (var vgIdx = 1; vgIdx < 3; vgIdx += 3) {
-                                    let vg = `svgImages/vg${vgIdx}.svg`;
-                                    // Looping over connection types
-                                    for (var connectionStr of connections) {
-                                        let connection = `connections/${connectionStr}.svg`;
-
+                        // Looping over 3 use cases
+                        for (var useCase = 1; useCase < 4; useCase++) {
+                            let input, colours;
+                            if (useCase === 1) {
+                                input = input4;
+                                colours = colours4;
+                            } else {
+                                input = input5;
+                                colours = colours5;
+                            }
+                            // Looping over the best flows in each flow
+                            for (var bestFlowIdx of indices[useCase - 1]) {
+                                // Looping over connection types
+                                for (var connectionType of connectionTypes) {
+                                    // Looping over colours
+                                    // for (
+                                    //     var colourIdx = 0;
+                                    //     colourIdx < colours.length;
+                                    //     colourIdx++
+                                    // )
+                                    // Using only one colour
+                                    for (
+                                        var colourIdx = 0;
+                                        colourIdx < 1;
+                                        colourIdx++
+                                    ) {
                                         d3.select('svg').text('');
 
                                         generateSVG(
@@ -87,8 +88,8 @@ class GenerateSVG extends React.Component {
                             }
                         }
                     }
-                }
-            });
+                });
+        }
     }
 
     render() {
@@ -120,7 +121,6 @@ async function generateSVG(
     coloursInfo
 ) {
     let svg = d3.select('svg');
-
     let flow = flows[useCase - 1][flowId],
         coloursIdx = coloursInfo[0],
         colours = coloursInfo[1],
