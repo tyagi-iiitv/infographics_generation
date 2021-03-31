@@ -3,35 +3,37 @@ let input4 = [
         label: 'USA',
         title: '1',
         text:
-            ' The entire world population could fit inside LA, if everyone stands shoulder to shoulder',
+            ' The United States has maintained its position of being the world’s largest economy since 1871.',
         imageAlt: '',
         image: 'images/usa.svg',
-        color: '.color-10{fill:#8dd3c7;}',
+        color: '.color-10{fill:#1b9e77;}',
     },
     {
         label: 'CHINA',
         title: '4',
         text:
-            'In In China, the dragons are associated with wealth, power, and leadership',
+            ' In China, the dragons are associated with wealth, power, and leadership',
         imageAlt: '',
         image: 'images/china.svg',
-        color: '.color-13{fill:#fb8072;}',
+        color: '.color-13{fill:#d95f02;}',
     },
     {
         label: 'INDIA',
         title: '2',
-        text: ' More people visit France than any other country',
+        text:
+            ' It’s estimated that between 15% and 30% of India’s population follow a strict vegetarian diet.',
         imageAlt: '',
         image: 'images/india.svg',
-        color: '.color-11{fill:#ffffb3;}',
+        color: '.color-11{fill:#7570b3;}',
     },
     {
         label: 'RUSSIA',
         title: '3',
-        text: ' Canary Islands are named after dogs',
+        text:
+            ' Russia is 60% forest. What’s more interesting, half of that forest is totally uninhabited by humans.',
         imageAlt: '',
         image: 'images/russia.svg',
-        color: '.color-12{fill:#bebada;}',
+        color: '.color-12{fill:#e7298a;}',
     },
 ];
 
