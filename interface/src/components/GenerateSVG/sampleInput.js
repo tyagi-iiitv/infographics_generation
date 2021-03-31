@@ -78,15 +78,14 @@ let input5 = [
 
 let colours5 = [
     ['#d7191c', '#fdae61', '#ffffbf', '#abdda4', '#2b83ba'],
-    ['#d7191c', '#fdae61', '#ffffbf', '#a6d96a', '#1a9641'],
-    ['#d7191c', '#fdae61', '#ffffbf', '#abd9e9', '#2c7bb6'],
+    ['#7b3294', '#c2a5cf', '#f7f7f7', '#a6dba0', '#008837'],
+    ['#d01c8b', '#f1b6da', '#f7f7f7', '#b8e186', '#4dac26'],
 ];
 
 let colours4 = [
     ['#d7191c', '#fdae61', '#abdda4', '#2b83ba'],
-    ['#d7191c', '#fdae61', '#a6d96a', '#1a9641'],
+    ['#7b3294', '#c2a5cf', '#a6dba0', '#008837'],
     ['#d01c8b', '#f1b6da', '#b8e186', '#4dac26'],
-    ['#e66101', '#fdb863', '#b2abd2', '#5e3c99'],
 ];
 
 export { input4, input5, colours4, colours5 };

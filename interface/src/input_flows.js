@@ -11,9 +11,9 @@ VGs 1-8 -> for flows 1
 VGs 9-16 -> for flows 2
 VGs 17-25 -> for flows 3
 
-flow1[1] 
-flow1[3] 
-flow1[21] 
+flow1[1]
+flow1[3]
+flow1[21]
 
 
 
@@ -826,4 +826,11 @@ let flows3 = [
     ],
 ];
 
-export { flows1, flows2, flows3 };
+let flows = [flows1, flows2, flows3];
+let indexes = [
+    [1, 3, 20, 21, 35],
+    [0, 1, 2, 3, 4, 7],
+    [0, 3, 4, 8, 13],
+];
+
+export { flows, indexes };
