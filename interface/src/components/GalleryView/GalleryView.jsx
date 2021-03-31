@@ -1,8 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import Gallery from 'react-photo-gallery';
 import Carousel, { Modal, ModalGateway } from 'react-images';
-import { StylesProvider } from '@material-ui/styles';
+import Button from '@material-ui/core/Button';
 import styles from './GalleryView.module.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
 
 export default function GalleryView(props) {
     const [currentImage, setCurrentImage] = useState(0);
@@ -18,6 +20,22 @@ export default function GalleryView(props) {
         setViewerIsOpen(false);
     };
 
+    const CustomFooter = ({ innerProps, isModal }) =>
+        isModal ? (
+            <div {...innerProps}>
+                <div align="center">
+                    <Button
+                        size="large"
+                        variant="contained"
+                        color="secondary"
+                        style={{ margin: '10px' }}
+                    >
+                        <FontAwesomeIcon icon={faDownload} />
+                    </Button>
+                </div>
+            </div>
+        ) : null;
+
     console.log(props.combine_images);
     return (
         <div className={styles.fullGallery}>
@@ -29,9 +47,8 @@ export default function GalleryView(props) {
                             currentIndex={currentImage}
                             views={props.photos.map((x) => ({
                                 ...x,
-                                srcset: x.srcSet,
-                                caption: x.title,
                             }))}
+                            components={{ Footer: CustomFooter }}
                         />
                     </Modal>
                 ) : null}
