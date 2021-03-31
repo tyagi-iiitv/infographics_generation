@@ -3,7 +3,7 @@ import styles from './GenerateSVG.module.scss';
 import * as d3 from 'd3';
 import { flows1, flows2, flows3 } from '../../input_flows';
 import { wrap } from './wrap';
-import { input4, input5 } from './sampleInput';
+import { input4, input5, colours4, colours5 } from './sampleInput';
 import * as d3_save_svg from 'd3-save-svg';
 import axios from 'axios';
 
@@ -14,13 +14,15 @@ class GenerateSVG extends React.Component {
             canvasDims: { width: 1280, height: 960 },
             flow: flows2[0],
             vg: 'svgImages/vg1.svg',
-            pivot: null,
+            pivot: 'images/pivot.png',
             background: 'images/background3.jpg',
             textInfo: this.props.textInfo,
             connectionType: 'regular', // Choose b/w {regular, pivot and alternate}
             includeLast: true, // Whether to generate last connection or not
             input: input5,
             connection: 'connections/glasses.svg',
+            useCase: 1,
+            colours: colours5[0],
         };
     }
     componentDidMount() {
@@ -41,7 +43,9 @@ class GenerateSVG extends React.Component {
                     this.state.connectionType,
                     this.state.includeLast,
                     this.state.input,
-                    this.state.connection
+                    this.state.connection,
+                    this.state.useCase,
+                    this.state.colours
                 );
             });
     }
@@ -70,15 +74,20 @@ async function generateSVG(
     connectionType,
     includeLast,
     input,
-    connection
+    connection,
+    useCase,
+    colours
 ) {
     let svg = d3.select('svg');
 
-    // Pivot centers for third use cases (set scale = 0.75 while loading the image for third use case)
-    let pivotCenter = { x: width / 2 + 100, y: 60 };
-
-    // Pivot centers for second use case with scale 1
-    // let pivotCenter = { x: width / 2 - 100, y: 550 };
+    let pivotCenter;
+    if (useCase === 2) {
+        // Pivot centers for second use case with scale 1
+        pivotCenter = { x: width / 2 - 100, y: 550 };
+    } else if (useCase === 3) {
+        // Pivot centers for third use cases (set scale = 0.75 while loading the image for third use case)
+        pivotCenter = { x: width / 2 + 100, y: 60 };
+    }
 
     // Defining lines, angles and centers to insert connections
     let lines = [];
@@ -215,7 +224,7 @@ async function generateSVG(
         let orgStyle = svg.select(`#vg${i}`).select('style').text();
         svg.select(`#vg${i}`)
             .select('style')
-            .text(orgStyle + input[i].color);
+            .text(orgStyle + `.color-1${i}{fill:${colours[i]};}`);
     }
 
     // let scaleVG = 250;
@@ -270,12 +279,19 @@ async function generateSVG(
     //         return d[3];
     //     });
 
-    // Positioning for 2nd
-    // svg.append('image')
-    //     .attr('x', pivotCenter.x)
-    //     .attr('y', pivotCenter.y)
-    //     .attr('href', pivot);
-    // .attr('transform', 'scale(0.75)')
+    if (useCase === 2) {
+        // Positioning for 2nd
+        svg.append('image')
+            .attr('x', pivotCenter.x)
+            .attr('y', pivotCenter.y)
+            .attr('href', pivot);
+    } else if (useCase === 3) {
+        svg.append('image')
+            .attr('x', pivotCenter.x)
+            .attr('y', pivotCenter.y)
+            .attr('href', pivot)
+            .attr('transform', 'scale(0.75)');
+    }
 
     // return svg.node();
 }
