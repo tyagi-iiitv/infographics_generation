@@ -226,7 +226,7 @@ def visgrps():
 @app.route('/save_vg/', methods=['POST'])
 def save_vg():
     data = json.loads(request.data.decode('utf-8'))
-    file_name = os.path.join('vg_svgs', f'{data["uc"]}_{data["fl"]}_{data["vg"]}_{data["cl"]}_{data["cnt"]}_{data["cne"]}.svg')
+    file_name = os.path.join('vg_svgs', f'uc{data["uc"]}_l{data["fl"]}_vg{data["vg"]}_{data["cl"]}_{data["cnt"]}_{data["cne"]}.svg')
     f = open(file_name, 'w+')
     f.write(data['vgCode'])
     f.close()

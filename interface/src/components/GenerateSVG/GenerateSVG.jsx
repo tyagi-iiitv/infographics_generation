@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './GenerateSVG.module.scss';
 import * as d3 from 'd3';
-import { flows, indexes } from '../../input_flows';
+import { flows, indices } from '../../input_flows';
 import { wrap } from './wrap';
 import { input4, input5, colours4, colours5 } from './sampleInput';
 import * as d3_save_svg from 'd3-save-svg';
@@ -12,7 +12,7 @@ class GenerateSVG extends React.Component {
         super(props);
         this.state = {
             canvasDims: { width: 1280, height: 960 },
-            flowId: [1, 0],
+            flowId: 0,
             vg: 'svgImages/vg1.svg',
             pivot: 'images/pivot.png',
             background: 'images/background3.jpg',
@@ -34,71 +34,54 @@ class GenerateSVG extends React.Component {
                     vg: t,
                 });
 
-                let connections = [
-                    'arrow',
-                    'arrow2',
-                    'arrow3',
-                    'arrow4',
-                    'curved_rect',
-                    'curved-arrow',
-                    'glasses',
-                    'minus-line',
-                    'striped-arrow',
-                    'striped-stick',
-                    'three-curved-arrows',
-                    'three-dots',
-                ];
+                let connections = ['arrow3', 'glasses', 'minus-line', 'three-dots'],
+                    connectionTypes = ['regular', 'alternate'];
 
                 // Looping over 3 use cases
                 for (var useCase = 1; useCase < 4; useCase++) {
-                    let connectionTypes;
+                    let input, colours;
                     if (useCase === 1) {
-                        connectionTypes = ['regular', 'alternate'];
+                        input = input4;
+                        colours = colours4;
                     } else {
-                        connectionTypes = ['regular', 'pivot', 'alternate'];
+                        input = input5;
+                        colours = colours5;
                     }
-                    // Looping over all 3 flows
-                    for (var flowsIdx = 0; flowsIdx < flows.length; flowsIdx++) {
-                        // Looping over the best flows in each flow
-                        for (var bestFlowIdx of indexes[flowsIdx]) {
-                            let input, colours;
-                            if (flowsIdx === 0) {
-                                input = input4;
-                                colours = colours4;
-                            } else {
-                                input = input5;
-                                colours = colours5;
-                            }
-                            // Looping over connection types
-                            for (var connectionType of connectionTypes) {
-                                // Looping over colours
-                                for (
-                                    var colourIdx = 0;
-                                    colourIdx < colours.length;
-                                    colourIdx++
-                                ) {
-                                    // Looping over Visual Elements
-                                    for (var vgIdx = 1; vgIdx < 26; vgIdx++) {
-                                        let vg = `svgImages/vg${vgIdx}.svg`;
-                                        // Looping over connection types
-                                        for (var connectionStr of connections) {
-                                            let connection = `connections/${connectionStr}.svg`;
-                                            d3.select('svg').text('');
-                                            generateSVG(
-                                                [vgIdx, vg],
-                                                [flowsIdx, bestFlowIdx],
-                                                this.state.canvasDims.width,
-                                                this.state.canvasDims.height,
-                                                this.state.background,
-                                                this.state.pivot,
-                                                connectionType,
-                                                this.state.includeLast,
-                                                input,
-                                                [connectionStr, connection],
-                                                useCase,
-                                                [colourIdx, colours[colourIdx]]
-                                            );
-                                        }
+                    // Looping over the best flows in each flow
+                    for (var bestFlowIdx of indices[useCase - 1]) {
+                        // Looping over connection types
+                        for (var connectionType of connectionTypes) {
+                            // Looping over colours
+                            // for (
+                            //     var colourIdx = 0;
+                            //     colourIdx < colours.length;
+                            //     colourIdx++
+                            // )
+                            // Using only one colour
+                            for (var colourIdx = 0; colourIdx < 1; colourIdx++) {
+                                // Looping over Visual Elements
+                                for (var vgIdx = 1; vgIdx < 3; vgIdx += 3) {
+                                    let vg = `svgImages/vg${vgIdx}.svg`;
+                                    // Looping over connection types
+                                    for (var connectionStr of connections) {
+                                        let connection = `connections/${connectionStr}.svg`;
+
+                                        d3.select('svg').text('');
+
+                                        generateSVG(
+                                            [vgIdx, vg],
+                                            bestFlowIdx,
+                                            this.state.canvasDims.width,
+                                            this.state.canvasDims.height,
+                                            this.state.background,
+                                            this.state.pivot,
+                                            connectionType,
+                                            this.state.includeLast,
+                                            input,
+                                            [connectionStr, connection],
+                                            useCase,
+                                            [colourIdx, colours[colourIdx]]
+                                        );
                                     }
                                 }
                             }
@@ -138,7 +121,7 @@ async function generateSVG(
 ) {
     let svg = d3.select('svg');
 
-    let flow = flows[flowId[0]][flowId[1]],
+    let flow = flows[useCase - 1][flowId],
         coloursIdx = coloursInfo[0],
         colours = coloursInfo[1],
         vgIdx = vgInfo[0],
@@ -210,7 +193,7 @@ async function generateSVG(
                 (flow[i][1] + flow[i + 2][1]) / 2,
             ]);
         }
-    } else {
+    } else if (connectionType === 'regular') {
         // Generating regular connections b/w sequential elements
         for (let i = 0; i < flow.length - 1; i++) {
             angles.push(
@@ -262,6 +245,7 @@ async function generateSVG(
             .attr('y', flow[i][1] - scale / 2)
             .html(vg);
 
+        // console.log(svg.select(`#vg${i}`).node());
         let textBoxWidth = svg.select(`#vg${i}`).select('.text-wrap').attr('width');
 
         // The text size is defined in the SVGs, so not changing that
@@ -365,7 +349,7 @@ async function generateSVG(
     const response = await axios.post('/save_vg/', {
         vgCode: svg.node().outerHTML,
         uc: useCase,
-        fl: `${flowId[0]}[${flowId[1]}]`,
+        fl: flowId,
         vg: vgIdx,
         cl: coloursIdx,
         cnt: connectionType,

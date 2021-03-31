@@ -827,10 +827,10 @@ let flows3 = [
 ];
 
 let flows = [flows1, flows2, flows3];
-let indexes = [
+let indices = [
     [1, 3, 20, 21, 35],
     [0, 1, 2, 3, 4, 7],
     [0, 3, 4, 8, 13],
 ];
 
-export { flows, indexes };
+export { flows, indices };
