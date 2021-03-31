@@ -13,9 +13,9 @@ class GenerateSVG extends React.Component {
         this.state = {
             canvasDims: { width: 1280, height: 960 },
             flow: flows1[1],
-            vg: 'get-vg/vg1.svg',
+            vg: 'svgImages/vg22.svg',
             pivot: null,
-            background: 'images/background.jpg',
+            background: 'images/background3.jpg',
             textInfo: this.props.textInfo,
             connectionType: 'regular', // Choose b/w {regular, pivot and alternate}
             includeLast: true, // Whether to generate last connection or not
@@ -176,7 +176,7 @@ async function generateSVG(
         lines.push([flow[i][0], flow[i][1], flow[i + 1][0], flow[i + 1][1]]);
     }
 
-    let scale = 200;
+    let scale = 350;
     for (let i = 0; i < flow.length; i++) {
         svg.append('svg')
             .attr('width', scale)

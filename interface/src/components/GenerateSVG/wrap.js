@@ -17,7 +17,6 @@ export function wrap(text, width) {
                 .attr('x', x)
                 .attr('y', y)
                 .attr('dy', dy + 'em');
-
         words.pop();
         while ((word = words.pop())) {
             line.push(word);
