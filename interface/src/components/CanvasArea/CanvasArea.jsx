@@ -402,8 +402,10 @@ class CanvasArea extends React.Component {
 
         // Currently displaying the closest flow. There are a total of 5 nearest flows
         const flow = response.data.closestFlows[0];
-        for (var i = 0; i < numVisGrps; i++) {
-            this.addVG(svgs[i], imgLinks[i], flow[i][0], flow[i][1]);
+        if (flow) {
+            for (var i = 0; i < numVisGrps; i++) {
+                this.addVG(svgs[i], imgLinks[i], flow[i][0], flow[i][1]);
+            }
         }
 
         this.drawVGs();
@@ -861,6 +863,7 @@ class CanvasArea extends React.Component {
                                 this.setState({
                                     selectedTool: 'upload',
                                 });
+                                this.props.getDesignsPressed();
                             }}
                         >
                             Get Designs

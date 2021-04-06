@@ -78,21 +78,43 @@ class App extends React.Component {
         this.state = {
             flows: null,
             textInfo: null,
+            isGetDesignsPressed: false,
         };
         this.callbackFromChild = this.callbackFromChild.bind(this);
+        this.getDesignsPressed = this.getDesignsPressed.bind(this);
     }
 
     callbackFromChild(dataFromChild) {
         this.setState(dataFromChild, () => console.log(this.state));
     }
+
+    getDesignsPressed = () => {
+        this.setState({
+            isGetDesignsPressed: true,
+        });
+    };
+
     render() {
         return (
             <div className={styles.AppBody}>
                 <div className={styles.leftContainer}>
                     <TextInput callbackFromChild={this.callbackFromChild} />
                 </div>
-                <div className={styles.rightContainer}>
-                    <CanvasArea callbackFromChild={this.callbackFromChild} />
+                <div
+                    className={styles.middleContainer}
+                    style={{
+                        width: this.state.isGetDesignsPressed ? '50%' : '80%',
+                    }}
+                >
+                    <CanvasArea getDesignsPressed={this.getDesignsPressed} />
+                </div>
+                <div
+                    className={styles.rightContainer}
+                    style={{
+                        width: this.state.isGetDesignsPressed ? '30%' : '0%',
+                    }}
+                >
+                    <ImagePicker />
                 </div>
             </div>
         );
