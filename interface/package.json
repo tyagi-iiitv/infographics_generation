@@ -26,6 +26,7 @@
         "react": "^16.13.1",
         "react-bootstrap": "^1.5.2",
         "react-dom": "^16.13.1",
+        "react-grid-gallery": "^0.5.5",
         "react-image-gallery": "^1.0.9",
         "react-image-picker": "^1.1.1",
         "react-images": "1.0.0",

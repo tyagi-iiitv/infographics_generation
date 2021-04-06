@@ -43,9 +43,16 @@
     align-items: center;
 }
 
-.galleryContainer {
-    width: 20%;
+.pickerContainer {
     height: 100%;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+}
+
+.infographicContainer {
+    height: 100%;
+    width: 60%;
     display: flex;
     flex-direction: column;
 }

@@ -1,42 +1,39 @@
 import React, { Component } from 'react';
 import Gallery from 'react-grid-gallery';
 
-export default class ImageSelect extends Component {
+export default class InfographicPicker extends Component {
     constructor(props) {
         super(props);
         this.state = {
             images: this.props.images,
-            selectedImages: [],
         };
         this.onClickThumbnail = this.onClickThumbnail.bind(this);
     }
 
     onClickThumbnail(index, image) {
         var images = this.state.images.slice();
-        var selectedImages = this.state.selectedImages;
-        var img = images[index];
-        if (img.hasOwnProperty('isSelected')) {
-            img.isSelected = !img.isSelected;
-            if (img.isSelected === true) {
-                selectedImages.push(img);
-            } else {
-                selectedImages = selectedImages.filter((obj) => obj !== img);
+        var selectedImage = images[index];
+        images.forEach((obj) => {
+            if (obj !== selectedImage) {
+                obj.isSelected = false;
             }
-        } else {
-            img.isSelected = true;
-            selectedImages.push(img);
-        }
+        });
+        selectedImage.isSelected = true;
 
         this.setState({
             images: images,
-            selectedImages: selectedImages,
+            selectedImage: selectedImage,
         });
     }
 
     render() {
         return (
             <div
-                style={{ height: '33%', overflow: 'scroll', scrollBehavior: 'auto' }}
+                style={{
+                    height: '100%',
+                    overflow: 'scroll',
+                    scrollBehavior: 'auto',
+                }}
             >
                 <Gallery
                     images={this.state.images}
