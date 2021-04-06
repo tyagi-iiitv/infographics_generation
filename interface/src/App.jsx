@@ -87,31 +87,14 @@ class App extends React.Component {
     }
     render() {
         return (
-            <Tabs defaultActiveKey="View" id="tabs">
-                <Tab eventKey="View" title="View">
-                    <div className={styles.ViewBody}>
-                        <GenerateSVG textInfo={this.state.textInfo} />
-                    </div>
-                </Tab>
-                <Tab eventKey="Draw" title="Draw">
-                    <div className={styles.AppBody}>
-                        <div className={styles.leftContainer}>
-                            <CanvasArea callbackFromChild={this.callbackFromChild} />
-                        </div>
-                        <div className={styles.rightContainer}>
-                            <TextInput callbackFromChild={this.callbackFromChild} />
-                        </div>
-                    </div>
-                </Tab>
-                <Tab eventKey="Recommendations" title="Recommendations">
-                    {/* <div className={styles.galleryContainer}>
-                        <GalleryView photos={photos} />
-                    </div> */}
-                    <div className={styles.leftContainer}>
-                        <ImagePicker />
-                    </div>
-                </Tab>
-            </Tabs>
+            <div className={styles.AppBody}>
+                <div className={styles.leftContainer}>
+                    <TextInput callbackFromChild={this.callbackFromChild} />
+                </div>
+                <div className={styles.rightContainer}>
+                    <CanvasArea callbackFromChild={this.callbackFromChild} />
+                </div>
+            </div>
         );
     }
 }

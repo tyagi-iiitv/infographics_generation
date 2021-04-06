@@ -1,5 +1,6 @@
 import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
+import Switch from '@material-ui/core/Switch';
 import axios from 'axios';
 import styles from './TextInput.module.scss';
 
@@ -16,6 +17,7 @@ class TextInput extends React.Component {
         this.state = {
             text: '', // Text
             renderedText: '', // Text to render in the preview area
+            previewChecked: false, // To show preview or text area
         };
         this.info = []; // Information about visual groups from the input
         this.numVisGrps = 0; // Number of visual groups
@@ -148,8 +150,8 @@ class TextInput extends React.Component {
             renderedText +=
                 `<div\n` +
                 `   style='border-bottom:0.5px dashed black;'\n` +
-                `   onMouseEnter={this.style.background='#e0ffff'}\n` +
-                `   onMouseLeave={this.style.background='white'}\n` +
+                `   onMouseEnter={this.style.background='#152028'}\n` +
+                `   onMouseLeave={this.style.background='#121212'}\n` +
                 `>\n`;
             renderedText += `<p align='center'><u>Visual Group #${j + 1}</u></p>\n`;
             // If no label, just add title as a level 1 heading
@@ -207,20 +209,51 @@ class TextInput extends React.Component {
                         </span>
                     </Tooltip>
                 </div>
+                <div className={styles.previewSwitch}>
+                    <div
+                        style={{
+                            color: 'white',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-around',
+                        }}
+                    >
+                        Preview Input
+                    </div>
+                    <Switch
+                        checked={this.state.previewChecked}
+                        color="secondary"
+                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                        onChange={() => {
+                            this.setState({
+                                previewChecked: !this.state.previewChecked,
+                            });
+                        }}
+                    />
+                </div>
                 <form className={styles.inputForm}>
+                    (
                     <textarea
                         id="input_text"
                         className={styles.inputArea}
                         onChange={this.handleChangeText}
                         placeholder="Enter the information about visual groups here..."
+                        style={{
+                            display: !this.state.previewChecked ? 'block' : 'none',
+                        }}
                     />
+                    ) (
                     <div
                         id="preview_text"
                         className={styles.previewArea}
                         dangerouslySetInnerHTML={{
                             __html: this.state.renderedText,
                         }}
+                        style={{
+                            display: this.state.previewChecked ? 'block' : 'none',
+                        }}
                     />
+                    )
                 </form>
             </div>
         );

@@ -27,127 +27,23 @@ class GenerateSVG extends React.Component {
     }
 
     componentDidMount() {
-        let connections = ['minus-line', 'three-dots', 'arrow3', 'striped-arrow'];
-        let connectionTypes = ['none', 'regular', 'alternate'];
-
-        var vgIdx = 1;
-        let vgFile = `svgImages/vg${vgIdx}.svg`;
-        fetch(vgFile)
-            .then((r) => r.text())
-            .then((vg) => {
-                // Looping over connection types
-                for (var connectionType of connectionTypes) {
-                    // Looping over connection elements
-                    for (var connectionStr of connections) {
-                        let connection = 'none',
-                            connecStr = 'none';
-                        if (connectionType !== 'none') {
-                            connection = `connections/${connectionStr}.svg`;
-                            connecStr = connectionStr;
-                        }
-                        // Looping over 3 use cases
-                        for (var useCase = 1; useCase < 4; useCase++) {
-                            let input, colours;
-                            if (useCase === 1) {
-                                input = input4;
-                                colours = colours4;
-                            } else {
-                                input = input5;
-                                colours = colours5;
-                            }
-
-                            let colourIdx = 0,
-                                bestFlowIdx = indices[useCase - 1][0];
-
-                            d3.select('svg').text('');
-
-                            generateSVG(
-                                [vgIdx, vg],
-                                bestFlowIdx,
-                                this.state.canvasDims.width,
-                                this.state.canvasDims.height,
-                                this.state.background,
-                                this.state.pivot,
-                                connectionType,
-                                this.state.includeLast,
-                                input,
-                                [connecStr, connection],
-                                useCase,
-                                [colourIdx, colours[colourIdx]]
-                            );
-                        }
-                    }
-                }
-            });
-
-        for (var i = 0; i < 41; i++) {
-            var vgIdx = Math.floor(Math.random() * 25 + 1);
-            let vgFile = `svgImages/vg${vgIdx}.svg`;
-            fetch(vgFile)
-                .then((r) => r.text())
-                .then((vg) => {
-                    for (var useCase = 1; useCase < 4; useCase++) {
-                        let input, colours;
-                        if (useCase === 1) {
-                            input = input4;
-                            colours = colours4;
-                        } else {
-                            input = input5;
-                            colours = colours5;
-                        }
-                        let connecStr,
-                            connection,
-                            connectionType =
-                                connectionTypes[
-                                    Math.floor(
-                                        Math.random() * connectionTypes.length
-                                    )
-                                ];
-                        if (connectionType !== 'none') {
-                            connecStr =
-                                connections[
-                                    Math.floor(Math.random() * connections.length)
-                                ];
-                            connection = `connections/${connecStr}.svg`;
-                        } else {
-                            connection = 'none';
-                            connecStr = 'none';
-                        }
-
-                        let colourIdx = Math.floor(Math.random() * 3),
-                            bestFlowIdx =
-                                indices[useCase - 1][Math.floor(Math.random() * 5)];
-
-                        d3.select('svg').text('');
-
-                        generateSVG(
-                            [vgIdx, vg],
-                            bestFlowIdx,
-                            this.state.canvasDims.width,
-                            this.state.canvasDims.height,
-                            this.state.background,
-                            this.state.pivot,
-                            connectionType,
-                            this.state.includeLast,
-                            input,
-                            [connecStr, connection],
-                            useCase,
-                            [colourIdx, colours[colourIdx]]
-                        );
-                    }
-                });
-        }
-
-        // Looping over Visual Elements
-        // for (var vgIdx = 1; vgIdx < 2; vgIdx += 1) {
-        //     let vgFile = `svgImages/vg${vgIdx}.svg`;
-        //     fetch(vgFile)
-        //         .then((r) => r.text())
-        //         .then((vg) => {
-        //             // Looping over connection types
+        // let connections = ['minus-line', 'three-dots', 'arrow3', 'striped-arrow'];
+        // let connectionTypes = ['none', 'regular', 'alternate'];
+        // var vgIdx = 1;
+        // let vgFile = `svgImages/vg${vgIdx}.svg`;
+        // fetch(vgFile)
+        //     .then((r) => r.text())
+        //     .then((vg) => {
+        //         // Looping over connection types
+        //         for (var connectionType of connectionTypes) {
+        //             // Looping over connection elements
         //             for (var connectionStr of connections) {
-        //                 let connection = `connections/${connectionStr}.svg`;
-
+        //                 let connection = 'none',
+        //                     connecStr = 'none';
+        //                 if (connectionType !== 'none') {
+        //                     connection = `connections/${connectionStr}.svg`;
+        //                     connecStr = connectionStr;
+        //                 }
         //                 // Looping over 3 use cases
         //                 for (var useCase = 1; useCase < 4; useCase++) {
         //                     let input, colours;
@@ -158,44 +54,81 @@ class GenerateSVG extends React.Component {
         //                         input = input5;
         //                         colours = colours5;
         //                     }
-        //                     // Looping over the best flows in each flow
-        //                     for (var bestFlowIdx of indices[useCase - 1]) {
-        //                         // Looping over connection types
-        //                         for (var connectionType of connectionTypes) {
-        //                             // Looping over colours
-        //                             // for (
-        //                             //     var colourIdx = 0;
-        //                             //     colourIdx < colours.length;
-        //                             //     colourIdx++
-        //                             // )
-        //                             // Using only one colour
-        //                             for (
-        //                                 var colourIdx = 0;
-        //                                 colourIdx < 1;
-        //                                 colourIdx++
-        //                             ) {
-        //                                 d3.select('svg').text('');
-
-        //                                 generateSVG(
-        //                                     [vgIdx, vg],
-        //                                     bestFlowIdx,
-        //                                     this.state.canvasDims.width,
-        //                                     this.state.canvasDims.height,
-        //                                     this.state.background,
-        //                                     this.state.pivot,
-        //                                     connectionType,
-        //                                     this.state.includeLast,
-        //                                     input,
-        //                                     [connectionStr, connection],
-        //                                     useCase,
-        //                                     [colourIdx, colours[colourIdx]]
-        //                                 );
-        //                             }
-        //                         }
-        //                     }
+        //                     let colourIdx = 0,
+        //                         bestFlowIdx = indices[useCase - 1][0];
+        //                     d3.select('svg').text('');
+        //                     generateSVG(
+        //                         [vgIdx, vg],
+        //                         bestFlowIdx,
+        //                         this.state.canvasDims.width,
+        //                         this.state.canvasDims.height,
+        //                         this.state.background,
+        //                         this.state.pivot,
+        //                         connectionType,
+        //                         this.state.includeLast,
+        //                         input,
+        //                         [connecStr, connection],
+        //                         useCase,
+        //                         [colourIdx, colours[colourIdx]]
+        //                     );
         //                 }
         //             }
+        //         }
+        //     });
+        // for (var i = 0; i < 41; i++) {
+        //     var vgIdx = Math.floor(Math.random() * 25 + 1);
+        //     let vgFile = `svgImages/vg${vgIdx}.svg`;
+        //     fetch(vgFile)
+        //         .then((r) => r.text())
+        //         .then((vg) => {
+        //             for (var useCase = 1; useCase < 4; useCase++) {
+        //                 let input, colours;
+        //                 if (useCase === 1) {
+        //                     input = input4;
+        //                     colours = colours4;
+        //                 } else {
+        //                     input = input5;
+        //                     colours = colours5;
+        //                 }
+        //                 let connecStr,
+        //                     connection,
+        //                     connectionType =
+        //                         connectionTypes[
+        //                             Math.floor(
+        //                                 Math.random() * connectionTypes.length
+        //                             )
+        //                         ];
+        //                 if (connectionType !== 'none') {
+        //                     connecStr =
+        //                         connections[
+        //                             Math.floor(Math.random() * connections.length)
+        //                         ];
+        //                     connection = `connections/${connecStr}.svg`;
+        //                 } else {
+        //                     connection = 'none';
+        //                     connecStr = 'none';
+        //                 }
+        //                 let colourIdx = Math.floor(Math.random() * 3),
+        //                     bestFlowIdx =
+        //                         indices[useCase - 1][Math.floor(Math.random() * 5)];
+        //                 d3.select('svg').text('');
+        //                 generateSVG(
+        //                     [vgIdx, vg],
+        //                     bestFlowIdx,
+        //                     this.state.canvasDims.width,
+        //                     this.state.canvasDims.height,
+        //                     this.state.background,
+        //                     this.state.pivot,
+        //                     connectionType,
+        //                     this.state.includeLast,
+        //                     input,
+        //                     [connecStr, connection],
+        //                     useCase,
+        //                     [colourIdx, colours[colourIdx]]
+        //                 );
+        //             }
         //         });
+        // }
     }
 
     render() {

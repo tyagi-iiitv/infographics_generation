@@ -685,8 +685,8 @@ class CanvasArea extends React.Component {
                                 style={{
                                     color:
                                         this.state.canvasRes === '4:3'
-                                            ? 'white'
-                                            : 'black',
+                                            ? 'whitesmoke'
+                                            : '#121212',
                                 }}
                             >
                                 <FontAwesomeIcon icon={faExpand} />
@@ -721,8 +721,8 @@ class CanvasArea extends React.Component {
                                 style={{
                                     color:
                                         this.state.canvasRes === '3:4'
-                                            ? 'white'
-                                            : 'black',
+                                            ? 'whitesmoke'
+                                            : '#121212',
                                 }}
                             >
                                 <FontAwesomeIcon icon={faExpand} />
@@ -757,8 +757,8 @@ class CanvasArea extends React.Component {
                                 style={{
                                     color:
                                         this.state.canvasRes === '1:1'
-                                            ? 'white'
-                                            : 'black',
+                                            ? 'whitesmoke'
+                                            : '#121212',
                                 }}
                             >
                                 <FontAwesomeIcon icon={faExpand} />
@@ -793,8 +793,8 @@ class CanvasArea extends React.Component {
                                 style={{
                                     color:
                                         this.state.canvasRes === '16:9'
-                                            ? 'white'
-                                            : 'black',
+                                            ? 'whitesmoke'
+                                            : '#121212',
                                 }}
                             >
                                 <FontAwesomeIcon icon={faExpand} />
@@ -829,8 +829,8 @@ class CanvasArea extends React.Component {
                                 style={{
                                     color:
                                         this.state.canvasRes === '9:16'
-                                            ? 'white'
-                                            : 'black',
+                                            ? 'whitesmoke'
+                                            : '#121212',
                                 }}
                             >
                                 <FontAwesomeIcon icon={faExpand} />
@@ -863,7 +863,7 @@ class CanvasArea extends React.Component {
                                 });
                             }}
                         >
-                            Update Flow
+                            Get Designs
                         </Button>
                     </ButtonGroup>
                     <ButtonGroup
