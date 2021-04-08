@@ -6,11 +6,22 @@ import {
     GalleryView,
     ImagePicker,
     InfographicPicker,
+    Upload,
+    Export,
+    ColorPallets,
+    ConnectionTypes,
+    Examples,
+    About,
 } from './components';
 import styles from './App.module.scss';
-import { Tabs, Tab, TabPane } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { style } from 'd3-selection';
+import { Navbar, Nav, FormControl, Button, Form, Tooltip } from 'react-bootstrap';
+import {
+    uploadButtonState,
+    colorButtonState,
+    connectionButtonState,
+    exampleButtonState,
+} from './state';
 
 let urls = [
     'images/canary_islands.jpg',
@@ -146,72 +157,91 @@ class App extends React.Component {
 
     render() {
         return (
-            <div className={styles.AppBody}>
-                <div className={styles.leftContainer}>
-                    <TextInput callbackFromChild={this.callbackFromChild} />
-                </div>
-                <div
-                    className={styles.middleContainer}
-                    style={{
-                        width: this.state.isGetDesignsPressed ? '50%' : '80%',
-                    }}
-                >
-                    <CanvasArea getDesignsPressed={this.getDesignsPressed} />
-                </div>
-                <div
-                    className={styles.rightContainer}
-                    style={{
-                        width: this.state.isGetDesignsPressed ? '30%' : '0%',
-                        display: this.state.isGetDesignsPressed ? 'flex' : 'none',
-                    }}
-                >
-                    <div className={styles.pickerContainer}>
-                        <div
-                            style={{
-                                color: 'white',
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'space-around',
-                            }}
-                        >
-                            Layouts
-                        </div>
-                        <ImagePicker images={flowUrls} />
-                        <div
-                            style={{
-                                color: 'white',
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'space-around',
-                            }}
-                        >
-                            Visual Groups
-                        </div>
-                        <ImagePicker images={svgUrls} />
-                        <div
-                            style={{
-                                color: 'white',
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'space-around',
-                            }}
-                        >
-                            Connections
-                        </div>
-                        <ImagePicker images={connectionUrls} />
+            <div>
+                <Navbar bg="dark" variant="dark">
+                    <Navbar.Brand style={{ fontSize: 30, padding: '5 0' }}>
+                        Infographics Wizard
+                    </Navbar.Brand>
+                    <Nav className="mr-auto">
+                        <Upload values={uploadButtonState} />
+                        <Export />
+                        <ColorPallets values={colorButtonState} />
+                        <ConnectionTypes values={connectionButtonState} />
+                    </Nav>
+                    <Nav>
+                        <Examples values={exampleButtonState} />
+                        <About />
+                    </Nav>
+                </Navbar>
+                <div className={styles.AppBody}>
+                    <div className={styles.leftContainer}>
+                        <TextInput callbackFromChild={this.callbackFromChild} />
                     </div>
-                    <div className={styles.infographicContainer}>
-                        <div
-                            style={{
-                                color: 'white',
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'space-around',
-                            }}
-                        >
-                            Infographics
+                    <div
+                        className={styles.middleContainer}
+                        style={{
+                            width: this.state.isGetDesignsPressed ? '50%' : '80%',
+                        }}
+                    >
+                        <CanvasArea getDesignsPressed={this.getDesignsPressed} />
+                    </div>
+                    <div
+                        className={styles.rightContainer}
+                        style={{
+                            width: this.state.isGetDesignsPressed ? '30%' : '0%',
+                            display: this.state.isGetDesignsPressed
+                                ? 'flex'
+                                : 'none',
+                        }}
+                    >
+                        <div className={styles.pickerContainer}>
+                            <div
+                                style={{
+                                    color: 'white',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-around',
+                                }}
+                            >
+                                Layouts
+                            </div>
+                            <ImagePicker images={flowUrls} />
+                            <div
+                                style={{
+                                    color: 'white',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-around',
+                                }}
+                            >
+                                Visual Groups
+                            </div>
+                            <ImagePicker images={svgUrls} />
+                            <div
+                                style={{
+                                    color: 'white',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-around',
+                                }}
+                            >
+                                Connections
+                            </div>
+                            <ImagePicker images={connectionUrls} />
                         </div>
-                        <InfographicPicker images={photos} />
+                        <div className={styles.infographicContainer}>
+                            <div
+                                style={{
+                                    color: 'white',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-around',
+                                }}
+                            >
+                                Infographics
+                            </div>
+                            <InfographicPicker images={photos} />
+                        </div>
                     </div>
                 </div>
             </div>
