@@ -47,6 +47,11 @@
     flex-direction: column;
 }
 
+.textInputHeader {
+    direction: flex;
+    flex-direction: row;
+}
+
 .previewSwitch {
     display: flex;
     flex-direction: row;

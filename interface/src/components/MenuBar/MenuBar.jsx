@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { NavDropdown, Nav, OverlayTrigger, Popover } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { TwitterPicker, GithubPicker } from 'react-color';
+import { GithubPicker } from 'react-color';
 
 export class Upload extends Component {
     constructor(props) {
