@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
-import {
-    NavDropdown,
-    Nav,
-    OverlayTrigger,
-    Popover,
-    PopoverTitle,
-} from 'react-bootstrap';
+import { NavDropdown, Nav, OverlayTrigger, Popover } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { TwitterPicker, GithubPicker } from 'react-color';
 
 export class Upload extends Component {
     constructor(props) {
@@ -89,7 +84,11 @@ export class ColorPallets extends Component {
                     eventKey={this.props.values.values[i].key}
                     onSelect={this.handleChange}
                 >
-                    {this.props.values.values[i].name}
+                    <GithubPicker
+                        width={140}
+                        colors={this.props.values.values[i].name}
+                        triangle="hide"
+                    />
                 </NavDropdown.Item>
             );
         }
@@ -211,7 +210,14 @@ export class About extends Component {
                     </Popover>
                 }
             >
-                <Nav.Link style={{ paddingLeft: 15, fontSize: 17, outline: 'none' }}>
+                <Nav.Link
+                    style={{
+                        paddingLeft: 15,
+                        paddingRight: 50,
+                        fontSize: 17,
+                        outline: 'none',
+                    }}
+                >
                     About
                 </Nav.Link>
             </OverlayTrigger>
