@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from './GenerateSVG.module.scss';
 import * as d3 from 'd3';
-import { flows1, flows2, flows3 } from '../../input_flows';
+import { flows, indices } from '../../input_flows';
 import { wrap } from './wrap';
-import { input4, input5 } from './sampleInput';
+import { input4, input5, colours4, colours5 } from './sampleInput';
 import * as d3_save_svg from 'd3-save-svg';
 import axios from 'axios';
 
@@ -12,38 +12,123 @@ class GenerateSVG extends React.Component {
         super(props);
         this.state = {
             canvasDims: { width: 1280, height: 960 },
-            flow: flows2[0],
+            flowId: 0,
             vg: 'svgImages/vg1.svg',
-            pivot: null,
+            pivot: 'images/pivot.png',
             background: 'images/background3.jpg',
             textInfo: this.props.textInfo,
             connectionType: 'regular', // Choose b/w {regular, pivot and alternate}
             includeLast: true, // Whether to generate last connection or not
             input: input5,
             connection: 'connections/glasses.svg',
+            useCase: 1,
+            colours: colours5[0],
         };
     }
-    componentDidMount() {
-        fetch(this.state.vg)
-            .then((r) => r.text())
-            .then((t) => {
-                this.setState({
-                    vg: t,
-                });
 
-                generateSVG(
-                    this.state.vg,
-                    this.state.flow,
-                    this.state.canvasDims.width,
-                    this.state.canvasDims.height,
-                    this.state.background,
-                    this.state.pivot,
-                    this.state.connectionType,
-                    this.state.includeLast,
-                    this.state.input,
-                    this.state.connection
-                );
-            });
+    componentDidMount() {
+        // let connections = ['minus-line', 'three-dots', 'arrow3', 'striped-arrow'];
+        // let connectionTypes = ['none', 'regular', 'alternate'];
+        // var vgIdx = 1;
+        // let vgFile = `svgImages/vg${vgIdx}.svg`;
+        // fetch(vgFile)
+        //     .then((r) => r.text())
+        //     .then((vg) => {
+        //         // Looping over connection types
+        //         for (var connectionType of connectionTypes) {
+        //             // Looping over connection elements
+        //             for (var connectionStr of connections) {
+        //                 let connection = 'none',
+        //                     connecStr = 'none';
+        //                 if (connectionType !== 'none') {
+        //                     connection = `connections/${connectionStr}.svg`;
+        //                     connecStr = connectionStr;
+        //                 }
+        //                 // Looping over 3 use cases
+        //                 for (var useCase = 1; useCase < 4; useCase++) {
+        //                     let input, colours;
+        //                     if (useCase === 1) {
+        //                         input = input4;
+        //                         colours = colours4;
+        //                     } else {
+        //                         input = input5;
+        //                         colours = colours5;
+        //                     }
+        //                     let colourIdx = 0,
+        //                         bestFlowIdx = indices[useCase - 1][0];
+        //                     d3.select('svg').text('');
+        //                     generateSVG(
+        //                         [vgIdx, vg],
+        //                         bestFlowIdx,
+        //                         this.state.canvasDims.width,
+        //                         this.state.canvasDims.height,
+        //                         this.state.background,
+        //                         this.state.pivot,
+        //                         connectionType,
+        //                         this.state.includeLast,
+        //                         input,
+        //                         [connecStr, connection],
+        //                         useCase,
+        //                         [colourIdx, colours[colourIdx]]
+        //                     );
+        //                 }
+        //             }
+        //         }
+        //     });
+        // for (var i = 0; i < 41; i++) {
+        //     var vgIdx = Math.floor(Math.random() * 25 + 1);
+        //     let vgFile = `svgImages/vg${vgIdx}.svg`;
+        //     fetch(vgFile)
+        //         .then((r) => r.text())
+        //         .then((vg) => {
+        //             for (var useCase = 1; useCase < 4; useCase++) {
+        //                 let input, colours;
+        //                 if (useCase === 1) {
+        //                     input = input4;
+        //                     colours = colours4;
+        //                 } else {
+        //                     input = input5;
+        //                     colours = colours5;
+        //                 }
+        //                 let connecStr,
+        //                     connection,
+        //                     connectionType =
+        //                         connectionTypes[
+        //                             Math.floor(
+        //                                 Math.random() * connectionTypes.length
+        //                             )
+        //                         ];
+        //                 if (connectionType !== 'none') {
+        //                     connecStr =
+        //                         connections[
+        //                             Math.floor(Math.random() * connections.length)
+        //                         ];
+        //                     connection = `connections/${connecStr}.svg`;
+        //                 } else {
+        //                     connection = 'none';
+        //                     connecStr = 'none';
+        //                 }
+        //                 let colourIdx = Math.floor(Math.random() * 3),
+        //                     bestFlowIdx =
+        //                         indices[useCase - 1][Math.floor(Math.random() * 5)];
+        //                 d3.select('svg').text('');
+        //                 generateSVG(
+        //                     [vgIdx, vg],
+        //                     bestFlowIdx,
+        //                     this.state.canvasDims.width,
+        //                     this.state.canvasDims.height,
+        //                     this.state.background,
+        //                     this.state.pivot,
+        //                     connectionType,
+        //                     this.state.includeLast,
+        //                     input,
+        //                     [connecStr, connection],
+        //                     useCase,
+        //                     [colourIdx, colours[colourIdx]]
+        //                 );
+        //             }
+        //         });
+        // }
     }
 
     render() {
@@ -61,8 +146,8 @@ class GenerateSVG extends React.Component {
 }
 
 async function generateSVG(
-    vg,
-    flow,
+    vgInfo,
+    flowId,
     width,
     height,
     background,
@@ -70,15 +155,28 @@ async function generateSVG(
     connectionType,
     includeLast,
     input,
-    connection
+    connectionInfo,
+    useCase,
+    coloursInfo
 ) {
     let svg = d3.select('svg');
+    let flow = flows[useCase - 1][flowId],
+        coloursIdx = coloursInfo[0],
+        colours = coloursInfo[1],
+        vgIdx = vgInfo[0],
+        vg = vgInfo[1],
+        connectionStr = connectionInfo[0],
+        connection = connectionInfo[1];
+    // console.log(flowId, connectionType, useCase, colourIdx);
 
-    // Pivot centers for third use cases (set scale = 0.75 while loading the image for third use case)
-    let pivotCenter = { x: width / 2 + 100, y: 60 };
-
-    // Pivot centers for second use case with scale 1
-    // let pivotCenter = { x: width / 2 - 100, y: 550 };
+    let pivotCenter;
+    if (useCase === 2) {
+        // Pivot centers for second use case with scale 1
+        pivotCenter = { x: width / 2 - 100, y: 550 };
+    } else if (useCase === 3) {
+        // Pivot centers for third use cases (set scale = 0.75 while loading the image for third use case)
+        pivotCenter = { x: width / 2 + 100, y: 60 };
+    }
 
     // Defining lines, angles and centers to insert connections
     let lines = [];
@@ -91,7 +189,7 @@ async function generateSVG(
         lines.push([flow[i][0], flow[i][1], flow[i + 1][0], flow[i + 1][1]]);
     }
 
-    if (connectionType == 'pivot') {
+    if (connectionType === 'pivot') {
         // Generating connections b/w elements and pivot
         for (let i = 0; i < flow.length - 1; i++) {
             angles.push(
@@ -119,7 +217,7 @@ async function generateSVG(
                     180
             );
         }
-    } else if (connectionType == 'alternate') {
+    } else if (connectionType === 'alternate') {
         for (let i = 0; i < flow.length - 2; i++) {
             angles.push(
                 Math.atan2(
@@ -134,7 +232,7 @@ async function generateSVG(
                 (flow[i][1] + flow[i + 2][1]) / 2,
             ]);
         }
-    } else {
+    } else if (connectionType === 'regular') {
         // Generating regular connections b/w sequential elements
         for (let i = 0; i < flow.length - 1; i++) {
             angles.push(
@@ -186,6 +284,7 @@ async function generateSVG(
             .attr('y', flow[i][1] - scale / 2)
             .html(vg);
 
+        // console.log(svg.select(`#vg${i}`).node());
         let textBoxWidth = svg.select(`#vg${i}`).select('.text-wrap').attr('width');
 
         // The text size is defined in the SVGs, so not changing that
@@ -215,7 +314,7 @@ async function generateSVG(
         let orgStyle = svg.select(`#vg${i}`).select('style').text();
         svg.select(`#vg${i}`)
             .select('style')
-            .text(orgStyle + input[i].color);
+            .text(orgStyle + `.color-1${i}{fill:${colours[i]};}`);
     }
 
     // let scaleVG = 250;
@@ -232,12 +331,12 @@ async function generateSVG(
     for (let i = 0; i < centers.length; i++) {
         svg.append('g')
             .append('svg:image')
-            .attr('xlink:href', connection)
+            .attr('href', connection)
             .attr('width', scaleC)
             .attr('x', centers[i][0] - scaleC / 2)
             .attr('y', centers[i][1] - scaleC / 2)
             .attr('transform', function () {
-                console.log(angles[i]);
+                // console.log(angles[i]);
                 return (
                     'rotate(' +
                     angles[i] +
@@ -270,14 +369,32 @@ async function generateSVG(
     //         return d[3];
     //     });
 
-    // Positioning for 2nd
-    // svg.append('image')
-    //     .attr('x', pivotCenter.x)
-    //     .attr('y', pivotCenter.y)
-    //     .attr('href', pivot);
-    // .attr('transform', 'scale(0.75)')
+    if (useCase === 2) {
+        // Positioning for 2nd
+        svg.append('image')
+            .attr('x', pivotCenter.x)
+            .attr('y', pivotCenter.y)
+            .attr('href', pivot);
+    } else if (useCase === 3) {
+        svg.append('image')
+            .attr('x', pivotCenter.x)
+            .attr('y', pivotCenter.y)
+            .attr('href', pivot)
+            .attr('transform', 'scale(0.75)');
+    }
 
-    // return svg.node();
+    svg.attr('xmlns', 'http://www.w3.org/2000/svg');
+
+    const response = await axios.post('/save_vg/', {
+        vgCode: svg.node().outerHTML,
+        uc: useCase,
+        fl: flowId,
+        vg: vgIdx,
+        cl: coloursIdx,
+        cnt: connectionType,
+        cne: connectionStr,
+    });
+    console.log(response);
 }
 
 export default GenerateSVG;

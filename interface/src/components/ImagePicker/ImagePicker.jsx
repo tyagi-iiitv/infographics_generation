@@ -1,34 +1,48 @@
 import React, { Component } from 'react';
-import ImagePicker from 'react-image-picker';
-import 'react-image-picker/dist/index.css';
+import Gallery from 'react-grid-gallery';
 
-let imgUrls = [
-    'flowImages/flow_0.jpg',
-    'flowImages/flow_1.jpg',
-    'flowImages/flow_2.jpg',
-    'flowImages/flow_3.jpg',
-    'flowImages/flow_4.jpg',
-];
 export default class ImageSelect extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            images: [],
+            images: this.props.images,
+            selectedImages: [],
         };
+        this.onClickThumbnail = this.onClickThumbnail.bind(this);
     }
-    onPickImages(images) {
-        this.setState({ images });
+
+    onClickThumbnail(index, image) {
+        var images = this.state.images.slice();
+        var selectedImages = this.state.selectedImages;
+        var img = images[index];
+        if (img.hasOwnProperty('isSelected')) {
+            img.isSelected = !img.isSelected;
+            if (img.isSelected === true) {
+                selectedImages.push(img);
+            } else {
+                selectedImages = selectedImages.filter((obj) => obj !== img);
+            }
+        } else {
+            img.isSelected = true;
+            selectedImages.push(img);
+        }
+
+        this.setState({
+            images: images,
+            selectedImages: selectedImages,
+        });
     }
+
     render() {
         return (
-            <div>
-                <ImagePicker
-                    images={imgUrls.map((image, i) => ({
-                        src: image,
-                        value: i,
-                    }))}
-                    onPick={this.onPickImages.bind(this)}
-                    multiple
+            <div
+                style={{ height: '33%', overflow: 'scroll', scrollBehavior: 'auto' }}
+            >
+                <Gallery
+                    images={this.state.images}
+                    enableLightbox={false}
+                    enableImageSelection={false}
+                    onClickThumbnail={this.onClickThumbnail}
                 />
             </div>
         );

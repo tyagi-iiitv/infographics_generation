@@ -28,7 +28,7 @@ def get_vf_image(flow, height, width):
 
     for i in range(len(flow) - 1):
         cv2.line(black, (int(flow[i][0]), int(flow[i][1])), (int(flow[i + 1][0]), int(flow[i + 1][1])), (0, 0, 255), 30)
-    
+
     return black
 
 # Converts a abse64 image string to a numpy image
@@ -222,21 +222,26 @@ def visgrps():
         'visGrpsInfo': vis_grps_info,
         })
 
-@app.route('/save-vg', methods=['POST'])
+
+@app.route('/save_vg/', methods=['POST'])
 def save_vg():
     data = json.loads(request.data.decode('utf-8'))
-    f = open('vg_svgs/vg.svg', 'w')
+    file_name = os.path.join('vg_svgs', f'uc{data["uc"]}_l{data["fl"]}_vg{data["vg"]}_{data["cl"]}_{data["cnt"]}_{data["cne"]}.svg')
+    f = open(file_name, 'w+')
     f.write(data['vgCode'])
     f.close()
     return "OK"
+
 
 @app.route('/get-vg/<path:path>', methods=['GET'])
 def get_vg(path):
     return send_from_directory('svgImages', path, as_attachment=True)
 
+
 @app.route('/images/<path:path>', methods=['GET'])
 def get_image(path):
     return send_from_directory('images', path, as_attachment=True)
+
 
 @app.route('/layout/', methods=['POST'])
 def set_layout():

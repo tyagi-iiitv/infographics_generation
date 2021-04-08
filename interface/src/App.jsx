@@ -5,6 +5,7 @@ import {
     GenerateSVG,
     GalleryView,
     ImagePicker,
+    InfographicPicker,
 } from './components';
 import styles from './App.module.scss';
 import { Tabs, Tab, TabPane } from 'react-bootstrap';
@@ -21,56 +22,105 @@ let urls = [
 
 let photos = [
     {
-        src: 'images/vg.svg',
-        width: 4,
-        height: 3,
+        src: 'https://source.unsplash.com/2ShvY8Lf6l0/600x599',
+        thumbnail: 'https://source.unsplash.com/2ShvY8Lf6l0/600x599',
+        thumbnailWidth: 80,
+        thumbnailHeight: 60,
     },
     {
-        src: 'https://source.unsplash.com/2ShvY8Lf6l0/800x599',
-        width: 4,
-        height: 3,
-    },
-    {
-        src: 'https://source.unsplash.com/Dm-qxdynoEc/800x799',
-        width: 1,
-        height: 1,
+        src: 'https://source.unsplash.com/Dm-qxdynoEc/600x799',
+        thumbnail: 'https://source.unsplash.com/Dm-qxdynoEc/600x799',
+        thumbnailWidth: 80,
+        thumbnailHeight: 80,
     },
     {
         src: 'https://source.unsplash.com/qDkso9nvCg0/600x799',
-        width: 3,
-        height: 4,
+        thumbnail: 'https://source.unsplash.com/qDkso9nvCg0/600x799',
+        thumbnailWidth: 60,
+        thumbnailHeight: 80,
     },
     {
         src: 'https://source.unsplash.com/iecJiKe_RNg/600x799',
-        width: 3,
-        height: 4,
+        thumbnail: 'https://source.unsplash.com/iecJiKe_RNg/600x799',
+        thumbnailWidth: 60,
+        thumbnailHeight: 80,
     },
     {
         src: 'https://source.unsplash.com/epcsn8Ed8kY/600x799',
-        width: 3,
-        height: 4,
+        thumbnail: 'https://source.unsplash.com/epcsn8Ed8kY/600x799',
+        thumbnailWidth: 60,
+        thumbnailHeight: 80,
     },
     {
-        src: 'https://source.unsplash.com/NQSWvyVRIJk/800x599',
-        width: 4,
-        height: 3,
+        src: 'https://source.unsplash.com/NQSWvyVRIJk/600x599',
+        thumbnail: 'https://source.unsplash.com/NQSWvyVRIJk/600x599',
+        thumbnailWidth: 80,
+        thumbnailHeight: 60,
     },
     {
         src: 'https://source.unsplash.com/zh7GEuORbUw/600x799',
-        width: 3,
-        height: 4,
+        thumbnail: 'https://source.unsplash.com/zh7GEuORbUw/600x799',
+        thumbnailWidth: 60,
+        thumbnailHeight: 80,
     },
     {
-        src: 'https://source.unsplash.com/PpOHJezOalU/800x599',
-        width: 4,
-        height: 3,
+        src: 'https://source.unsplash.com/PpOHJezOalU/600x599',
+        thumbnail: 'https://source.unsplash.com/PpOHJezOalU/600x599',
+        thumbnailWidth: 80,
+        thumbnailHeight: 60,
     },
     {
-        src: 'https://source.unsplash.com/I1ASdgphUH4/800x599',
-        width: 4,
-        height: 3,
+        src: 'https://source.unsplash.com/I1ASdgphUH4/600x599',
+        thumbnail: 'https://source.unsplash.com/I1ASdgphUH4/600x599',
+        thumbnailWidth: 80,
+        thumbnailHeight: 60,
     },
 ];
+
+let flowUrls = [],
+    svgUrls = [],
+    connectionUrls = [],
+    connectionNames = [
+        'arrow',
+        'arrow2',
+        'arrow3',
+        'arrow4',
+        'curved_rect',
+        'curved-arrow',
+        'glasses',
+        'minus-line',
+        'striped-arrow',
+        'striped-stick',
+        'three-curved-arrows',
+        'three-dots',
+    ];
+
+for (var i = 0; i < 5; i++) {
+    flowUrls.push({
+        src: `flowImages/flow_${i}.jpg`,
+        thumbnail: `flowImages/flow_${i}.jpg`,
+        thumbnailWidth: 50,
+        thumbnailHeight: 50,
+    });
+}
+
+for (var i = 1; i < 26; i++) {
+    svgUrls.push({
+        src: `svgImages/vg${i}.svg`,
+        thumbnail: `svgImages/vg${i}.svg`,
+        thumbnailWidth: 50,
+        thumbnailHeight: 50,
+    });
+}
+
+for (var connectionName of connectionNames) {
+    connectionUrls.push({
+        src: `connections/${connectionName}.svg`,
+        thumbnail: `connections/${connectionName}.svg`,
+        thumbnailWidth: 50,
+        thumbnailHeight: 50,
+    });
+}
 
 class App extends React.Component {
     constructor(props) {
@@ -78,40 +128,93 @@ class App extends React.Component {
         this.state = {
             flows: null,
             textInfo: null,
+            isGetDesignsPressed: false,
         };
         this.callbackFromChild = this.callbackFromChild.bind(this);
+        this.getDesignsPressed = this.getDesignsPressed.bind(this);
     }
 
     callbackFromChild(dataFromChild) {
         this.setState(dataFromChild, () => console.log(this.state));
     }
+
+    getDesignsPressed = () => {
+        this.setState({
+            isGetDesignsPressed: true,
+        });
+    };
+
     render() {
         return (
-            <Tabs defaultActiveKey="View" id="tabs">
-                <Tab eventKey="View" title="View">
-                    <div className={styles.ViewBody}>
-                        <GenerateSVG textInfo={this.state.textInfo} />
-                    </div>
-                </Tab>
-                <Tab eventKey="Draw" title="Draw">
-                    <div className={styles.AppBody}>
-                        <div className={styles.leftContainer}>
-                            <CanvasArea callbackFromChild={this.callbackFromChild} />
+            <div className={styles.AppBody}>
+                <div className={styles.leftContainer}>
+                    <TextInput callbackFromChild={this.callbackFromChild} />
+                </div>
+                <div
+                    className={styles.middleContainer}
+                    style={{
+                        width: this.state.isGetDesignsPressed ? '50%' : '80%',
+                    }}
+                >
+                    <CanvasArea getDesignsPressed={this.getDesignsPressed} />
+                </div>
+                <div
+                    className={styles.rightContainer}
+                    style={{
+                        width: this.state.isGetDesignsPressed ? '30%' : '0%',
+                        display: this.state.isGetDesignsPressed ? 'flex' : 'none',
+                    }}
+                >
+                    <div className={styles.pickerContainer}>
+                        <div
+                            style={{
+                                color: 'white',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-around',
+                            }}
+                        >
+                            Layouts
                         </div>
-                        <div className={styles.rightContainer}>
-                            <TextInput callbackFromChild={this.callbackFromChild} />
+                        <ImagePicker images={flowUrls} />
+                        <div
+                            style={{
+                                color: 'white',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-around',
+                            }}
+                        >
+                            Visual Groups
                         </div>
+                        <ImagePicker images={svgUrls} />
+                        <div
+                            style={{
+                                color: 'white',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-around',
+                            }}
+                        >
+                            Connections
+                        </div>
+                        <ImagePicker images={connectionUrls} />
                     </div>
-                </Tab>
-                <Tab eventKey="Recommendations" title="Recommendations">
-                    {/* <div className={styles.galleryContainer}>
-                        <GalleryView photos={photos} />
-                    </div> */}
-                    <div className={styles.leftContainer}>
-                        <ImagePicker />
+                    <div className={styles.infographicContainer}>
+                        <div
+                            style={{
+                                color: 'white',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-around',
+                            }}
+                        >
+                            Infographics
+                        </div>
+                        <InfographicPicker images={photos} />
                     </div>
-                </Tab>
-            </Tabs>
+                </div>
+            </div>
         );
     }
 }
