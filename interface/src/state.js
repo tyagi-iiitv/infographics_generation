@@ -465,6 +465,8 @@ let exampleButtonState = {
     ],
 };
 
+let flowUrls = ['flows/flow0.jpg', 'flows/flow1.jpg'];
+
 export {
     uploadButtonState,
     colorButtonState,

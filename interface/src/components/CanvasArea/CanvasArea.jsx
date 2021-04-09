@@ -394,8 +394,14 @@ class CanvasArea extends React.Component {
         // });
 
         const data = response['data'];
-        console.log(data);
-        // this.props.callbackFromChild({ flows: data.closestFlows });
+        // console.log(data);
+        let time = performance.now();
+        this.props.callbackFromChild({
+            flowUrls: [
+                'flows/flow0.jpg?' + time.toString(),
+                'flows/flow1.jpg?' + time.toString(),
+            ],
+        });
         var svgs = data.svgs,
             imgLinks = data.imgLinks,
             numVisGrps = data.numVisGrps;

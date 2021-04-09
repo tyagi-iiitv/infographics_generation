@@ -192,9 +192,9 @@ class TextInput extends React.Component {
             numVisGrps: this.numVisGrps,
             visGrpsInfo: this.info,
         });
-        if (response.status !== 200) {
-            console.log(response);
-        }
+        // if (response.status !== 200) {
+        // console.log(response);
+        // }
         return renderedText;
     }
 
