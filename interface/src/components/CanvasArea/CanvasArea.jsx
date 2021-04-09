@@ -401,6 +401,7 @@ class CanvasArea extends React.Component {
                 'flows/flow0.jpg?' + time.toString(),
                 'flows/flow1.jpg?' + time.toString(),
             ],
+            flowLen: data.closestFlows.length,
         });
         var svgs = data.svgs,
             imgLinks = data.imgLinks,

@@ -90,6 +90,7 @@ class App extends React.Component {
             flowUrls: ['flows/flow0.jpg', 'flows/flow1.jpg'],
             inputText: ``,
             curFlowIndex: 0,
+            flowLen: 2,
         };
         this.callbackFromChild = this.callbackFromChild.bind(this);
         this.getDesignsPressed = this.getDesignsPressed.bind(this);
@@ -231,6 +232,9 @@ class App extends React.Component {
                                     variant="danger"
                                     style={{ marginRight: 20, marginTop: 10 }}
                                     onClick={this.prevLayoutClick}
+                                    disabled={
+                                        this.state.curFlowIndex <= 0 ? true : false
+                                    }
                                 >
                                     Prev
                                 </Button>
@@ -238,6 +242,12 @@ class App extends React.Component {
                                     variant="danger"
                                     style={{ marginTop: 10 }}
                                     onClick={this.nextLayoutClick}
+                                    disabled={
+                                        this.state.curFlowIndex + 1 >=
+                                        this.state.flowLen
+                                            ? true
+                                            : false
+                                    }
                                 >
                                     Next
                                 </Button>
