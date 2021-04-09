@@ -14,11 +14,9 @@ TextInputClass
 Area where user would add the text to describe the infographic
 */
 class TextInput extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            text: '', // Text
-            renderedText: '', // Text to render in the preview area
             previewChecked: false, // To show preview or text area
         };
         this.info = []; // Information about visual groups from the input
@@ -44,14 +42,18 @@ class TextInput extends React.Component {
         );
 
         this.handleChangeText = this.handleChangeText.bind(this);
+        this.generatePreview = this.generatePreview.bind(this);
     }
 
     /*
     Handles the text input area for extracting information and previewing
     */
     async handleChangeText(value, e) {
-        var text = value;
-        // console.log(text);
+        this.props.callbackFromChild({ inputText: value });
+    }
+
+    generatePreview() {
+        var text = this.props.inputText;
         // Get a list of lines
         var lines = text.split('\n');
         var i;
@@ -186,18 +188,14 @@ class TextInput extends React.Component {
         }
         this.numVisGrps = info.length;
         this.info = info;
-        const response = await axios.post('/visgrps/', {
+        const response = axios.post('/visgrps/', {
             numVisGrps: this.numVisGrps,
             visGrpsInfo: this.info,
         });
         if (response.status !== 200) {
             console.log(response);
         }
-        this.setState({
-            text,
-            renderedText,
-        });
-        this.props.callbackFromChild({ textInfo: this.info });
+        return renderedText;
     }
 
     render() {
@@ -253,6 +251,7 @@ class TextInput extends React.Component {
                         name="blah2"
                         height="100%"
                         width="100%"
+                        value={this.props.inputText}
                         onChange={this.handleChangeText}
                         fontSize={15}
                         wrapEnabled={true}
@@ -274,7 +273,7 @@ class TextInput extends React.Component {
                         id="preview_text"
                         className={styles.previewArea}
                         dangerouslySetInnerHTML={{
-                            __html: this.state.renderedText,
+                            __html: this.generatePreview(),
                         }}
                         style={{
                             display: this.state.previewChecked ? 'block' : 'none',

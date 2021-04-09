@@ -153,9 +153,11 @@ export class Examples extends Component {
     }
 
     handleChange(event) {
-        this.setState({ value: event }, () => {
-            console.log(this.state.value);
-        });
+        this.setState({ value: event.key }, () =>
+            this.props.callbackFromChild({
+                inputText: this.props.values.values[event].value,
+            })
+        );
     }
 
     render() {

@@ -1,3 +1,138 @@
+let fourWorldFacts = `# 1
+## USA
+ The United States has maintained its position of being the world’s largest economy since 1871
+![](images/usa.svg)
+
+# 2
+## China
+ In China, the dragons are associated with wealth, power, and leadership
+![](images/china.svg)
+
+# 3
+## India
+ It's estimated that between 15% and 30% of India's population follow a strict vegetarian diet
+![](images/india.svg)
+
+# 4
+## Russia
+ Russia is 60% forest. What’s more interesting, half of that forest is totally uninhabited by humans.
+![](images/russia.svg)`;
+
+let fiveWorldFacts = `# 1
+## USA
+ The United States has maintained its position of being the world’s largest economy since 1871
+![](images/usa.svg)
+
+# 2
+## China
+ In China, the dragons are associated with wealth, power, and leadership
+![](images/china.svg)
+
+# 3
+## India
+ It's estimated that between 15% and 30% of India's population follow a strict vegetarian diet
+![](images/india.svg)
+
+# 4
+## Russia
+ Russia is 60% forest. What’s more interesting, half of that forest is totally uninhabited by humans.
+![](images/russia.svg)
+
+# 5
+## Brazil
+ Brazil has won more football world cups than any other country, with Pele being the top scorer
+![](images/brazil.svg)`;
+
+let fourBill = `#
+## Jeff B.
+ Jeffrey Preston Bezos is an American internet entrepreneur, industrialist, media proprietor, and investor.
+![](images/jeff.svg)
+
+#
+## Elon M.
+ Elon Reeve Musk FRS is a business magnate, industrial designer, and engineer.
+![](images/elon.svg)
+
+#
+## Bernard A.
+ Bernard Jean Étienne Arnault is a French billionaire businessman and art collector.
+![](images/bernard.svg)
+
+#
+## Bill G.
+ William Henry Gates III is an American business magnate, software developer, investor,author, philanthropist.
+![](images/bill.svg)`;
+
+let fiveBill = `#
+## Jeff B.
+ Jeffrey Preston Bezos is an American internet entrepreneur, industrialist, media proprietor, and investor.
+![](images/jeff.svg)
+
+#
+## Elon M.
+ Elon Reeve Musk FRS is a business magnate, industrial designer, and engineer.
+![](images/elon.svg)
+
+#
+## Bernard A.
+ Bernard Jean Étienne Arnault is a French billionaire businessman and art collector.
+![](images/bernard.svg)
+
+#
+## Bill G.
+ William Henry Gates III is an American business magnate, software developer, investor,author, philanthropist.
+![](images/bill.svg)
+
+#
+## Mark Z.
+Mark Elliot Zuckerberg is an American media magnate, entrepreneur, and philanthrophist.
+![](images/mark.svg)`;
+
+let fourOlympics = `# London
+## 2012
+ The 2012 Summer Olympics consisted of 302 events in 26 sports (39 disciplines)
+![](images/london.svg)
+
+# Sochi
+## 2014
+ The 2014 Winter Olympics consisted of 98 events in 7 sports (15 disciplines)
+![](images/sochi.svg)
+
+# Rio
+## 2016
+ The 2016 Summer Olympics consisted of 306 events in 28 sports (41 disciplines)
+![](images/rio.svg)
+
+# PyeongChang
+## 2018
+ The 2018 Winter Olympics consisted of 102 events in 7 sports (15 disciplines)
+![](images/pyeongchang.svg)`;
+
+let fiveOlympics = `# London
+## 2012
+ The 2012 Summer Olympics consisted of 302 events in 26 sports (39 disciplines)
+![](images/london.svg)
+
+# Sochi
+## 2014
+ The 2014 Winter Olympics consisted of 98 events in 7 sports (15 disciplines)
+![](images/sochi.svg)
+
+# Rio
+## 2016
+ The 2016 Summer Olympics consisted of 306 events in 28 sports (41 disciplines)
+![](images/rio.svg)
+
+# PyeongChang
+## 2018
+ The 2018 Winter Olympics consisted of 102 events in 7 sports (15 disciplines)
+![](images/pyeongchang.svg)
+
+# Tokyo
+## 2021
+ The 2021 Tokyo Olympic medals are made up of recycled electronic devices.
+![](images/tokyo.svg)`;
+
 let uploadButtonState = {
     selected: 0,
     values: [
@@ -300,26 +435,32 @@ let exampleButtonState = {
         {
             key: 0,
             name: '4 World Facts',
+            value: fourWorldFacts,
         },
         {
             key: 1,
             name: '5 World Facts',
+            value: fiveWorldFacts,
         },
         {
             key: 2,
             name: '4 Billionaires',
+            value: fourBill,
         },
         {
             key: 3,
             name: '5 Billionaires',
+            value: fiveBill,
         },
         {
             key: 4,
             name: '4 Olympics',
+            value: fourOlympics,
         },
         {
             key: 5,
             name: '5 Olympics',
+            value: fiveOlympics,
         },
     ],
 };

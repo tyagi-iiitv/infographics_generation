@@ -140,6 +140,7 @@ class App extends React.Component {
             flows: null,
             textInfo: null,
             isGetDesignsPressed: false,
+            inputText: ``,
         };
         this.callbackFromChild = this.callbackFromChild.bind(this);
         this.getDesignsPressed = this.getDesignsPressed.bind(this);
@@ -169,13 +170,19 @@ class App extends React.Component {
                         <ConnectionTypes values={connectionButtonState} />
                     </Nav>
                     <Nav>
-                        <Examples values={exampleButtonState} />
+                        <Examples
+                            values={exampleButtonState}
+                            callbackFromChild={this.callbackFromChild}
+                        />
                         <About />
                     </Nav>
                 </Navbar>
                 <div className={styles.AppBody}>
                     <div className={styles.leftContainer}>
-                        <TextInput callbackFromChild={this.callbackFromChild} />
+                        <TextInput
+                            inputText={this.state.inputText}
+                            callbackFromChild={this.callbackFromChild}
+                        />
                     </div>
                     <div
                         className={styles.middleContainer}
