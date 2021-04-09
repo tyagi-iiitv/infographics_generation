@@ -202,7 +202,7 @@ class TextInput extends React.Component {
         return (
             <div className={styles.textInputContainer}>
                 <div className={styles.textInputHeader}>
-                    <div style={{ color: 'white', fontSize: 14 }}>
+                    <div style={{ color: 'white', fontSize: 14, paddingTop: 10 }}>
                         {/* {`Text Input Area `} */}
                         <Tooltip title={this.tooltipInfo} arrow>
                             <span>
@@ -251,6 +251,7 @@ class TextInput extends React.Component {
                         name="blah2"
                         height="100%"
                         width="100%"
+                        className={styles.inputArea}
                         value={this.props.inputText}
                         onChange={this.handleChangeText}
                         fontSize={15}
