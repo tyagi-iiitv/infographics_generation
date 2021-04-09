@@ -23,14 +23,6 @@ import {
     exampleButtonState,
 } from './state';
 
-// let urls = [
-//     'images/canary_islands.jpg',
-//     'images/indonesia.jpg',
-//     'images/la.jpg',
-//     'images/vg.svg',
-//     'images/paris.jpg',
-// ];
-
 let photos = [
     {
         src: 'https://source.unsplash.com/2ShvY8Lf6l0/600x599',
@@ -97,10 +89,59 @@ class App extends React.Component {
             isGetDesignsPressed: false,
             flowUrls: ['flows/flow0.jpg', 'flows/flow1.jpg'],
             inputText: ``,
+            curFlowIndex: 0,
         };
         this.callbackFromChild = this.callbackFromChild.bind(this);
         this.getDesignsPressed = this.getDesignsPressed.bind(this);
+        this.prevLayoutClick = this.prevLayoutClick.bind(this);
+        this.nextLayoutClick = this.nextLayoutClick.bind(this);
+        this.prevVGClick = this.prevVGClick.bind(this);
+        this.nextVGClick = this.nextVGClick.bind(this);
+        this.prevConClick = this.prevConClick.bind(this);
+        this.nextConClick = this.nextConClick.bind(this);
     }
+
+    prevLayoutClick() {
+        let curState = { ...this.state };
+        curState.curFlowIndex -= 2;
+        let time = performance.now();
+        curState.flowUrls = [
+            'flows/flow' +
+                curState.curFlowIndex.toString() +
+                '.jpg?' +
+                time.toString(),
+            'flows/flow' +
+                (curState.curFlowIndex + 1).toString() +
+                '.jpg?' +
+                time.toString(),
+        ];
+        this.setState(curState, () => console.log(curState));
+    }
+
+    nextLayoutClick() {
+        let curState = { ...this.state };
+        curState.curFlowIndex += 2;
+        let time = performance.now();
+        curState.flowUrls = [
+            'flows/flow' +
+                curState.curFlowIndex.toString() +
+                '.jpg?' +
+                time.toString(),
+            'flows/flow' +
+                (curState.curFlowIndex + 1).toString() +
+                '.jpg?' +
+                time.toString(),
+        ];
+        this.setState(curState, () => console.log(curState));
+    }
+
+    prevVGClick(event) {}
+
+    nextVGClick(event) {}
+
+    prevConClick(event) {}
+
+    nextConClick(event) {}
 
     callbackFromChild(dataFromChild) {
         this.setState(dataFromChild, () => console.log(this.state));
@@ -178,9 +219,28 @@ class App extends React.Component {
                                 </Button>
                             </div>
                             <ImagePicker imgUrls={this.state.flowUrls} />
-                            <div>
-                                <Button variant="danger">Prev</Button>
-                                <Button variant="danger">Next</Button>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Button
+                                    variant="danger"
+                                    style={{ marginRight: 20, marginTop: 10 }}
+                                    onClick={this.prevLayoutClick}
+                                >
+                                    Prev
+                                </Button>
+                                <Button
+                                    variant="danger"
+                                    style={{ marginTop: 10 }}
+                                    onClick={this.nextLayoutClick}
+                                >
+                                    Next
+                                </Button>
                             </div>
                             {/* <div
                                 style={{

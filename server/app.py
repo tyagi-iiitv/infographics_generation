@@ -315,7 +315,7 @@ def set_layout():
 
     print(session.get('canvas_dims')['width'])
     # Creating VIF flow images and saving in flows directory
-    for j,flow in enumerate(session.get('closest_flows')[:2]):
+    for j,flow in enumerate(session.get('closest_flows')[:50]):
         height = session.get('canvas_dims')['height']
         width = session.get('canvas_dims')['width']
         black = np.zeros((height, width, 3), np.uint8)
