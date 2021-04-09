@@ -244,7 +244,7 @@ class App extends React.Component {
                                     onClick={this.nextLayoutClick}
                                     disabled={
                                         this.state.curFlowIndex + 1 >=
-                                        this.state.flowLen
+                                        Math.min(this.state.flowLen, 49)
                                             ? true
                                             : false
                                     }
