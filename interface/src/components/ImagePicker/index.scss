@@ -3,16 +3,15 @@
 
     .responsive {
         position: relative;
-        margin: 0 6px;
-        float: left;
         opacity: 1;
         width: 100%;
+        display: flex;
+        justify-content: center;
 
         .thumbnail {
             border: 1px solid #ddd; /* Gray border */
             border-radius: 4px; /* Rounded border */
             padding: 5px; /* Some padding */
-            // width: '100%'; /* Set a small width */
             opacity: 1;
             margin-bottom: 2;
 

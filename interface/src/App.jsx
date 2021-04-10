@@ -15,7 +15,7 @@ import {
 } from './components';
 import styles from './App.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Navbar, Nav, FormControl, Button, Form, Tooltip } from 'react-bootstrap';
+import { Navbar, Nav, Button, Badge } from 'react-bootstrap';
 import {
     uploadButtonState,
     colorButtonState,
@@ -249,7 +249,7 @@ class App extends React.Component {
                     <div
                         className={styles.middleContainer}
                         style={{
-                            width: this.state.isGetDesignsPressed ? '50%' : '80%',
+                            width: this.state.isGetDesignsPressed ? '70%' : '80%',
                         }}
                     >
                         <CanvasArea
@@ -276,12 +276,17 @@ class App extends React.Component {
                                     alignItems: 'center',
                                 }}
                             >
-                                <Button
-                                    variant="danger"
-                                    style={{ marginTop: 10, marginBottom: 10 }}
+                                <Badge
+                                    pill
+                                    variant="info"
+                                    style={{
+                                        marginTop: 20,
+                                        marginBottom: 10,
+                                        fontSize: 15,
+                                    }}
                                 >
                                     Layouts
-                                </Button>
+                                </Badge>
                             </div>
                             <ImagePicker imgUrls={this.state.flowUrls} />
                             <div
@@ -324,12 +329,17 @@ class App extends React.Component {
                                     alignItems: 'center',
                                 }}
                             >
-                                <Button
-                                    variant="danger"
-                                    style={{ marginTop: 10, marginBottom: 10 }}
+                                <Badge
+                                    pill
+                                    variant="info"
+                                    style={{
+                                        marginTop: 20,
+                                        marginBottom: 10,
+                                        fontSize: 15,
+                                    }}
                                 >
                                     Visual Groups
-                                </Button>
+                                </Badge>
                             </div>
                             <ImagePicker imgUrls={this.state.VGUrls} />
                             <div
@@ -371,12 +381,17 @@ class App extends React.Component {
                                     alignItems: 'center',
                                 }}
                             >
-                                <Button
-                                    variant="danger"
-                                    style={{ marginTop: 10, marginBottom: 10 }}
+                                <Badge
+                                    pill
+                                    variant="info"
+                                    style={{
+                                        marginTop: 20,
+                                        marginBottom: 10,
+                                        fontSize: 15,
+                                    }}
                                 >
                                     Connections
-                                </Button>
+                                </Badge>
                             </div>
                             <ImagePicker imgUrls={this.state.connUrls} />
                             <div
@@ -418,7 +433,7 @@ class App extends React.Component {
                                     justifyContent: 'space-around',
                                 }}
                             >
-                                <Button variant="danger" style={{marginTop: 10}}>Visual Groups</Button>
+                                <Button variant="danger" style={{marginTop: 20}}>Visual Groups</Button>
                             </div>
                             <ImagePicker images={flowUrls} />
                             <div
@@ -429,7 +444,7 @@ class App extends React.Component {
                                     justifyContent: 'space-around',
                                 }}
                             >
-                                <Button variant="danger" style={{marginTop: 10}}>Connections</Button>
+                                <Button variant="danger" style={{marginTop: 20}}>Connections</Button>
                             </div>
                             <ImagePicker images={flowUrls} />
                         </div>
