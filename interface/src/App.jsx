@@ -22,6 +22,7 @@ import {
     connectionButtonState,
     exampleButtonState,
 } from './state';
+import generateSVG from './generateSVG';
 
 let photos = [
     {
@@ -84,7 +85,6 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            flows: null,
             textInfo: null,
             isGetDesignsPressed: false,
             flowUrls: ['flows/flow0.jpg', 'flows/flow1.jpg'],
@@ -97,6 +97,7 @@ class App extends React.Component {
             flowLen: 2,
             VGLen: 23,
             connLen: 12,
+            innerHtml: { __html: '' },
         };
         this.callbackFromChild = this.callbackFromChild.bind(this);
         this.getDesignsPressed = this.getDesignsPressed.bind(this);
@@ -425,28 +426,6 @@ class App extends React.Component {
                                     Next
                                 </Button>
                             </div>
-                            {/* <div
-                                style={{
-                                    color: 'white',
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-around',
-                                }}
-                            >
-                                <Button variant="danger" style={{marginTop: 20}}>Visual Groups</Button>
-                            </div>
-                            <ImagePicker images={flowUrls} />
-                            <div
-                                style={{
-                                    color: 'white',
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-around',
-                                }}
-                            >
-                                <Button variant="danger" style={{marginTop: 20}}>Connections</Button>
-                            </div>
-                            <ImagePicker images={flowUrls} />
                         </div>
                         <div className={styles.infographicContainer}>
                             <div
@@ -454,12 +433,58 @@ class App extends React.Component {
                                     color: 'white',
                                     display: 'flex',
                                     flexDirection: 'row',
-                                    justifyContent: 'space-around',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
                                 }}
                             >
-                                <Button variant="danger">Infographics</Button>
+                                <Badge
+                                    pill
+                                    variant="info"
+                                    style={{
+                                        marginTop: 20,
+                                        marginBottom: 10,
+                                        fontSize: 15,
+                                    }}
+                                >
+                                    Infographics
+                                </Badge>
                             </div>
-                            <InfographicPicker images={photos} /> */}
+                            {/* <div className={styles.infographics} dangerouslySetInnerHTML={this.state.innerHtml}/> */}
+                            <div
+                                dangerouslySetInnerHTML={this.state.innerHtml}
+                                className={styles.infographics}
+                            ></div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Button
+                                    variant="danger"
+                                    style={{ marginRight: 20 }}
+                                    onClick={this.prevConClick}
+                                    disabled={
+                                        this.state.curConnIndex <= 0 ? true : false
+                                    }
+                                >
+                                    Prev
+                                </Button>
+                                <Button
+                                    variant="danger"
+                                    onClick={this.nextConClick}
+                                    disabled={
+                                        this.state.curConnIndex + 1 >=
+                                        this.state.connLen
+                                            ? true
+                                            : false
+                                    }
+                                >
+                                    Next
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>

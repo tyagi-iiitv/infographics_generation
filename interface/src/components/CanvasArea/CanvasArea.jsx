@@ -6,6 +6,7 @@ import styles from './CanvasArea.module.scss';
 import * as d3 from 'd3';
 import { canvas_dims, flow_img, dragged_image } from './input1';
 import { canvas_dims2, flow_img2, dragged_image2 } from './input2';
+import generateSVG from '../../generateSVG';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -402,6 +403,11 @@ class CanvasArea extends React.Component {
                 'flows/flow1.jpg?' + time.toString(),
             ],
             flowLen: data.closestFlows.length,
+            innerHtml: generateSVG(
+                data.closestFlows[0],
+                canvas_dims.width,
+                canvas_dims.height
+            ),
         });
         var svgs = data.svgs,
             imgLinks = data.imgLinks,
