@@ -24,63 +24,6 @@ import {
 } from './state';
 import generateSVG from './generateSVG';
 
-let photos = [
-    {
-        src: 'https://source.unsplash.com/2ShvY8Lf6l0/600x599',
-        thumbnail: 'https://source.unsplash.com/2ShvY8Lf6l0/600x599',
-        thumbnailWidth: 80,
-        thumbnailHeight: 60,
-    },
-    {
-        src: 'https://source.unsplash.com/Dm-qxdynoEc/600x799',
-        thumbnail: 'https://source.unsplash.com/Dm-qxdynoEc/600x799',
-        thumbnailWidth: 80,
-        thumbnailHeight: 80,
-    },
-    {
-        src: 'https://source.unsplash.com/qDkso9nvCg0/600x799',
-        thumbnail: 'https://source.unsplash.com/qDkso9nvCg0/600x799',
-        thumbnailWidth: 60,
-        thumbnailHeight: 80,
-    },
-    {
-        src: 'https://source.unsplash.com/iecJiKe_RNg/600x799',
-        thumbnail: 'https://source.unsplash.com/iecJiKe_RNg/600x799',
-        thumbnailWidth: 60,
-        thumbnailHeight: 80,
-    },
-    {
-        src: 'https://source.unsplash.com/epcsn8Ed8kY/600x799',
-        thumbnail: 'https://source.unsplash.com/epcsn8Ed8kY/600x799',
-        thumbnailWidth: 60,
-        thumbnailHeight: 80,
-    },
-    {
-        src: 'https://source.unsplash.com/NQSWvyVRIJk/600x599',
-        thumbnail: 'https://source.unsplash.com/NQSWvyVRIJk/600x599',
-        thumbnailWidth: 80,
-        thumbnailHeight: 60,
-    },
-    {
-        src: 'https://source.unsplash.com/zh7GEuORbUw/600x799',
-        thumbnail: 'https://source.unsplash.com/zh7GEuORbUw/600x799',
-        thumbnailWidth: 60,
-        thumbnailHeight: 80,
-    },
-    {
-        src: 'https://source.unsplash.com/PpOHJezOalU/600x599',
-        thumbnail: 'https://source.unsplash.com/PpOHJezOalU/600x599',
-        thumbnailWidth: 80,
-        thumbnailHeight: 60,
-    },
-    {
-        src: 'https://source.unsplash.com/I1ASdgphUH4/600x599',
-        thumbnail: 'https://source.unsplash.com/I1ASdgphUH4/600x599',
-        thumbnailWidth: 80,
-        thumbnailHeight: 60,
-    },
-];
-
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -186,10 +129,6 @@ class App extends React.Component {
                 time.toString(),
         ];
         this.setState(curState, () => console.log(curState));
-    }
-
-    callbackFromChild(dataFromChild) {
-        this.setState(dataFromChild, () => console.log(this.state));
     }
 
     nextConClick() {
@@ -463,7 +402,7 @@ class App extends React.Component {
                                     alignItems: 'center',
                                 }}
                             >
-                                <Button
+                                {/* <Button
                                     variant="danger"
                                     style={{ marginRight: 20 }}
                                     onClick={this.prevConClick}
@@ -484,7 +423,7 @@ class App extends React.Component {
                                     }
                                 >
                                     Next
-                                </Button>
+                                </Button> */}
                             </div>
                         </div>
                     </div>

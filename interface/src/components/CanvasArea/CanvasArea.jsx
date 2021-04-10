@@ -36,7 +36,9 @@ class CanvasArea extends React.Component {
             imgIdx: -1, // The image which is currently being dragged
             vgIdx: -1, // The vg which is currently being dragged
             selectedTool: 'upload', // Tool selected by the user
-            isDrawing: false, // Whether the user is drawing/erasing inside the canvas
+            isDrawing: false, // Whether the user is drawing/erasing inside the canvas,
+            background: 'images/background3.jpg',
+            vgDesign: 'getvg/vg0.svg',
         };
 
         this.undraw = this.undraw.bind(this);
@@ -76,6 +78,14 @@ class CanvasArea extends React.Component {
     */
     componentDidMount() {
         this.setCanvasRes(this.canvasDims.width, this.canvasDims.height);
+    }
+
+    componentWillMount() {
+        axios
+            .get(this.state.vgDesign)
+            .then((r) => this.setState({ vgDesign: r.data }));
+
+        console.log(this.state.vgDesign);
     }
 
     /*
@@ -407,7 +417,9 @@ class CanvasArea extends React.Component {
             innerHtml: generateSVG(
                 data.closestFlows[0],
                 canvas_dims.width,
-                canvas_dims.height
+                canvas_dims.height,
+                this.state.background,
+                this.state.vgDesign
             ),
         });
         var svgs = data.svgs,

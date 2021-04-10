@@ -1,5 +1,6 @@
-export default function generateSVG(flow, width, height) {
-    console.log(flow, width, height);
+import axios from 'axios';
+
+export default function generateSVG(flow, width, height, background, vg) {
     var d3 = require('d3'),
         jsdom = require('jsdom');
 
@@ -15,6 +16,14 @@ export default function generateSVG(flow, width, height) {
     for (let i = 0; i < flow.length - 1; i++) {
         lines.push([flow[i][0], flow[i][1], flow[i + 1][0], flow[i + 1][1]]);
     }
+
+    svg.append('image')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('height', height)
+        .attr('width', width)
+        .attr('preserveAspectRatio', 'none')
+        .attr('href', background);
 
     svg.append('g')
         .selectAll('line')
@@ -35,6 +44,17 @@ export default function generateSVG(flow, width, height) {
         .attr('y2', function (d) {
             return d[3];
         });
+
+    let scale = 350;
+    for (let i = 0; i < flow.length; i++) {
+        svg.append('svg')
+            .attr('width', scale)
+            .attr('height', scale)
+            .attr('id', `vg${i}`)
+            .attr('x', flow[i][0] - scale / 2)
+            .attr('y', flow[i][1] - scale / 2)
+            .html(vg);
+    }
 
     console.log(body.node().innerHTML);
     return { __html: body.node().innerHTML };
