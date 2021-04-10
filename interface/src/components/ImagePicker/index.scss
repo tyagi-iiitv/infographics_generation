@@ -6,14 +6,15 @@
         margin: 0 6px;
         float: left;
         opacity: 1;
+        width: 100%;
 
         .thumbnail {
             border: 1px solid #ddd; /* Gray border */
             border-radius: 4px; /* Rounded border */
             padding: 5px; /* Some padding */
-            width: '100%'; /* Set a small width */
+            // width: '100%'; /* Set a small width */
             opacity: 1;
-            margin: 0;
+            margin-bottom: 2;
 
             &:hover {
                 box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.7);

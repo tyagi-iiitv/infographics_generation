@@ -88,9 +88,15 @@ class App extends React.Component {
             textInfo: null,
             isGetDesignsPressed: false,
             flowUrls: ['flows/flow0.jpg', 'flows/flow1.jpg'],
+            VGUrls: ['getvg/vg0.svg', 'getvg/vg1.svg'],
+            connUrls: ['getcon/conn0.svg', 'getcon/conn1.svg'],
             inputText: ``,
             curFlowIndex: 0,
+            curVGIndex: 0,
+            curConnIndex: 0,
             flowLen: 2,
+            VGLen: 23,
+            connLen: 12,
         };
         this.callbackFromChild = this.callbackFromChild.bind(this);
         this.getDesignsPressed = this.getDesignsPressed.bind(this);
@@ -136,13 +142,71 @@ class App extends React.Component {
         this.setState(curState, () => console.log(curState));
     }
 
-    prevVGClick(event) {}
+    prevVGClick() {
+        let curState = { ...this.state };
+        curState.curVGIndex -= 2;
+        let time = performance.now();
+        curState.VGUrls = [
+            'getvg/vg' + curState.curVGIndex.toString() + '.svg?' + time.toString(),
+            'getvg/vg' +
+                (curState.curVGIndex + 1).toString() +
+                '.svg?' +
+                time.toString(),
+        ];
+        this.setState(curState, () => console.log(curState));
+    }
 
-    nextVGClick(event) {}
+    nextVGClick() {
+        let curState = { ...this.state };
+        curState.curVGIndex += 2;
+        let time = performance.now();
+        curState.VGUrls = [
+            'getvg/vg' + curState.curVGIndex.toString() + '.svg?' + time.toString(),
+            'getvg/vg' +
+                (curState.curVGIndex + 1).toString() +
+                '.svg?' +
+                time.toString(),
+        ];
+        this.setState(curState, () => console.log(curState));
+    }
 
-    prevConClick(event) {}
+    prevConClick() {
+        let curState = { ...this.state };
+        curState.curConnIndex -= 2;
+        let time = performance.now();
+        curState.connUrls = [
+            'getcon/conn' +
+                curState.curConnIndex.toString() +
+                '.svg?' +
+                time.toString(),
+            'getcon/conn' +
+                (curState.curConnIndex + 1).toString() +
+                '.svg?' +
+                time.toString(),
+        ];
+        this.setState(curState, () => console.log(curState));
+    }
 
-    nextConClick(event) {}
+    callbackFromChild(dataFromChild) {
+        this.setState(dataFromChild, () => console.log(this.state));
+    }
+
+    nextConClick() {
+        let curState = { ...this.state };
+        curState.curConnIndex += 2;
+        let time = performance.now();
+        curState.connUrls = [
+            'getcon/conn' +
+                curState.curConnIndex.toString() +
+                '.svg?' +
+                time.toString(),
+            'getcon/conn' +
+                (curState.curConnIndex + 1).toString() +
+                '.svg?' +
+                time.toString(),
+        ];
+        this.setState(curState, () => console.log(curState));
+    }
 
     callbackFromChild(dataFromChild) {
         this.setState(dataFromChild, () => console.log(this.state));
@@ -230,7 +294,7 @@ class App extends React.Component {
                             >
                                 <Button
                                     variant="danger"
-                                    style={{ marginRight: 20, marginTop: 10 }}
+                                    style={{ marginRight: 20 }}
                                     onClick={this.prevLayoutClick}
                                     disabled={
                                         this.state.curFlowIndex <= 0 ? true : false
@@ -240,11 +304,105 @@ class App extends React.Component {
                                 </Button>
                                 <Button
                                     variant="danger"
-                                    style={{ marginTop: 10 }}
                                     onClick={this.nextLayoutClick}
                                     disabled={
                                         this.state.curFlowIndex + 1 >=
                                         Math.min(this.state.flowLen, 49)
+                                            ? true
+                                            : false
+                                    }
+                                >
+                                    Next
+                                </Button>
+                            </div>
+                            <div
+                                style={{
+                                    color: 'white',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Button
+                                    variant="danger"
+                                    style={{ marginTop: 10, marginBottom: 10 }}
+                                >
+                                    Visual Groups
+                                </Button>
+                            </div>
+                            <ImagePicker imgUrls={this.state.VGUrls} />
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Button
+                                    variant="danger"
+                                    style={{ marginRight: 20 }}
+                                    onClick={this.prevVGClick}
+                                    disabled={
+                                        this.state.curVGIndex <= 0 ? true : false
+                                    }
+                                >
+                                    Prev
+                                </Button>
+                                <Button
+                                    variant="danger"
+                                    onClick={this.nextVGClick}
+                                    disabled={
+                                        this.state.curVGIndex + 1 >= this.state.VGLen
+                                            ? true
+                                            : false
+                                    }
+                                >
+                                    Next
+                                </Button>
+                            </div>
+                            <div
+                                style={{
+                                    color: 'white',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Button
+                                    variant="danger"
+                                    style={{ marginTop: 10, marginBottom: 10 }}
+                                >
+                                    Connections
+                                </Button>
+                            </div>
+                            <ImagePicker imgUrls={this.state.connUrls} />
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Button
+                                    variant="danger"
+                                    style={{ marginRight: 20 }}
+                                    onClick={this.prevConClick}
+                                    disabled={
+                                        this.state.curConnIndex <= 0 ? true : false
+                                    }
+                                >
+                                    Prev
+                                </Button>
+                                <Button
+                                    variant="danger"
+                                    onClick={this.nextConClick}
+                                    disabled={
+                                        this.state.curConnIndex + 1 >=
+                                        this.state.connLen
                                             ? true
                                             : false
                                     }

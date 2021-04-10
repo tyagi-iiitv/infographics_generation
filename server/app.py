@@ -233,7 +233,7 @@ def save_vg():
     f.close()
     return "OK"
 
-@app.route('/get-vg/<path:path>', methods=['GET'])
+@app.route('/getvg/<path:path>', methods=['GET'])
 def get_vg(path):
     return send_from_directory('svgImages', path, as_attachment=True)
 
@@ -246,6 +246,11 @@ def get_image(path):
 def get_layout(path):
     print(path)
     return send_from_directory('flowImages', path, as_attachment=True)
+
+@app.route('/getcon/<path:path>', methods=['GET'])
+def get_conns(path):
+    print(path)
+    return send_from_directory('connections', path, as_attachment=True)
 
 @app.route('/layout/', methods=['POST'])
 def set_layout():

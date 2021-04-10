@@ -5,7 +5,8 @@ const ImageStyle = (width, height) => {
     return {
         width,
         height,
-        objectFit: 'cover',
+        marginBottom: 5,
+        // objectFit: 'cover',
     };
 };
 
@@ -24,7 +25,7 @@ export default class Image extends Component {
                 <img
                     src={src}
                     className={`thumbnail${isSelected ? ' selected' : ''}`}
-                    style={ImageStyle('100%', '100%')}
+                    style={ImageStyle('100%', 125)}
                 />
                 <div className="checked">
                     {/*<img src={imgCheck} style={{ width: 75, height: 75, objectFit: "cover" }}/>*/}
