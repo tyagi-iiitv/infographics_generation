@@ -256,6 +256,7 @@ class App extends React.Component {
                         <CanvasArea
                             getDesignsPressed={this.getDesignsPressed}
                             callbackFromChild={this.callbackFromChild}
+                            inputText={this.state.inputText}
                         />
                     </div>
                     <div

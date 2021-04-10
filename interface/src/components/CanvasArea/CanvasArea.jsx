@@ -1,6 +1,7 @@
 import React from 'react';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
+import * as reactBootstrap from 'react-bootstrap';
 import axios from 'axios';
 import styles from './CanvasArea.module.scss';
 import * as d3 from 'd3';
@@ -866,10 +867,8 @@ class CanvasArea extends React.Component {
                         color="default"
                         aria-label="Download Tools"
                     >
-                        <Button
-                            size="medium"
-                            variant="contained"
-                            color="secondary"
+                        <reactBootstrap.Button
+                            variant="danger"
                             className={styles.toolButton}
                             onClick={() => {
                                 this.sendInfo();
@@ -878,9 +877,10 @@ class CanvasArea extends React.Component {
                                 });
                                 this.props.getDesignsPressed();
                             }}
+                            disabled={this.props.inputText === `` ? true : false}
                         >
                             Get Designs
-                        </Button>
+                        </reactBootstrap.Button>
                     </ButtonGroup>
                     <ButtonGroup
                         className={styles.toolButtonGroup}
