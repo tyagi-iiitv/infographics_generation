@@ -9,11 +9,31 @@ export default class ImageSelect extends Component {
             images: [],
         };
     }
+
+    componentDidMount() {
+        this.setState({ images: [] });
+    }
+
     onPickImages(images) {
         this.setState({ images });
+        console.log(images);
+        if (images.length === 0) {
+            this.props.callbackFromChild({
+                selectedConns: null,
+                selectedLayouts: null,
+                selectedVGs: null,
+            });
+        } else if (this.props.id == 0) {
+            this.props.callbackFromChild({ selectedLayouts: images[0].src });
+        } else if (this.props.id == 1) {
+            this.props.callbackFromChild({ selectedVGs: images[0].src });
+        } else {
+            this.props.callbackFromChild({ selectedConns: images[0].src });
+        }
     }
 
     render() {
+        console.log(this.state);
         return (
             <div>
                 <ImagePicker

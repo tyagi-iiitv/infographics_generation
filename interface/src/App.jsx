@@ -30,6 +30,9 @@ class App extends React.Component {
         super(props);
         this.state = {
             textInfo: null,
+            selectedLayouts: null,
+            selectedVGs: null,
+            selectedConns: null,
             isGetDesignsPressed: false,
             canvasView: true,
             canvasBg: 'images/background4.jpg',
@@ -203,6 +206,11 @@ class App extends React.Component {
     };
 
     render() {
+        console.log(
+            this.state.selectedConns,
+            this.state.selectedLayouts,
+            this.state.selectedVGs
+        );
         return (
             <div>
                 <Navbar bg="dark" variant="dark">
@@ -293,7 +301,11 @@ class App extends React.Component {
                                     Layouts
                                 </Badge>
                             </div>
-                            <ImagePicker imgUrls={this.state.flowUrls} />
+                            <ImagePicker
+                                imgUrls={this.state.flowUrls}
+                                id={0}
+                                callbackFromChild={this.callbackFromChild}
+                            />
                             <div
                                 style={{
                                     display: 'flex',
@@ -346,7 +358,11 @@ class App extends React.Component {
                                     Visual Groups
                                 </Badge>
                             </div>
-                            <ImagePicker imgUrls={this.state.VGUrls} />
+                            <ImagePicker
+                                id={1}
+                                imgUrls={this.state.VGUrls}
+                                callbackFromChild={this.callbackFromChild}
+                            />
                             <div
                                 style={{
                                     display: 'flex',
@@ -398,7 +414,11 @@ class App extends React.Component {
                                     Connections
                                 </Badge>
                             </div>
-                            <ImagePicker imgUrls={this.state.connUrls} />
+                            <ImagePicker
+                                id={2}
+                                callbackFromChild={this.callbackFromChild}
+                                imgUrls={this.state.connUrls}
+                            />
                             <div
                                 style={{
                                     display: 'flex',
