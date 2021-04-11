@@ -432,6 +432,7 @@ class CanvasArea extends React.Component {
     Send flow image and dragged locations to server
     */
     async sendInfo() {
+        console.log('here1');
         const canvas = this.dispCanvas.current;
         // this.drawBackground();
         // this.undraw();
@@ -461,7 +462,7 @@ class CanvasArea extends React.Component {
         //     flowImg: flowImg,
         //     draggedImages: draggedImages,
         // });
-
+        console.log('here2');
         const data = response['data'];
         // console.log(data);
         let time = performance.now();
@@ -494,6 +495,7 @@ class CanvasArea extends React.Component {
             }
             // let curFlow = this.props.selectedLayouts?this.props.selectedLayouts:
             await axios.get(curVG).then((r) => {
+                console.log(r.data);
                 innerHtmls.push(
                     generateSVG(
                         data.closestFlows[curLayout],

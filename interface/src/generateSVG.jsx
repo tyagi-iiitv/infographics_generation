@@ -16,7 +16,7 @@ export default function generateSVG(
     pivotLocation,
     colors
 ) {
-    // console.log(connection);
+    console.log(flow.length, width, height, vg, input);
     var d3 = require('d3'),
         jsdom = require('jsdom');
 
@@ -78,12 +78,14 @@ export default function generateSVG(
             .text(orgStyle + `.color-1${i}{fill:${colors[i]};}`);
     }
 
-    svg.append('image')
-        .attr('x', pivotLocation.x)
-        .attr('y', pivotLocation.y)
-        .attr('width', pivotLocation.width)
-        .attr('height', pivotLocation.height)
-        .attr('href', pivot);
+    if (pivot) {
+        svg.append('image')
+            .attr('x', pivotLocation.x)
+            .attr('y', pivotLocation.y)
+            .attr('width', pivotLocation.width)
+            .attr('height', pivotLocation.height)
+            .attr('href', pivot);
+    }
 
     return { __html: body.node().innerHTML };
     // const fs = require('fs');
