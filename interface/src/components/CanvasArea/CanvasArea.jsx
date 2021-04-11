@@ -19,6 +19,7 @@ import {
     faDownload,
     faExpand,
 } from '@fortawesome/free-solid-svg-icons';
+import { image } from 'd3';
 
 /*
 Drawing functions implemented from:
@@ -38,8 +39,23 @@ class CanvasArea extends React.Component {
             vgIdx: -1, // The vg which is currently being dragged
             selectedTool: 'upload', // Tool selected by the user
             isDrawing: false, // Whether the user is drawing/erasing inside the canvas,
-            background: 'images/background3.jpg',
+            background: 'images/background10.jpg',
             vgDesign: 'getvg/vg1.svg',
+            selectedSVG: ``,
+            connectionType: 'none',
+            connection: 'getcon/conn3.svg',
+            pivot: 'pivot/pivot0.svg',
+            pivotLocation: { x: 100, y: 100 },
+            colors: [
+                '#7fc97f',
+                '#beaed4',
+                '#fdc086',
+                '#ffff99',
+                '#386cb0',
+                '#f0027f',
+                '#bf5b17',
+                '#666666',
+            ],
         };
 
         this.undraw = this.undraw.bind(this);
@@ -61,6 +77,7 @@ class CanvasArea extends React.Component {
         this.onMouseMove = this.onMouseMove.bind(this);
         this.imgBelow = this.imgBelow.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
+        this.drawBackground = this.drawBackground.bind(this);
 
         this.dispCanvas = React.createRef(); // Reference for the canvas area
         this.imgForm = React.createRef(); // Reference for the upload image input
@@ -117,6 +134,23 @@ class CanvasArea extends React.Component {
         });
     };
 
+    drawBackground() {
+        console.log(this.props.backgroundSVG.__html);
+        const canvas = this.dispCanvas.current;
+        const ctx = canvas.getContext('2d');
+
+        let img = new Image();
+        img.onload = () => {
+            ctx.drawImage(img, 0, 0, this.canvasDims.width, this.canvasDims.height);
+        };
+
+        img.src = URL.createObjectURL(
+            new Blob([this.state.selectedSVG], {
+                type: 'image/svg+xml;charset=utf-8',
+            })
+        );
+    }
+
     /*
     Removes the Visual Groups added to the canvas
     */
@@ -161,7 +195,7 @@ class CanvasArea extends React.Component {
     drawVGs = () => {
         const canvas = this.dispCanvas.current;
         const ctx = canvas.getContext('2d');
-        // Positions all the VGs to their respective positions
+
         for (const vg of this.vgs) {
             ctx.drawImage(vg.image, vg.x, vg.y, vg.width, vg.height);
         }
@@ -376,11 +410,12 @@ class CanvasArea extends React.Component {
     */
     async sendInfo() {
         const canvas = this.dispCanvas.current;
-        this.undraw();
-        this.redrawLines();
-        const flowImg = canvas.toDataURL('image/png');
-        this.redrawPics();
-        this.clearVGs();
+        this.drawBackground();
+        // this.undraw();
+        // this.redrawLines();
+        // const flowImg = canvas.toDataURL('image/png');
+        // this.redrawPics();
+        // this.clearVGs();
         var draggedImages = [];
         this.imgs.forEach((img) => {
             const draggedImage = {
@@ -419,7 +454,12 @@ class CanvasArea extends React.Component {
                 canvas_dims.height,
                 this.state.background,
                 this.state.vgDesign,
-                generatePreview(this.props.inputText)
+                generatePreview(this.props.inputText),
+                this.state.connectionType,
+                this.state.connection,
+                this.state.pivot,
+                this.state.pivotLocation,
+                this.state.colors
             ),
         });
         var svgs = data.svgs,
@@ -427,14 +467,14 @@ class CanvasArea extends React.Component {
             numVisGrps = data.numVisGrps;
 
         // Currently displaying the closest flow. There are a total of 5 nearest flows
-        const flow = response.data.closestFlows[0];
-        if (flow) {
-            for (var i = 0; i < numVisGrps; i++) {
-                this.addVG(svgs[i], imgLinks[i], flow[i][0], flow[i][1]);
-            }
-        }
+        // const flow = response.data.closestFlows[0];
+        // if (flow) {
+        //     for (var i = 0; i < numVisGrps; i++) {
+        //         this.addVG(svgs[i], imgLinks[i], flow[i][0], flow[i][1]);
+        //     }
+        // }
 
-        this.drawVGs();
+        // this.drawVGs();
     }
 
     /*
@@ -658,6 +698,7 @@ class CanvasArea extends React.Component {
     }
 
     render() {
+        console.log(this.props.display);
         return (
             <div className={styles.canvasAreaContainer}>
                 <canvas
@@ -959,7 +1000,7 @@ class CanvasArea extends React.Component {
                             }}
                             style={
                                 this.state.selectedTool === 'draw'
-                                    ? { backgroundColor: '#101536' }
+                                    ? { backgroundColor: 'transparent' }
                                     : {}
                             }
                             disableElevation={this.state.selectedTool === 'draw'}
@@ -984,7 +1025,7 @@ class CanvasArea extends React.Component {
                             }}
                             style={
                                 this.state.selectedTool === 'erase'
-                                    ? { backgroundColor: '#101536' }
+                                    ? { backgroundColor: 'transparent' }
                                     : {}
                             }
                             disableElevation={this.state.selectedTool === 'erase'}

@@ -12,6 +12,7 @@ import {
     ConnectionTypes,
     Examples,
     About,
+    ShowCanvas,
 } from './components';
 import styles from './App.module.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -22,7 +23,7 @@ import {
     connectionButtonState,
     exampleButtonState,
 } from './state';
-import generateSVG from './generateSVG';
+import axios from 'axios';
 
 class App extends React.Component {
     constructor(props) {
@@ -30,6 +31,7 @@ class App extends React.Component {
         this.state = {
             textInfo: null,
             isGetDesignsPressed: false,
+            canvasView: true,
             flowUrls: ['flows/flow0.jpg', 'flows/flow1.jpg'],
             VGUrls: ['getvg/vg0.svg', 'getvg/vg1.svg'],
             connUrls: ['getcon/conn0.svg', 'getcon/conn1.svg'],
@@ -40,7 +42,7 @@ class App extends React.Component {
             flowLen: 2,
             VGLen: 23,
             connLen: 12,
-            innerHtml: { __html: '' },
+            innerHtml: { __html: `` },
         };
         this.callbackFromChild = this.callbackFromChild.bind(this);
         this.getDesignsPressed = this.getDesignsPressed.bind(this);
@@ -50,6 +52,12 @@ class App extends React.Component {
         this.nextVGClick = this.nextVGClick.bind(this);
         this.prevConClick = this.prevConClick.bind(this);
         this.nextConClick = this.nextConClick.bind(this);
+        this.prevInfoClick = this.prevInfoClick.bind(this);
+        this.nextInfoClick = this.nextInfoClick.bind(this);
+        this.info1Click = this.info1Click.bind(this);
+        this.info2Click = this.info2Click.bind(this);
+        this.info3Click = this.info3Click.bind(this);
+        this.info4Click = this.info4Click.bind(this);
     }
 
     prevLayoutClick() {
@@ -148,6 +156,20 @@ class App extends React.Component {
         this.setState(curState, () => console.log(curState));
     }
 
+    prevInfoClick() {}
+
+    nextInfoClick() {}
+
+    info1Click() {
+        this.setState({ canvasView: false });
+    }
+
+    info2Click() {}
+
+    info3Click() {}
+
+    info4Click() {}
+
     callbackFromChild(dataFromChild) {
         this.setState(dataFromChild, () => console.log(this.state));
     }
@@ -170,6 +192,7 @@ class App extends React.Component {
                         <Export />
                         <ColorPallets values={colorButtonState} />
                         <ConnectionTypes values={connectionButtonState} />
+                        <ShowCanvas callbackFromChild={this.callbackFromChild} />
                     </Nav>
                     <Nav>
                         <Examples
@@ -192,11 +215,21 @@ class App extends React.Component {
                             width: this.state.isGetDesignsPressed ? '70%' : '80%',
                         }}
                     >
-                        <CanvasArea
-                            getDesignsPressed={this.getDesignsPressed}
-                            callbackFromChild={this.callbackFromChild}
-                            inputText={this.state.inputText}
+                        <div
+                            className={styles.svgContainer}
+                            dangerouslySetInnerHTML={this.state.innerHtml}
+                            style={{
+                                display: this.state.canvasView ? 'none' : 'flex',
+                            }}
                         />
+                        {this.state.canvasView && (
+                            <CanvasArea
+                                getDesignsPressed={this.getDesignsPressed}
+                                callbackFromChild={this.callbackFromChild}
+                                inputText={this.state.inputText}
+                                backgroundSVG={this.state.innerHtml}
+                            />
+                        )}
                     </div>
                     <div
                         className={styles.rightContainer}
@@ -393,6 +426,19 @@ class App extends React.Component {
                             <div
                                 dangerouslySetInnerHTML={this.state.innerHtml}
                                 className={styles.infographics}
+                                onClick={this.info1Click}
+                            ></div>
+                            <div
+                                dangerouslySetInnerHTML={this.state.innerHtml}
+                                className={styles.infographics}
+                            ></div>
+                            <div
+                                dangerouslySetInnerHTML={this.state.innerHtml}
+                                className={styles.infographics}
+                            ></div>
+                            <div
+                                dangerouslySetInnerHTML={this.state.innerHtml}
+                                className={styles.infographics}
                             ></div>
                             <div
                                 style={{
@@ -402,10 +448,10 @@ class App extends React.Component {
                                     alignItems: 'center',
                                 }}
                             >
-                                {/* <Button
+                                <Button
                                     variant="danger"
                                     style={{ marginRight: 20 }}
-                                    onClick={this.prevConClick}
+                                    onClick={this.prevInfoClick}
                                     disabled={
                                         this.state.curConnIndex <= 0 ? true : false
                                     }
@@ -414,7 +460,7 @@ class App extends React.Component {
                                 </Button>
                                 <Button
                                     variant="danger"
-                                    onClick={this.nextConClick}
+                                    onClick={this.nextInfoClick}
                                     disabled={
                                         this.state.curConnIndex + 1 >=
                                         this.state.connLen
@@ -423,7 +469,7 @@ class App extends React.Component {
                                     }
                                 >
                                     Next
-                                </Button> */}
+                                </Button>
                             </div>
                         </div>
                     </div>

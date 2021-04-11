@@ -62,6 +62,30 @@ export class Export extends Component {
     }
 }
 
+export class ShowCanvas extends Component {
+    constructor(props) {
+        super(props);
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick(event) {
+        event.preventDefault();
+        this.props.callbackFromChild({ canvasView: true });
+        // download SVG code for the infographic here
+    }
+
+    render() {
+        return (
+            <Nav.Link
+                style={{ paddingLeft: 15, fontSize: 17, outline: 'none' }}
+                onClick={this.handleClick}
+            >
+                Canvas
+            </Nav.Link>
+        );
+    }
+}
+
 export class ColorPallets extends Component {
     constructor(props) {
         super(props);

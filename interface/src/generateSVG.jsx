@@ -1,10 +1,20 @@
-import axios from 'axios';
 import { textwrap } from 'd3-textwrap';
 
 // import {wrap} from './wrap';
 
-export default function generateSVG(flow, width, height, background, vg, input) {
-    console.log(input);
+export default function generateSVG(
+    flow,
+    width,
+    height,
+    background,
+    vg,
+    input,
+    connectionType,
+    connection,
+    pivot,
+    pivotLocation,
+    colors
+) {
     var d3 = require('d3'),
         jsdom = require('jsdom');
 
@@ -52,8 +62,19 @@ export default function generateSVG(flow, width, height, background, vg, input) 
 
         // Insert image
         svg.select(`#vg${i}`).select('.img1').attr('href', input[i].image);
-    }
 
+        svg.selectAll('.color-1')
+            .nodes()
+            .forEach((node) => {
+                d3.select(node).attr('class', `color-1${i}`);
+            });
+
+        //Change color of SVGs
+        let orgStyle = svg.select(`#vg${i}`).select('style').text();
+        svg.select(`#vg${i}`)
+            .select('style')
+            .text(orgStyle + `.color-1${i}{fill:${colors[i]};}`);
+    }
     console.log(body.node().innerHTML);
     return { __html: body.node().innerHTML };
     // const fs = require('fs');

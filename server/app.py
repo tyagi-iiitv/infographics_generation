@@ -11,6 +11,7 @@ from scipy.spatial import ConvexHull
 from lxml import etree
 import os
 import cv2
+from cairosvg import svg2png
 
 
 app = Flask(__name__)
@@ -226,11 +227,15 @@ def visgrps():
 
 @app.route('/save_vg/', methods=['POST'])
 def save_vg():
-    data = json.loads(request.data.decode('utf-8'))
-    file_name = os.path.join('vg_svgs', f'uc{data["uc"]}_l{data["fl"]}_vg{data["vg"]}_{data["cl"]}_{data["cnt"]}_{data["cne"]}.svg')
-    f = open(file_name, 'w+')
-    f.write(data['vgCode'])
-    f.close()
+    # data = json.loads(request.data.decode('utf-8'))
+    # svg_code = data['vgCode']
+    # svg2png(bytestring=bytes(svg_code,'UTF-8'), write_to='output.png')
+    # file_name = os.path.join('vg_svgs', f'uc{data["uc"]}_l{data["fl"]}_vg{data["vg"]}_{data["cl"]}_{data["cnt"]}_{data["cne"]}.svg')
+    # print(data['vgCode'])
+    # file_name = 'output.svg'
+    # f = open(file_name, 'w+')
+    # f.write(data['vgCode'])
+    # f.close(
     return "OK"
 
 @app.route('/getvg/<path:path>', methods=['GET'])
@@ -244,13 +249,15 @@ def get_image(path):
 
 @app.route('/flows/<path:path>', methods=['GET'])
 def get_layout(path):
-    print(path)
     return send_from_directory('flowImages', path, as_attachment=True)
 
 @app.route('/getcon/<path:path>', methods=['GET'])
 def get_conns(path):
-    print(path)
     return send_from_directory('connections', path, as_attachment=True)
+
+@app.route('/pivot/<path:path>', methods=['GET'])
+def get_pivots(path):
+    return send_from_directory('pivotImages', path, as_attachment=True)
 
 @app.route('/layout/', methods=['POST'])
 def set_layout():

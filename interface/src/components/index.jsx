@@ -12,4 +12,5 @@ export {
     ConnectionTypes,
     Examples,
     About,
+    ShowCanvas,
 } from './MenuBar/MenuBar';

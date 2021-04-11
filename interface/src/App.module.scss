@@ -33,7 +33,6 @@
     height: 100%;
     display: flex;
     flex-direction: row;
-    align-items: center;
 }
 
 .rightContainer {
@@ -58,7 +57,24 @@
     flex-direction: column;
 }
 
-// .infographics {
-//     height: 200px;
-//     border: 2px solid white;
-// }
+.infographics {
+    padding-bottom: 15px;
+}
+
+.backgroundSVG {
+    border: 10px solid white;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.svgContainer {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 12%;
+    width: 95%;
+}
