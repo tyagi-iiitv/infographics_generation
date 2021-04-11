@@ -44,6 +44,10 @@ class App extends React.Component {
             VGLen: 23,
             connLen: 12,
             innerHtml: { __html: `` },
+            innerHtml1: { __html: `` },
+            innerHtml2: { __html: `` },
+            innerHtml3: { __html: `` },
+            innerHtml4: { __html: `` },
             colorPallete: [
                 '#7fc97f',
                 '#beaed4',
@@ -173,14 +177,20 @@ class App extends React.Component {
     nextInfoClick() {}
 
     info1Click() {
-        this.setState({ canvasView: false });
+        this.setState({ canvasView: false, innerHtml: this.state.innerHtml1 });
     }
 
-    info2Click() {}
+    info2Click() {
+        this.setState({ canvasView: false, innerHtml: this.state.innerHtml2 });
+    }
 
-    info3Click() {}
+    info3Click() {
+        this.setState({ canvasView: false, innerHtml: this.state.innerHtml3 });
+    }
 
-    info4Click() {}
+    info4Click() {
+        this.setState({ canvasView: false, innerHtml: this.state.innerHtml4 });
+    }
 
     callbackFromChild(dataFromChild) {
         this.setState(dataFromChild, () => console.log(this.state));
@@ -445,21 +455,24 @@ class App extends React.Component {
                             </div>
                             {/* <div className={styles.infographics} dangerouslySetInnerHTML={this.state.innerHtml}/> */}
                             <div
-                                dangerouslySetInnerHTML={this.state.innerHtml}
+                                dangerouslySetInnerHTML={this.state.innerHtml1}
                                 className={styles.infographics}
                                 onClick={this.info1Click}
                             ></div>
                             <div
-                                dangerouslySetInnerHTML={this.state.innerHtml}
+                                dangerouslySetInnerHTML={this.state.innerHtml2}
                                 className={styles.infographics}
+                                onClick={this.info2Click}
                             ></div>
                             <div
-                                dangerouslySetInnerHTML={this.state.innerHtml}
+                                dangerouslySetInnerHTML={this.state.innerHtml3}
                                 className={styles.infographics}
+                                onClick={this.info3Click}
                             ></div>
                             <div
-                                dangerouslySetInnerHTML={this.state.innerHtml}
+                                dangerouslySetInnerHTML={this.state.innerHtml4}
                                 className={styles.infographics}
+                                onClick={this.info4Click}
                             ></div>
                             <div
                                 style={{

@@ -459,7 +459,46 @@ class CanvasArea extends React.Component {
                 'flows/flow1.jpg?' + time.toString(),
             ],
             flowLen: data.closestFlows.length,
-            innerHtml: generateSVG(
+            innerHtml1: generateSVG(
+                data.closestFlows[0],
+                canvas_dims.width,
+                canvas_dims.height,
+                this.props.background,
+                this.state.vgDesign,
+                generatePreview(this.props.inputText),
+                this.state.connectionType,
+                this.state.connection,
+                this.state.pivot,
+                this.state.pivotLocation,
+                this.props.colorPallete
+            ),
+            innerHtml2: generateSVG(
+                data.closestFlows[0],
+                canvas_dims.width,
+                canvas_dims.height,
+                this.props.background,
+                this.state.vgDesign,
+                generatePreview(this.props.inputText),
+                this.state.connectionType,
+                this.state.connection,
+                this.state.pivot,
+                this.state.pivotLocation,
+                this.props.colorPallete
+            ),
+            innerHtml3: generateSVG(
+                data.closestFlows[0],
+                canvas_dims.width,
+                canvas_dims.height,
+                this.props.background,
+                this.state.vgDesign,
+                generatePreview(this.props.inputText),
+                this.state.connectionType,
+                this.state.connection,
+                this.state.pivot,
+                this.state.pivotLocation,
+                this.props.colorPallete
+            ),
+            innerHtml4: generateSVG(
                 data.closestFlows[0],
                 canvas_dims.width,
                 canvas_dims.height,
