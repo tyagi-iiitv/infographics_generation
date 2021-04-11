@@ -15,9 +15,12 @@ import {
     faPencilAlt,
     faEraser,
     faTrash,
-    faUpload,
+    faHands,
     faDownload,
     faExpand,
+    faImage,
+    faSun,
+    faLink,
 } from '@fortawesome/free-solid-svg-icons';
 import { image } from 'd3';
 
@@ -39,7 +42,6 @@ class CanvasArea extends React.Component {
             vgIdx: -1, // The vg which is currently being dragged
             selectedTool: 'upload', // Tool selected by the user
             isDrawing: false, // Whether the user is drawing/erasing inside the canvas,
-            background: 'images/background10.jpg',
             vgDesign: 'getvg/vg1.svg',
             selectedSVG: ``,
             connectionType: 'none',
@@ -69,6 +71,7 @@ class CanvasArea extends React.Component {
         this.imgBelow = this.imgBelow.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
         this.addBackground = this.addBackground.bind(this);
+        this.drawBackground = this.drawBackground.bind(this);
 
         this.dispCanvas = React.createRef(); // Reference for the canvas area
         this.imgForm = React.createRef(); // Reference for the upload image input
@@ -88,6 +91,7 @@ class CanvasArea extends React.Component {
     */
     componentDidMount() {
         this.setCanvasRes(this.canvasDims.width, this.canvasDims.height);
+        this.drawBackground();
     }
 
     componentWillMount() {
@@ -126,6 +130,18 @@ class CanvasArea extends React.Component {
         });
     };
 
+    drawBackground() {
+        const canvas = this.dispCanvas.current;
+        const ctx = canvas.getContext('2d');
+
+        let img = new Image();
+        img.onload = () => {
+            ctx.drawImage(img, 0, 0, this.canvasDims.width, this.canvasDims.height);
+        };
+
+        img.src = this.props.background;
+    }
+
     addBackground(e) {
         const canvas = this.dispCanvas.current;
         const ctx = canvas.getContext('2d');
@@ -143,7 +159,7 @@ class CanvasArea extends React.Component {
             const y = 50;
             ctx.drawImage(img, 0, 0, this.canvasDims.width, this.canvasDims.height);
         };
-        this.setState({ background: img.src });
+        this.props.callbackFromChild({ canvasBg: img.src });
     }
 
     /*
@@ -447,7 +463,7 @@ class CanvasArea extends React.Component {
                 data.closestFlows[0],
                 canvas_dims.width,
                 canvas_dims.height,
-                this.state.background,
+                this.props.background,
                 this.state.vgDesign,
                 generatePreview(this.props.inputText),
                 this.state.connectionType,
@@ -955,7 +971,7 @@ class CanvasArea extends React.Component {
                             }}
                         >
                             <FontAwesomeIcon
-                                icon={faUpload}
+                                icon={faImage}
                                 aria-label="Upload Image"
                             />
                         </Button>
@@ -972,7 +988,7 @@ class CanvasArea extends React.Component {
                             }}
                         >
                             <FontAwesomeIcon
-                                icon={faUpload}
+                                icon={faSun}
                                 aria-label="Upload Image"
                             />
                         </Button>
@@ -989,7 +1005,24 @@ class CanvasArea extends React.Component {
                             }}
                         >
                             <FontAwesomeIcon
-                                icon={faUpload}
+                                icon={faLink}
+                                aria-label="Upload Image"
+                            />
+                        </Button>
+                        <Button
+                            size="medium"
+                            variant="contained"
+                            color="primary"
+                            className={styles.toolButton}
+                            onClick={() => {
+                                this.setState({
+                                    selectedTool: 'upload',
+                                });
+                                this.imgForm.current.click();
+                            }}
+                        >
+                            <FontAwesomeIcon
+                                icon={faHands}
                                 aria-label="Upload Image"
                             />
                         </Button>

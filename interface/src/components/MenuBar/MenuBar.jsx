@@ -6,38 +6,23 @@ import { GithubPicker } from 'react-color';
 export class Upload extends Component {
     constructor(props) {
         super(props);
-        this.state = { value: this.props.values.selected };
-
-        this.handleChange = this.handleChange.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
 
-    handleChange(event) {
-        this.setState({ value: event }, () => {
-            if (event == 1) {
-                this.props.callbackFromChild({ uploadPivot: true });
-            }
-        });
+    handleClick(event) {
+        event.preventDefault();
+        // download SVG code for the infographic here
     }
 
     render() {
-        let values_array = [];
-        for (let i = 0; i < this.props.values.values.length; i++) {
-            values_array.push(
-                <NavDropdown.Item
-                    eventKey={this.props.values.values[i].key}
-                    onSelect={this.handleChange}
-                >
-                    {this.props.values.values[i].name}
-                </NavDropdown.Item>
-            );
-        }
-
-        const upload_button = (
-            <NavDropdown style={{ fontSize: 17, paddingLeft: 15 }} title="Upload">
-                {values_array}
-            </NavDropdown>
+        return (
+            <Nav.Link
+                style={{ paddingLeft: 15, fontSize: 17, outline: 'none' }}
+                onClick={this.handleClick}
+            >
+                Upload-Content
+            </Nav.Link>
         );
-        return upload_button;
     }
 }
 

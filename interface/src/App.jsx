@@ -32,6 +32,7 @@ class App extends React.Component {
             textInfo: null,
             isGetDesignsPressed: false,
             canvasView: true,
+            canvasBg: 'images/background4.jpg',
             flowUrls: ['flows/flow0.jpg', 'flows/flow1.jpg'],
             VGUrls: ['getvg/vg0.svg', 'getvg/vg1.svg'],
             connUrls: ['getcon/conn0.svg', 'getcon/conn1.svg'],
@@ -247,6 +248,7 @@ class App extends React.Component {
                                 backgroundSVG={this.state.innerHtml}
                                 colorPallete={this.state.colorPallete}
                                 uploadPivot={this.state.uploadPivot}
+                                background={this.state.canvasBg}
                             />
                         )}
                     </div>
