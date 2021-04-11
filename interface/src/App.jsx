@@ -53,6 +53,7 @@ class App extends React.Component {
                 '#bf5b17',
                 '#666666',
             ],
+            uploadPivot: false,
         };
         this.callbackFromChild = this.callbackFromChild.bind(this);
         this.getDesignsPressed = this.getDesignsPressed.bind(this);
@@ -198,7 +199,10 @@ class App extends React.Component {
                         Infographics Wizard
                     </Navbar.Brand>
                     <Nav className="mr-auto">
-                        <Upload values={uploadButtonState} />
+                        <Upload
+                            values={uploadButtonState}
+                            callbackFromChild={this.callbackFromChild}
+                        />
                         <Export />
                         <ColorPallets
                             values={colorButtonState}
@@ -242,6 +246,7 @@ class App extends React.Component {
                                 inputText={this.state.inputText}
                                 backgroundSVG={this.state.innerHtml}
                                 colorPallete={this.state.colorPallete}
+                                uploadPivot={this.state.uploadPivot}
                             />
                         )}
                     </div>

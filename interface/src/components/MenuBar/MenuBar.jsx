@@ -13,7 +13,9 @@ export class Upload extends Component {
 
     handleChange(event) {
         this.setState({ value: event }, () => {
-            console.log(this.state.value);
+            if (event == 1) {
+                this.props.callbackFromChild({ uploadPivot: true });
+            }
         });
     }
 

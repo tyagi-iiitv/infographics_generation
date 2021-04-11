@@ -46,6 +46,7 @@ class CanvasArea extends React.Component {
             connection: 'getcon/conn3.svg',
             pivot: 'pivot/pivot0.svg',
             pivotLocation: { x: 100, y: 100 },
+            uploadPivot: this.props.uploadPivot,
         };
 
         this.undraw = this.undraw.bind(this);
@@ -67,10 +68,11 @@ class CanvasArea extends React.Component {
         this.onMouseMove = this.onMouseMove.bind(this);
         this.imgBelow = this.imgBelow.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
-        this.drawBackground = this.drawBackground.bind(this);
+        this.addBackground = this.addBackground.bind(this);
 
         this.dispCanvas = React.createRef(); // Reference for the canvas area
         this.imgForm = React.createRef(); // Reference for the upload image input
+        this.bgForm = React.createRef();
 
         this.imgs = []; // List of images uploaded by the user
         this.vgs = []; // List of visual group svgs added
@@ -124,21 +126,24 @@ class CanvasArea extends React.Component {
         });
     };
 
-    drawBackground() {
-        console.log(this.props.backgroundSVG.__html);
+    addBackground(e) {
         const canvas = this.dispCanvas.current;
         const ctx = canvas.getContext('2d');
 
-        let img = new Image();
+        var img = new Image();
+        if (!e.target.files[0]) {
+            return;
+        }
+        img.src = URL.createObjectURL(e.target.files[0]);
+        e.target.value = '';
+
         img.onload = () => {
+            // Currently, setting all uploaded images to fixed width of 200px
+            const x = 50;
+            const y = 50;
             ctx.drawImage(img, 0, 0, this.canvasDims.width, this.canvasDims.height);
         };
-
-        img.src = URL.createObjectURL(
-            new Blob([this.state.selectedSVG], {
-                type: 'image/svg+xml;charset=utf-8',
-            })
-        );
+        this.setState({ background: img.src });
     }
 
     /*
@@ -400,7 +405,7 @@ class CanvasArea extends React.Component {
     */
     async sendInfo() {
         const canvas = this.dispCanvas.current;
-        this.drawBackground();
+        // this.drawBackground();
         // this.undraw();
         // this.redrawLines();
         // const flowImg = canvas.toDataURL('image/png');
@@ -688,7 +693,6 @@ class CanvasArea extends React.Component {
     }
 
     render() {
-        console.log(this.props.display);
         return (
             <div className={styles.canvasAreaContainer}>
                 <canvas
@@ -904,6 +908,13 @@ class CanvasArea extends React.Component {
                         style={{ display: 'none' }}
                         onChange={this.addPic}
                     />
+                    <input
+                        accept="image/*"
+                        ref={this.bgForm}
+                        type="file"
+                        style={{ display: 'none' }}
+                        onChange={this.addBackground}
+                    />
                     <ButtonGroup
                         className={styles.toolButtonGroup}
                         variant="contained"
@@ -931,6 +942,40 @@ class CanvasArea extends React.Component {
                         color="default"
                         aria-label="Draw Area tools"
                     >
+                        <Button
+                            size="medium"
+                            variant="contained"
+                            color="primary"
+                            className={styles.toolButton}
+                            onClick={() => {
+                                this.setState({
+                                    selectedTool: 'upload',
+                                });
+                                this.bgForm.current.click();
+                            }}
+                        >
+                            <FontAwesomeIcon
+                                icon={faUpload}
+                                aria-label="Upload Image"
+                            />
+                        </Button>
+                        <Button
+                            size="medium"
+                            variant="contained"
+                            color="primary"
+                            className={styles.toolButton}
+                            onClick={() => {
+                                this.setState({
+                                    selectedTool: 'upload',
+                                });
+                                this.imgForm.current.click();
+                            }}
+                        >
+                            <FontAwesomeIcon
+                                icon={faUpload}
+                                aria-label="Upload Image"
+                            />
+                        </Button>
                         <Button
                             size="medium"
                             variant="contained"
@@ -990,7 +1035,7 @@ class CanvasArea extends React.Component {
                             }}
                             style={
                                 this.state.selectedTool === 'draw'
-                                    ? { backgroundColor: 'transparent' }
+                                    ? { backgroundColor: '#101536' }
                                     : {}
                             }
                             disableElevation={this.state.selectedTool === 'draw'}
@@ -1015,7 +1060,7 @@ class CanvasArea extends React.Component {
                             }}
                             style={
                                 this.state.selectedTool === 'erase'
-                                    ? { backgroundColor: 'transparent' }
+                                    ? { backgroundColor: '#101536' }
                                     : {}
                             }
                             disableElevation={this.state.selectedTool === 'erase'}
