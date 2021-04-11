@@ -94,6 +94,16 @@ class CanvasArea extends React.Component {
     componentDidMount() {
         this.setCanvasRes(this.canvasDims.width, this.canvasDims.height);
         this.drawBackground();
+        // console.log("here")
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.recoMax != this.props.recoMax) {
+            this.sendInfo();
+        }
+        if (prevProps.colorPallete != this.props.colorPallete) {
+            this.sendInfo();
+        }
     }
 
     // async getSVGCode(url) {
@@ -488,7 +498,6 @@ class CanvasArea extends React.Component {
                     );
                 });
         }
-        console.log(innerHtmls);
         this.props.callbackFromChild({
             flowUrls: [
                 'flows/flow0.jpg?' + time.toString(),

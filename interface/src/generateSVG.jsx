@@ -16,7 +16,7 @@ export default function generateSVG(
     pivotLocation,
     colors
 ) {
-    console.log(flow, vg, input, connectionType, connection);
+    // console.log(flow, vg, input, connectionType, connection);
     var d3 = require('d3'),
         jsdom = require('jsdom');
 

@@ -30,6 +30,7 @@ class App extends React.Component {
         super(props);
         this.state = {
             recoMax: 3, // To check the cur value of recommendations being displayed from the configurations array
+            recoLen: 48,
             textInfo: null,
             selectedLayouts: null,
             selectedVGs: null,
@@ -78,6 +79,15 @@ class App extends React.Component {
         this.info2Click = this.info2Click.bind(this);
         this.info3Click = this.info3Click.bind(this);
         this.info4Click = this.info4Click.bind(this);
+    }
+
+    prevInfoClick() {
+        this.setState({ recoMax: this.state.recoMax - 4 });
+    }
+    nextInfoClick() {
+        this.setState({ recoMax: this.state.recoMax + 4 }, () =>
+            console.log(this.state)
+        );
     }
 
     prevLayoutClick() {
@@ -176,10 +186,6 @@ class App extends React.Component {
         this.setState(curState, () => console.log(curState));
     }
 
-    prevInfoClick() {}
-
-    nextInfoClick() {}
-
     info1Click() {
         this.setState({ canvasView: false, innerHtml: this.state.innerHtml1 });
     }
@@ -208,11 +214,11 @@ class App extends React.Component {
     };
 
     render() {
-        console.log(
-            this.state.selectedConns,
-            this.state.selectedLayouts,
-            this.state.selectedVGs
-        );
+        // console.log(
+        //     this.state.selectedConns,
+        //     this.state.selectedLayouts,
+        //     this.state.selectedVGs
+        // );
         return (
             <div>
                 <Navbar bg="dark" variant="dark">
