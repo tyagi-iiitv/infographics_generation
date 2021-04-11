@@ -468,35 +468,38 @@ class CanvasArea extends React.Component {
         let time = performance.now();
         let innerHtmls = [];
         for (let i = 3; i >= 0; i--) {
-            await axios
-                .get(
-                    'getvg/vg' +
-                        configurations[this.props.recoMax - i].vgId.toString() +
-                        '.svg'
-                )
-                .then((r) => {
-                    innerHtmls.push(
-                        generateSVG(
-                            data.closestFlows[
-                                configurations[this.props.recoMax - i].flowId
-                            ],
-                            canvas_dims.width,
-                            canvas_dims.height,
-                            this.props.background,
-                            r.data, //'getvg/vg1.svg'
-                            generatePreview(this.props.inputText),
-                            this.state.connectionType,
-                            'getcon/conn' +
-                                configurations[
-                                    this.props.recoMax - i
-                                ].connId.toString() +
-                                '.svg', //'getcon/conn3.svg'
-                            this.state.pivot,
-                            this.state.pivotLocation,
-                            this.props.colorPallete
-                        )
-                    );
-                });
+            let curConn = this.props.selectedConns
+                ? this.props.selectedConns
+                : 'getcon/conn' +
+                  configurations[this.props.recoMax - i].connId.toString() +
+                  '.svg';
+            let curVG = this.props.selectedVGs
+                ? this.props.selectedVGs
+                : 'getvg/vg' +
+                  configurations[this.props.recoMax - i].vgId.toString() +
+                  '.svg';
+            let curLayout = this.props.selectedLayouts
+                ? this.props.selectedLayouts
+                : configurations[this.props.recoMax - i].flowId;
+
+            // let curFlow = this.props.selectedLayouts?this.props.selectedLayouts:
+            await axios.get(curVG).then((r) => {
+                innerHtmls.push(
+                    generateSVG(
+                        data.closestFlows[curLayout],
+                        canvas_dims.width,
+                        canvas_dims.height,
+                        this.props.background,
+                        r.data, //'getvg/vg1.svg'
+                        generatePreview(this.props.inputText),
+                        this.state.connectionType,
+                        curConn,
+                        this.state.pivot,
+                        this.state.pivotLocation,
+                        this.props.colorPallete
+                    )
+                );
+            });
         }
         this.props.callbackFromChild({
             flowUrls: [
@@ -1062,7 +1065,7 @@ class CanvasArea extends React.Component {
                                 aria-label="Upload Image"
                             />
                         </Button>
-                        <Button
+                        {/* <Button
                             size="medium"
                             variant="contained"
                             color="primary"
@@ -1085,7 +1088,7 @@ class CanvasArea extends React.Component {
                                 icon={faDownload}
                                 aria-label="Download Canvas"
                             />
-                        </Button>
+                        </Button> */}
                         <Button
                             size="medium"
                             variant="contained"

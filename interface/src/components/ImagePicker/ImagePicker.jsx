@@ -12,7 +12,6 @@ export default class ImageSelect extends Component {
 
     onPickImages(images) {
         this.setState({ images });
-        // console.log(images);
         if (images.length === 0) {
             this.props.callbackFromChild({
                 selectedConns: null,
@@ -20,7 +19,9 @@ export default class ImageSelect extends Component {
                 selectedVGs: null,
             });
         } else if (this.props.id == 0) {
-            this.props.callbackFromChild({ selectedLayouts: images[0].src });
+            this.props.callbackFromChild({
+                selectedLayouts: this.props.curFlowIndex + images[0].value,
+            });
         } else if (this.props.id == 1) {
             this.props.callbackFromChild({ selectedVGs: images[0].src });
         } else {

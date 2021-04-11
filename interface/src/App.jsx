@@ -276,6 +276,9 @@ class App extends React.Component {
                                 uploadPivot={this.state.uploadPivot}
                                 background={this.state.canvasBg}
                                 recoMax={this.state.recoMax}
+                                selectedVGs={this.state.selectedVGs}
+                                selectedConns={this.state.selectedConns}
+                                selectedLayouts={this.state.selectedLayouts}
                             />
                         )}
                     </div>
@@ -313,6 +316,7 @@ class App extends React.Component {
                             <ImagePicker
                                 imgUrls={this.state.flowUrls}
                                 id={0}
+                                curFlowIndex={this.state.curFlowIndex}
                                 callbackFromChild={this.callbackFromChild}
                             />
                             <div
