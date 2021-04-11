@@ -515,9 +515,7 @@ class App extends React.Component {
                                     variant="danger"
                                     style={{ marginRight: 20 }}
                                     onClick={this.prevInfoClick}
-                                    disabled={
-                                        this.state.curConnIndex <= 0 ? true : false
-                                    }
+                                    disabled={this.state.recoMax <= 3 ? true : false}
                                 >
                                     Prev
                                 </Button>
@@ -525,8 +523,7 @@ class App extends React.Component {
                                     variant="danger"
                                     onClick={this.nextInfoClick}
                                     disabled={
-                                        this.state.curConnIndex + 1 >=
-                                        this.state.connLen
+                                        this.state.recoMax >= this.state.recoLen
                                             ? true
                                             : false
                                     }
