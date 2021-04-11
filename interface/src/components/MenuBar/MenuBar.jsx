@@ -96,7 +96,9 @@ export class ColorPallets extends Component {
 
     handleChange(event) {
         this.setState({ value: event }, () => {
-            console.log(this.state.value);
+            this.props.callbackFromChild({
+                colorPallete: this.props.values.values[event].values,
+            });
         });
     }
 

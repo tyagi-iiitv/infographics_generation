@@ -75,7 +75,6 @@ export default function generateSVG(
             .select('style')
             .text(orgStyle + `.color-1${i}{fill:${colors[i]};}`);
     }
-    console.log(body.node().innerHTML);
     return { __html: body.node().innerHTML };
     // const fs = require('fs');
     // fs.writeFileSync("test.svg", body.node().innerHTML)

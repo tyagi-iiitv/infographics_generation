@@ -43,6 +43,16 @@ class App extends React.Component {
             VGLen: 23,
             connLen: 12,
             innerHtml: { __html: `` },
+            colorPallete: [
+                '#7fc97f',
+                '#beaed4',
+                '#fdc086',
+                '#ffff99',
+                '#386cb0',
+                '#f0027f',
+                '#bf5b17',
+                '#666666',
+            ],
         };
         this.callbackFromChild = this.callbackFromChild.bind(this);
         this.getDesignsPressed = this.getDesignsPressed.bind(this);
@@ -190,7 +200,10 @@ class App extends React.Component {
                     <Nav className="mr-auto">
                         <Upload values={uploadButtonState} />
                         <Export />
-                        <ColorPallets values={colorButtonState} />
+                        <ColorPallets
+                            values={colorButtonState}
+                            callbackFromChild={this.callbackFromChild}
+                        />
                         <ConnectionTypes values={connectionButtonState} />
                         <ShowCanvas callbackFromChild={this.callbackFromChild} />
                     </Nav>
@@ -228,6 +241,7 @@ class App extends React.Component {
                                 callbackFromChild={this.callbackFromChild}
                                 inputText={this.state.inputText}
                                 backgroundSVG={this.state.innerHtml}
+                                colorPallete={this.state.colorPallete}
                             />
                         )}
                     </div>

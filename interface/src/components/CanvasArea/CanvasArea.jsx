@@ -46,16 +46,6 @@ class CanvasArea extends React.Component {
             connection: 'getcon/conn3.svg',
             pivot: 'pivot/pivot0.svg',
             pivotLocation: { x: 100, y: 100 },
-            colors: [
-                '#7fc97f',
-                '#beaed4',
-                '#fdc086',
-                '#ffff99',
-                '#386cb0',
-                '#f0027f',
-                '#bf5b17',
-                '#666666',
-            ],
         };
 
         this.undraw = this.undraw.bind(this);
@@ -459,7 +449,7 @@ class CanvasArea extends React.Component {
                 this.state.connection,
                 this.state.pivot,
                 this.state.pivotLocation,
-                this.state.colors
+                this.props.colorPallete
             ),
         });
         var svgs = data.svgs,
