@@ -29,6 +29,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            recoMax: 3, // To check the cur value of recommendations being displayed from the configurations array
             textInfo: null,
             selectedLayouts: null,
             selectedVGs: null,
@@ -196,6 +197,7 @@ class App extends React.Component {
     }
 
     callbackFromChild(dataFromChild) {
+        console.log(dataFromChild);
         this.setState(dataFromChild, () => console.log(this.state));
     }
 
@@ -267,6 +269,7 @@ class App extends React.Component {
                                 colorPallete={this.state.colorPallete}
                                 uploadPivot={this.state.uploadPivot}
                                 background={this.state.canvasBg}
+                                recoMax={this.state.recoMax}
                             />
                         )}
                     </div>

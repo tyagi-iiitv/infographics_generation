@@ -465,11 +465,23 @@ let exampleButtonState = {
     ],
 };
 
-let flowUrls = ['flows/flow0.jpg', 'flows/flow1.jpg'];
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
+let configurations = [];
+for (let i = 0; i < 50; i++) {
+    configurations.push({
+        flowId: getRandomInt(5),
+        vgId: getRandomInt(5),
+        connId: getRandomInt(5),
+    });
+}
 
 export {
     uploadButtonState,
     colorButtonState,
     connectionButtonState,
     exampleButtonState,
+    configurations,
 };

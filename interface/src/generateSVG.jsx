@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { textwrap } from 'd3-textwrap';
 
 // import {wrap} from './wrap';
@@ -15,6 +16,7 @@ export default function generateSVG(
     pivotLocation,
     colors
 ) {
+    console.log(flow, vg, input, connectionType, connection);
     var d3 = require('d3'),
         jsdom = require('jsdom');
 

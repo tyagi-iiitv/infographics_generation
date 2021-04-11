@@ -10,13 +10,9 @@ export default class ImageSelect extends Component {
         };
     }
 
-    componentDidMount() {
-        this.setState({ images: [] });
-    }
-
     onPickImages(images) {
         this.setState({ images });
-        console.log(images);
+        // console.log(images);
         if (images.length === 0) {
             this.props.callbackFromChild({
                 selectedConns: null,
@@ -33,7 +29,7 @@ export default class ImageSelect extends Component {
     }
 
     render() {
-        console.log(this.state);
+        // console.log(this.state);
         return (
             <div>
                 <ImagePicker

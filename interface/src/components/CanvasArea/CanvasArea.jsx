@@ -23,7 +23,7 @@ import {
     faLink,
 } from '@fortawesome/free-solid-svg-icons';
 import { image } from 'd3';
-
+import { configurations } from '../../state';
 /*
 Drawing functions implemented from:
 http://www.williammalone.com/articles/create-html5-canvas-javascript-drawing-app/
@@ -42,10 +42,10 @@ class CanvasArea extends React.Component {
             vgIdx: -1, // The vg which is currently being dragged
             selectedTool: 'upload', // Tool selected by the user
             isDrawing: false, // Whether the user is drawing/erasing inside the canvas,
-            vgDesign: 'getvg/vg1.svg',
+            vgDesign: null,
             selectedSVG: ``,
             connectionType: 'none',
-            connection: 'getcon/conn3.svg',
+            // connection: 'getcon/conn3.svg',
             pivot: 'pivot/pivot0.svg',
             pivotLocation: { x: 100, y: 100 },
             uploadPivot: this.props.uploadPivot,
@@ -72,6 +72,7 @@ class CanvasArea extends React.Component {
         this.onMouseDown = this.onMouseDown.bind(this);
         this.addBackground = this.addBackground.bind(this);
         this.drawBackground = this.drawBackground.bind(this);
+        // this.getSVGCode = this.getSVGCode.bind(this);
 
         this.dispCanvas = React.createRef(); // Reference for the canvas area
         this.imgForm = React.createRef(); // Reference for the upload image input
@@ -84,6 +85,7 @@ class CanvasArea extends React.Component {
         this.clickDrag = []; // True if user is clicking
         this.clickColor = []; // Black for pen and white for eraser
         this.canvasDims = { width: 1280, height: 960 }; // Dimensions of the canvas
+        this.vgCode = ``;
     }
 
     /*
@@ -94,11 +96,12 @@ class CanvasArea extends React.Component {
         this.drawBackground();
     }
 
-    componentWillMount() {
-        axios
-            .get(this.state.vgDesign)
-            .then((r) => this.setState({ vgDesign: r.data }));
-    }
+    // async getSVGCode(url) {
+    //     let data;
+    //     await axios.get(url).then(r => (data = r.data));
+    //     console.log(data);
+    //     return data
+    // }
 
     /*
     Clears the drawing area from all drawings and uploaded images.
@@ -453,64 +456,49 @@ class CanvasArea extends React.Component {
         const data = response['data'];
         // console.log(data);
         let time = performance.now();
+        let innerHtmls = [];
+        for (let i = 3; i >= 0; i--) {
+            await axios
+                .get(
+                    'getvg/vg' +
+                        configurations[this.props.recoMax - i].vgId.toString() +
+                        '.svg'
+                )
+                .then((r) => {
+                    innerHtmls.push(
+                        generateSVG(
+                            data.closestFlows[
+                                configurations[this.props.recoMax - i].flowId
+                            ],
+                            canvas_dims.width,
+                            canvas_dims.height,
+                            this.props.background,
+                            r.data, //'getvg/vg1.svg'
+                            generatePreview(this.props.inputText),
+                            this.state.connectionType,
+                            'getcon/conn' +
+                                configurations[
+                                    this.props.recoMax - i
+                                ].connId.toString() +
+                                '.svg', //'getcon/conn3.svg'
+                            this.state.pivot,
+                            this.state.pivotLocation,
+                            this.props.colorPallete
+                        )
+                    );
+                });
+        }
+        console.log(innerHtmls);
         this.props.callbackFromChild({
             flowUrls: [
                 'flows/flow0.jpg?' + time.toString(),
                 'flows/flow1.jpg?' + time.toString(),
             ],
             flowLen: data.closestFlows.length,
-            innerHtml1: generateSVG(
-                data.closestFlows[0],
-                canvas_dims.width,
-                canvas_dims.height,
-                this.props.background,
-                this.state.vgDesign,
-                generatePreview(this.props.inputText),
-                this.state.connectionType,
-                this.state.connection,
-                this.state.pivot,
-                this.state.pivotLocation,
-                this.props.colorPallete
-            ),
-            innerHtml2: generateSVG(
-                data.closestFlows[0],
-                canvas_dims.width,
-                canvas_dims.height,
-                this.props.background,
-                this.state.vgDesign,
-                generatePreview(this.props.inputText),
-                this.state.connectionType,
-                this.state.connection,
-                this.state.pivot,
-                this.state.pivotLocation,
-                this.props.colorPallete
-            ),
-            innerHtml3: generateSVG(
-                data.closestFlows[0],
-                canvas_dims.width,
-                canvas_dims.height,
-                this.props.background,
-                this.state.vgDesign,
-                generatePreview(this.props.inputText),
-                this.state.connectionType,
-                this.state.connection,
-                this.state.pivot,
-                this.state.pivotLocation,
-                this.props.colorPallete
-            ),
-            innerHtml4: generateSVG(
-                data.closestFlows[0],
-                canvas_dims.width,
-                canvas_dims.height,
-                this.props.background,
-                this.state.vgDesign,
-                generatePreview(this.props.inputText),
-                this.state.connectionType,
-                this.state.connection,
-                this.state.pivot,
-                this.state.pivotLocation,
-                this.props.colorPallete
-            ),
+            innerHtml1: innerHtmls[0],
+            innerHtml2: innerHtmls[1],
+            innerHtml3: innerHtmls[2],
+            innerHtml4: innerHtmls[3],
         });
         var svgs = data.svgs,
             imgLinks = data.imgLinks,
