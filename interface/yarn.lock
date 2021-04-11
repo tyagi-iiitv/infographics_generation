@@ -4303,10 +4303,10 @@ d3-shape@^1.2.0:
   dependencies:
     d3-path "1"
 
-d3-textwrap@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/d3-textwrap/-/d3-textwrap-2.0.0.tgz#29d54d2cdc32ce806d63921b8740e473f059b653"
-  integrity sha1-KdVNLNwyzoBtY5Ibh0Dkc/BZtlM=
+d3-textwrap@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/d3-textwrap/-/d3-textwrap-3.0.0.tgz#ed2855fd41cb15533a724284c03d67cb8294043f"
+  integrity sha512-Uj2YFm95i+bM4nu1+jIUJdB6U0sW/K0D506u6tYbTEkt0+SNeEWPJ8bZbvBHPhOqom/UK6hyrMAY7JYA6t6XIg==
   dependencies:
     d3-selection "^1.0.2"
 

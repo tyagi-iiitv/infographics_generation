@@ -1,11 +1,15 @@
 import axios from 'axios';
+import { textwrap } from 'd3-textwrap';
 
-export default function generateSVG(flow, width, height, background, vg) {
+// import {wrap} from './wrap';
+
+export default function generateSVG(flow, width, height, background, vg, input) {
+    console.log(input);
     var d3 = require('d3'),
         jsdom = require('jsdom');
 
     const { JSDOM } = jsdom;
-
+    d3.textwrap = textwrap;
     const { document } = new JSDOM('').window;
     // global.document = document;
     var body = d3.select(document).select('body');
@@ -25,26 +29,6 @@ export default function generateSVG(flow, width, height, background, vg) {
         .attr('preserveAspectRatio', 'none')
         .attr('href', background);
 
-    svg.append('g')
-        .selectAll('line')
-        .data(lines)
-        .enter()
-        .append('line')
-        .style('stroke', 'red')
-        .style('stroke-width', 10)
-        .attr('x1', function (d) {
-            return d[0];
-        })
-        .attr('x2', function (d) {
-            return d[2];
-        })
-        .attr('y1', function (d) {
-            return d[1];
-        })
-        .attr('y2', function (d) {
-            return d[3];
-        });
-
     let scale = 350;
     for (let i = 0; i < flow.length; i++) {
         svg.append('svg')
@@ -54,6 +38,20 @@ export default function generateSVG(flow, width, height, background, vg) {
             .attr('x', flow[i][0] - scale / 2)
             .attr('y', flow[i][1] - scale / 2)
             .html(vg);
+
+        let textBoxWidth = svg.select(`#vg${i}`).select('.text-wrap').attr('width');
+
+        let wrap = d3.textwrap().bounds({ width: textBoxWidth, height: 200 });
+        // Insert the new text from text field
+        svg.select(`#vg${i}`).select('.txt1').text(input[i].text).call(wrap);
+
+        // Insert Label
+        svg.select(`#vg${i}`).select('.lb1').text(input[i].label);
+
+        // Should be the same for title, but I was unable to find the class for it
+
+        // Insert image
+        svg.select(`#vg${i}`).select('.img1').attr('href', input[i].image);
     }
 
     console.log(body.node().innerHTML);

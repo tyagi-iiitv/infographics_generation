@@ -8,6 +8,7 @@ import * as d3 from 'd3';
 import { canvas_dims, flow_img, dragged_image } from './input1';
 import { canvas_dims2, flow_img2, dragged_image2 } from './input2';
 import generateSVG from '../../generateSVG';
+import generatePreview from '../../generatePreview';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -38,7 +39,7 @@ class CanvasArea extends React.Component {
             selectedTool: 'upload', // Tool selected by the user
             isDrawing: false, // Whether the user is drawing/erasing inside the canvas,
             background: 'images/background3.jpg',
-            vgDesign: 'getvg/vg0.svg',
+            vgDesign: 'getvg/vg1.svg',
         };
 
         this.undraw = this.undraw.bind(this);
@@ -84,8 +85,6 @@ class CanvasArea extends React.Component {
         axios
             .get(this.state.vgDesign)
             .then((r) => this.setState({ vgDesign: r.data }));
-
-        console.log(this.state.vgDesign);
     }
 
     /*
@@ -419,7 +418,8 @@ class CanvasArea extends React.Component {
                 canvas_dims.width,
                 canvas_dims.height,
                 this.state.background,
-                this.state.vgDesign
+                this.state.vgDesign,
+                generatePreview(this.props.inputText)
             ),
         });
         var svgs = data.svgs,
