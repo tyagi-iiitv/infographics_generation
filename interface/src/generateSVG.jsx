@@ -77,6 +77,14 @@ export default function generateSVG(
             .select('style')
             .text(orgStyle + `.color-1${i}{fill:${colors[i]};}`);
     }
+
+    svg.append('image')
+        .attr('x', pivotLocation.x)
+        .attr('y', pivotLocation.y)
+        .attr('width', pivotLocation.width)
+        .attr('height', pivotLocation.height)
+        .attr('href', pivot);
+
     return { __html: body.node().innerHTML };
     // const fs = require('fs');
     // fs.writeFileSync("test.svg", body.node().innerHTML)

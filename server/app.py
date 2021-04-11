@@ -19,7 +19,6 @@ app.secret_key = 'info'
 
 # Loads the flows array
 flows = np.load('flows.npy', allow_pickle=True)
-
 SVGNS = 'http://www.w3.org/2000/svg'
 
 # def get_vf_image(flow, height, width):
@@ -47,6 +46,7 @@ def get_corners_in_flow(flow_img):
     flow_as_np = base64_img_to_np(flow_img)
     im = cv2.imdecode(flow_as_np, flags=1)
     im = cv2.resize(im, (1024, 1024))
+    # cv2.imwrite('flow_img_received.jpg', im)
     imgray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
     im_inv = cv2.bitwise_not(imgray)
     ret, thresh = cv2.threshold(im_inv,127,255,0)
@@ -263,7 +263,6 @@ def get_pivots(path):
 def set_layout():
     # Get POST request from API call
     data = json.loads(request.data.decode('utf-8'))
-
     # Save canvas dimensions in sessions
     session['canvas_dims'] = data['canvasDims']
 
@@ -277,7 +276,7 @@ def set_layout():
 
     # Get corners and padded corners from the flow that user has drawn
     corners, corners_padded = get_corners_in_flow(data['flowImg'])
-
+    # print(corners, corners_padded)
     if corners is not None:
         # If corners are detected from the user-drawn flow,
         # scale them to canvas size, and get closest flows
@@ -325,7 +324,7 @@ def set_layout():
     session['svgs'] = svgs
     session['img_links'] = img_links
 
-    print(session.get('canvas_dims')['width'])
+    # print(session.get('canvas_dims')['width'])
     # Creating VIF flow images and saving in flows directory
     for j,flow in enumerate(session.get('closest_flows')[:50]):
         height = session.get('canvas_dims')['height']
