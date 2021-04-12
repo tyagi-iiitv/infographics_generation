@@ -140,51 +140,51 @@
 //         );
 //     }
 // } else if (connectionType == 'alternate') {
-//     for (let i = 0; i < flow.length - 2; i++) {
-//         angles.push(
-//             Math.atan2(
-//                 flow[i + 2][1] - flow[i][1],
-//                 flow[i + 2][0] - flow[i][0]
-//             ) *
-//                 (180 / Math.PI) +
-//                 180
-//         );
-//         centers.push([
-//             (flow[i][0] + flow[i + 2][0]) / 2,
-//             (flow[i][1] + flow[i + 2][1]) / 2,
-//         ]);
-//     }
+// for (let i = 0; i < flow.length - 2; i++) {
+//     angles.push(
+//         Math.atan2(
+//             flow[i + 2][1] - flow[i][1],
+//             flow[i + 2][0] - flow[i][0]
+//         ) *
+//             (180 / Math.PI) +
+//             180
+//     );
+//     centers.push([
+//         (flow[i][0] + flow[i + 2][0]) / 2,
+//         (flow[i][1] + flow[i + 2][1]) / 2,
+//     ]);
+// }
 // } else {
 //     // Generating regular connections b/w sequential elements
-//     for (let i = 0; i < flow.length - 1; i++) {
-//         angles.push(
-//             Math.atan2(
-//                 flow[i + 1][1] - flow[i][1],
-//                 flow[i + 1][0] - flow[i][0]
-//             ) *
-//                 (180 / Math.PI) +
-//                 180
-//         );
-//         centers.push([
-//             (flow[i][0] + flow[i + 1][0]) / 2,
-//             (flow[i][1] + flow[i + 1][1]) / 2,
-//         ]);
-//     }
-//     if (includeLast) {
-//         // Generating last angle and center
-//         centers.push([
-//             (flow[flow.length - 1][0] + flow[0][0]) / 2,
-//             (flow[flow.length - 1][1] + flow[0][1]) / 2,
-//         ]);
-//         angles.push(
-//             Math.atan2(
-//                 flow[0][1] - flow[flow.length - 1][1],
-//                 flow[0][0] - flow[flow.length - 1][0]
-//             ) *
-//                 (180 / Math.PI) +
-//                 180
-//         );
-//     }
+// for (let i = 0; i < flow.length - 1; i++) {
+//     angles.push(
+//         Math.atan2(
+//             flow[i + 1][1] - flow[i][1],
+//             flow[i + 1][0] - flow[i][0]
+//         ) *
+//             (180 / Math.PI) +
+//             180
+//     );
+//     centers.push([
+//         (flow[i][0] + flow[i + 1][0]) / 2,
+//         (flow[i][1] + flow[i + 1][1]) / 2,
+//     ]);
+// }
+// if (includeLast) {
+//     // Generating last angle and center
+//     centers.push([
+//         (flow[flow.length - 1][0] + flow[0][0]) / 2,
+//         (flow[flow.length - 1][1] + flow[0][1]) / 2,
+//     ]);
+//     angles.push(
+//         Math.atan2(
+//             flow[0][1] - flow[flow.length - 1][1],
+//             flow[0][0] - flow[flow.length - 1][0]
+//         ) *
+//             (180 / Math.PI) +
+//             180
+//     );
+// }
 // }
 
 // // Insert background image
@@ -224,18 +224,18 @@
 //     // Insert image
 //     svg.select(`#vg${i}`).select('.img1').attr('href', input[i].image);
 
-//     // Change class for each svg element
-//     svg.selectAll('.color-1')
-//         .nodes()
-//         .forEach((node) => {
-//             d3.select(node).attr('class', `color-1${i}`);
-//         });
+// Change class for each svg element
+// svg.selectAll('.color-1')
+//     .nodes()
+//     .forEach((node) => {
+//         d3.select(node).attr('class', `color-1${i}`);
+//     });
 
-//     //Change color of SVGs
-//     let orgStyle = svg.select(`#vg${i}`).select('style').text();
-//     svg.select(`#vg${i}`)
-//         .select('style')
-//         .text(orgStyle + input[i].color);
+// //Change color of SVGs
+// let orgStyle = svg.select(`#vg${i}`).select('style').text();
+// svg.select(`#vg${i}`)
+//     .select('style')
+//     .text(orgStyle + input[i].color);
 // }
 
 // // let scaleVG = 250;
