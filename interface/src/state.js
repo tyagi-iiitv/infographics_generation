@@ -415,11 +415,11 @@ let connectionButtonState = {
             key: 1,
         },
         {
-            name: 'Pivot',
+            name: 'Alternate',
             key: 2,
         },
         {
-            name: 'Alternate',
+            name: 'Pivot',
             key: 3,
         },
         {
@@ -475,6 +475,7 @@ for (let i = 0; i < 50; i++) {
         flowId: getRandomInt(5),
         vgId: getRandomInt(5),
         connId: getRandomInt(5),
+        connTypeId: getRandomInt(3),
     });
 }
 

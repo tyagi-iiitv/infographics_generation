@@ -128,7 +128,7 @@ export class ConnectionTypes extends Component {
 
     handleChange(event) {
         this.setState({ value: event }, () => {
-            console.log(this.state.value);
+            this.props.callbackFromChild({ curConnType: parseInt(event) });
         });
     }
 

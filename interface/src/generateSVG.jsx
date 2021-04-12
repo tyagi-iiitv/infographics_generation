@@ -1,3 +1,4 @@
+import { faLifeRing } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { textwrap } from 'd3-textwrap';
 
@@ -16,7 +17,7 @@ export default function generateSVG(
     pivotLocation,
     colors
 ) {
-    console.log(flow.length, width, height, vg, input);
+    console.log(connectionType, connection);
     var d3 = require('d3'),
         jsdom = require('jsdom');
 
@@ -29,6 +30,9 @@ export default function generateSVG(
     var svg = body.append('svg').attr('viewBox', `0 0 ${width} ${height}`);
 
     let lines = [];
+    let angles = [];
+    let centers = [];
+    let scaleC = 100;
     for (let i = 0; i < flow.length - 1; i++) {
         lines.push([flow[i][0], flow[i][1], flow[i + 1][0], flow[i + 1][1]]);
     }
@@ -76,6 +80,74 @@ export default function generateSVG(
         svg.select(`#vg${i}`)
             .select('style')
             .text(orgStyle + `.color-1${i}{fill:${colors[i]};}`);
+    }
+
+    if (connectionType > 0) {
+        if (connectionType === 1) {
+            for (let i = 0; i < flow.length - 1; i++) {
+                angles.push(
+                    Math.atan2(
+                        flow[i + 1][1] - flow[i][1],
+                        flow[i + 1][0] - flow[i][0]
+                    ) *
+                        (180 / Math.PI) +
+                        180
+                );
+                centers.push([
+                    (flow[i][0] + flow[i + 1][0]) / 2,
+                    (flow[i][1] + flow[i + 1][1]) / 2,
+                ]);
+            }
+        }
+        if (connectionType === 2) {
+            for (let i = 0; i < flow.length - 2; i++) {
+                angles.push(
+                    Math.atan2(
+                        flow[i + 2][1] - flow[i][1],
+                        flow[i + 2][0] - flow[i][0]
+                    ) *
+                        (180 / Math.PI) +
+                        180
+                );
+                centers.push([
+                    (flow[i][0] + flow[i + 2][0]) / 2,
+                    (flow[i][1] + flow[i + 2][1]) / 2,
+                ]);
+            }
+        }
+        centers.push([
+            (flow[flow.length - 1][0] + flow[0][0]) / 2,
+            (flow[flow.length - 1][1] + flow[0][1]) / 2,
+        ]);
+        angles.push(
+            Math.atan2(
+                flow[0][1] - flow[flow.length - 1][1],
+                flow[0][0] - flow[flow.length - 1][0]
+            ) *
+                (180 / Math.PI) +
+                180
+        );
+    }
+
+    for (let i = 0; i < centers.length; i++) {
+        svg.append('g')
+            .append('svg:image')
+            .attr('xlink:href', connection)
+            .attr('width', scaleC)
+            .attr('x', centers[i][0] - scaleC / 2)
+            .attr('y', centers[i][1] - scaleC / 2)
+            .attr('transform', function () {
+                console.log(angles[i]);
+                return (
+                    'rotate(' +
+                    angles[i] +
+                    ',' +
+                    centers[i][0] +
+                    ',' +
+                    centers[i][1] +
+                    ')'
+                );
+            });
     }
 
     if (pivot) {

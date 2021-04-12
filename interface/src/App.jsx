@@ -46,6 +46,7 @@ class App extends React.Component {
             curFlowIndex: 0,
             curVGIndex: 0,
             curConnIndex: 0,
+            curConnType: null,
             flowLen: 2,
             VGLen: 23,
             connLen: 12,
@@ -236,7 +237,10 @@ class App extends React.Component {
                             values={colorButtonState}
                             callbackFromChild={this.callbackFromChild}
                         />
-                        <ConnectionTypes values={connectionButtonState} />
+                        <ConnectionTypes
+                            values={connectionButtonState}
+                            callbackFromChild={this.callbackFromChild}
+                        />
                         <ShowCanvas callbackFromChild={this.callbackFromChild} />
                     </Nav>
                     <Nav>
@@ -281,6 +285,7 @@ class App extends React.Component {
                                 selectedVGs={this.state.selectedVGs}
                                 selectedConns={this.state.selectedConns}
                                 selectedLayouts={this.state.selectedLayouts}
+                                connType={this.state.curConnType}
                             />
                         )}
                     </div>

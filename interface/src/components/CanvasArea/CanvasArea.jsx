@@ -44,7 +44,6 @@ class CanvasArea extends React.Component {
             isDrawing: false, // Whether the user is drawing/erasing inside the canvas,
             vgDesign: null,
             selectedSVG: ``,
-            connectionType: 'none',
             // connection: 'getcon/conn3.svg',
             pivot: 'pivot/pivot0.svg',
             pivotLocation: { x: 100, y: 100 },
@@ -482,6 +481,9 @@ class CanvasArea extends React.Component {
                 ? this.props.selectedLayouts
                 : configurations[this.props.recoMax - i].flowId;
 
+            let curConnType = this.props.connType
+                ? this.props.connType
+                : configurations[this.props.recoMax - i].connTypeId;
             let curPivot = null;
             let pivotLocation = {};
             if (this.imgs.length > 0) {
@@ -495,7 +497,7 @@ class CanvasArea extends React.Component {
             }
             // let curFlow = this.props.selectedLayouts?this.props.selectedLayouts:
             await axios.get(curVG).then((r) => {
-                console.log(r.data);
+                // console.log(r.data);
                 innerHtmls.push(
                     generateSVG(
                         data.closestFlows[curLayout],
@@ -504,7 +506,7 @@ class CanvasArea extends React.Component {
                         this.props.background,
                         r.data, //'getvg/vg1.svg'
                         generatePreview(this.props.inputText),
-                        this.state.connectionType,
+                        curConnType,
                         curConn,
                         curPivot,
                         pivotLocation,
