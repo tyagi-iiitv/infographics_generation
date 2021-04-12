@@ -23,7 +23,7 @@ export default class ImageSelect extends Component {
                 selectedLayouts: this.props.curFlowIndex + images[0].value,
             });
         } else if (this.props.id == 1) {
-            this.props.callbackFromChild({ selectedVGs: images[0].src });
+            this.props.callbackFromChild({ selectedVGs: images[0].value });
         } else {
             this.props.callbackFromChild({ selectedConns: images[0].src });
         }

@@ -475,6 +475,7 @@ for (let i = 0; i < 50; i++) {
         flowId: getRandomInt(5),
         vgId: getRandomInt(5),
         connId: getRandomInt(5),
+        connTypeId: getRandomInt(2),
     });
 }
 

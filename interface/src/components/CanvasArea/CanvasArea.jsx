@@ -437,7 +437,7 @@ class CanvasArea extends React.Component {
         // this.drawBackground();
         // this.undraw();
         // this.redrawLines();
-        // const flowImg = canvas.toDataURL('image/png');
+        const flowImg = canvas.toDataURL('image/png');
         // this.redrawPics();
         // this.clearVGs();
         var draggedImages = [];
@@ -452,9 +452,9 @@ class CanvasArea extends React.Component {
             draggedImages.push(draggedImage);
         });
         const response = await axios.post('/layout/', {
-            canvasDims: canvas_dims,
-            flowImg: flow_img,
-            draggedImages: dragged_image,
+            canvasDims: this.canvasDims,
+            flowImg: flowImg,
+            draggedImages: draggedImages,
         });
         // console.log({ ...this.canvasDims }, flowImg, draggedImages);
         // const response = await axios.post('/layout/', {
@@ -474,15 +474,33 @@ class CanvasArea extends React.Component {
                   configurations[this.props.recoMax - i].connId.toString() +
                   '.svg';
             let curVG = this.props.selectedVGs
-                ? this.props.selectedVGs
+                ? 'getvg/vg' +
+                  this.props.selectedVGs.toString() +
+                  '.svg?' +
+                  time.toString()
                 : 'getvg/vg' +
                   configurations[this.props.recoMax - i].vgId.toString() +
-                  '.svg';
+                  '.svg?' +
+                  time.toString();
             let curLayout = this.props.selectedLayouts
                 ? this.props.selectedLayouts
                 : configurations[this.props.recoMax - i].flowId;
 
+            let curConnType = configurations[this.props.recoMax - i].connTypeId;
+
+            let curPivot = null;
+            let pivotLocation = {};
+            if (this.imgs.length > 0) {
+                curPivot = this.imgs[0].image.src;
+                pivotLocation = {
+                    x: this.imgs[0].x,
+                    y: this.imgs[0].y,
+                    width: this.imgs[0].width,
+                    height: this.imgs[0].height,
+                };
+            }
             // let curFlow = this.props.selectedLayouts?this.props.selectedLayouts:
+            console.log(curVG);
             await axios.get(curVG).then((r) => {
                 innerHtmls.push(
                     generateSVG(
@@ -492,7 +510,7 @@ class CanvasArea extends React.Component {
                         this.props.background,
                         r.data, //'getvg/vg1.svg'
                         generatePreview(this.props.inputText),
-                        this.state.connectionType,
+                        curConnType,
                         curConn,
                         this.state.pivot,
                         this.state.pivotLocation,

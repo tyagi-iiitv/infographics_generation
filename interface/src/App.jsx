@@ -39,7 +39,7 @@ class App extends React.Component {
             canvasView: true,
             canvasBg: 'images/background4.jpg',
             flowUrls: ['flows/flow0.jpg', 'flows/flow1.jpg'],
-            VGUrls: ['getvg/vg0.svg', 'getvg/vg1.svg'],
+            VGUrls: ['rawvg/vg0.svg', 'rawvg/vg1.svg'],
             connUrls: ['getcon/conn0.svg', 'getcon/conn1.svg'],
             inputText: ``,
             curFlowIndex: 0,
@@ -129,8 +129,8 @@ class App extends React.Component {
         curState.curVGIndex -= 2;
         let time = performance.now();
         curState.VGUrls = [
-            'getvg/vg' + curState.curVGIndex.toString() + '.svg?' + time.toString(),
-            'getvg/vg' +
+            'rawvg/vg' + curState.curVGIndex.toString() + '.svg?' + time.toString(),
+            'rawvg/vg' +
                 (curState.curVGIndex + 1).toString() +
                 '.svg?' +
                 time.toString(),
@@ -143,8 +143,8 @@ class App extends React.Component {
         curState.curVGIndex += 2;
         let time = performance.now();
         curState.VGUrls = [
-            'getvg/vg' + curState.curVGIndex.toString() + '.svg?' + time.toString(),
-            'getvg/vg' +
+            'rawvg/vg' + curState.curVGIndex.toString() + '.svg?' + time.toString(),
+            'rawvg/vg' +
                 (curState.curVGIndex + 1).toString() +
                 '.svg?' +
                 time.toString(),
