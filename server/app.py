@@ -241,6 +241,7 @@ def save_vg():
 
 @app.route('/getvg/<path:path>', methods=['GET'])
 def get_vg(path):
+    print(path)
     return send_from_directory('svgImages', path, as_attachment=True)
 
 
@@ -355,4 +356,4 @@ def set_layout():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(host='0.0.0.0', debug=True, port=5000)
