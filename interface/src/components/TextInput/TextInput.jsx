@@ -3,6 +3,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Switch from '@material-ui/core/Switch';
 import axios from 'axios';
 import styles from './TextInput.module.scss';
+import AceEditor from 'react-ace';
+import 'ace-builds/webpack-resolver';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
@@ -12,11 +14,9 @@ TextInputClass
 Area where user would add the text to describe the infographic
 */
 class TextInput extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            text: '', // Text
-            renderedText: '', // Text to render in the preview area
             previewChecked: false, // To show preview or text area
         };
         this.info = []; // Information about visual groups from the input
@@ -42,14 +42,18 @@ class TextInput extends React.Component {
         );
 
         this.handleChangeText = this.handleChangeText.bind(this);
+        this.generatePreview = this.generatePreview.bind(this);
     }
 
     /*
     Handles the text input area for extracting information and previewing
     */
-    async handleChangeText(e) {
-        var text = e.target.value;
-        // console.log(text);
+    async handleChangeText(value, e) {
+        this.props.callbackFromChild({ inputText: value });
+    }
+
+    generatePreview() {
+        var text = this.props.inputText;
         // Get a list of lines
         var lines = text.split('\n');
         var i;
@@ -184,56 +188,54 @@ class TextInput extends React.Component {
         }
         this.numVisGrps = info.length;
         this.info = info;
-        const response = await axios.post('/visgrps/', {
+        const response = axios.post('/visgrps/', {
             numVisGrps: this.numVisGrps,
             visGrpsInfo: this.info,
         });
-        if (response.status !== 200) {
-            console.log(response);
-        }
-        this.setState({
-            text,
-            renderedText,
-        });
-        this.props.callbackFromChild({ textInfo: this.info });
+        // if (response.status !== 200) {
+        // console.log(response);
+        // }
+        return renderedText;
     }
 
     render() {
         return (
             <div className={styles.textInputContainer}>
-                <div style={{ color: 'white' }}>
-                    {`Text Input Area `}
-                    <Tooltip title={this.tooltipInfo} arrow>
-                        <span>
-                            <FontAwesomeIcon icon={faQuestionCircle} />
-                        </span>
-                    </Tooltip>
-                </div>
-                <div className={styles.previewSwitch}>
-                    <div
-                        style={{
-                            color: 'white',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-around',
-                        }}
-                    >
-                        Preview Input
+                <div className={styles.textInputHeader}>
+                    <div style={{ color: 'white', fontSize: 14, paddingTop: 10 }}>
+                        {/* {`Text Input Area `} */}
+                        <Tooltip title={this.tooltipInfo} arrow>
+                            <span>
+                                <FontAwesomeIcon icon={faQuestionCircle} />
+                            </span>
+                        </Tooltip>
                     </div>
-                    <Switch
-                        checked={this.state.previewChecked}
-                        color="secondary"
-                        inputProps={{ 'aria-label': 'secondary checkbox' }}
-                        onChange={() => {
-                            this.setState({
-                                previewChecked: !this.state.previewChecked,
-                            });
-                        }}
-                    />
+                    <div className={styles.previewSwitch}>
+                        <div
+                            style={{
+                                color: 'white',
+                                fontSize: 18,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-around',
+                            }}
+                        >
+                            Preview Input
+                        </div>
+                        <Switch
+                            checked={this.state.previewChecked}
+                            color="secondary"
+                            inputProps={{ 'aria-label': 'secondary checkbox' }}
+                            onChange={() => {
+                                this.setState({
+                                    previewChecked: !this.state.previewChecked,
+                                });
+                            }}
+                        />
+                    </div>
                 </div>
                 <form className={styles.inputForm}>
-                    (
-                    <textarea
+                    {/* <textarea
                         id="input_text"
                         className={styles.inputArea}
                         onChange={this.handleChangeText}
@@ -241,19 +243,43 @@ class TextInput extends React.Component {
                         style={{
                             display: !this.state.previewChecked ? 'block' : 'none',
                         }}
+                    /> */}
+                    <AceEditor
+                        placeholder=""
+                        mode="markdown"
+                        theme="twilight"
+                        name="blah2"
+                        height="100%"
+                        width="100%"
+                        className={styles.inputArea}
+                        value={this.props.inputText}
+                        onChange={this.handleChangeText}
+                        fontSize={15}
+                        wrapEnabled={true}
+                        showPrintMargin={true}
+                        showGutter={true}
+                        highlightActiveLine={true}
+                        style={{
+                            display: !this.state.previewChecked ? 'block' : 'none',
+                        }}
+                        setOptions={{
+                            enableBasicAutocompletion: false,
+                            enableLiveAutocompletion: false,
+                            enableSnippets: false,
+                            showLineNumbers: true,
+                            tabSize: 4,
+                        }}
                     />
-                    ) (
                     <div
                         id="preview_text"
                         className={styles.previewArea}
                         dangerouslySetInnerHTML={{
-                            __html: this.state.renderedText,
+                            __html: this.generatePreview(),
                         }}
                         style={{
                             display: this.state.previewChecked ? 'block' : 'none',
                         }}
                     />
-                    )
                 </form>
             </div>
         );

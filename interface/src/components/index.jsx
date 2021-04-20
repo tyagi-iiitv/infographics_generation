@@ -5,3 +5,12 @@ export { default as GalleryView } from './GalleryView/GalleryView';
 export { default as ImagePicker } from './ImagePicker/ImagePicker';
 export { default as GenerateSVG } from './GenerateSVG/GenerateSVG';
 export { default as InfographicPicker } from './InfographicPicker/InfographicPicker';
+export {
+    Upload,
+    Export,
+    ColorPallets,
+    ConnectionTypes,
+    Examples,
+    About,
+    ShowCanvas,
+} from './MenuBar/MenuBar';

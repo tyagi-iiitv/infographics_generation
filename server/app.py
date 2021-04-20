@@ -10,6 +10,8 @@ from annoy import AnnoyIndex
 from scipy.spatial import ConvexHull
 from lxml import etree
 import os
+import cv2
+from cairosvg import svg2png
 
 
 app = Flask(__name__)
@@ -20,16 +22,16 @@ flows = np.load('flows.npy', allow_pickle=True)
 
 SVGNS = 'http://www.w3.org/2000/svg'
 
-def get_vf_image(flow, height, width):
-    print(flow)
-    black = np.zeros((height, width, 3), np.uint8)
-    for i in range(len(flow)):
-        cv2.circle(black, (int(flow[i][0]), int(flow[i][1])), 5, (0, 0, 255), -1)
+# def get_vf_image(flow, height, width):
+#     print(flow)
+#     black = np.zeros((height, width, 3), np.uint8)
+#     for i in range(len(flow)):
+#         cv2.circle(black, (int(flow[i][0]), int(flow[i][1])), 5, (0, 0, 255), -1)
 
-    for i in range(len(flow) - 1):
-        cv2.line(black, (int(flow[i][0]), int(flow[i][1])), (int(flow[i + 1][0]), int(flow[i + 1][1])), (0, 0, 255), 30)
+#     for i in range(len(flow) - 1):
+#         cv2.line(black, (int(flow[i][0]), int(flow[i][1])), (int(flow[i + 1][0]), int(flow[i + 1][1])), (0, 0, 255), 30)
 
-    return black
+#     return black
 
 # Converts a abse64 image string to a numpy image
 def base64_img_to_np(img_str):
@@ -225,23 +227,40 @@ def visgrps():
 
 @app.route('/save_vg/', methods=['POST'])
 def save_vg():
-    data = json.loads(request.data.decode('utf-8'))
-    file_name = os.path.join('vg_svgs', f'uc{data["uc"]}_l{data["fl"]}_vg{data["vg"]}_{data["cl"]}_{data["cnt"]}_{data["cne"]}.svg')
-    f = open(file_name, 'w+')
-    f.write(data['vgCode'])
-    f.close()
+    # data = json.loads(request.data.decode('utf-8'))
+    # svg_code = data['vgCode']
+    # svg2png(bytestring=bytes(svg_code,'UTF-8'), write_to='output.png')
+    # file_name = os.path.join('vg_svgs', f'uc{data["uc"]}_l{data["fl"]}_vg{data["vg"]}_{data["cl"]}_{data["cnt"]}_{data["cne"]}.svg')
+    # print(data['vgCode'])
+    # file_name = 'output.svg'
+    # f = open(file_name, 'w+')
+    # f.write(data['vgCode'])
+    # f.close(
     return "OK"
 
-
-@app.route('/get-vg/<path:path>', methods=['GET'])
+@app.route('/getvg/<path:path>', methods=['GET'])
 def get_vg(path):
     return send_from_directory('svgImages', path, as_attachment=True)
 
+@app.route('/rawvg/<path:path>', methods=['GET'])
+def raw_vg(path):
+    return send_from_directory('rawVGs', path, as_attachment=True)
 
 @app.route('/images/<path:path>', methods=['GET'])
 def get_image(path):
     return send_from_directory('images', path, as_attachment=True)
 
+@app.route('/flows/<path:path>', methods=['GET'])
+def get_layout(path):
+    return send_from_directory('flowImages', path, as_attachment=True)
+
+@app.route('/getcon/<path:path>', methods=['GET'])
+def get_conns(path):
+    return send_from_directory('connections', path, as_attachment=True)
+
+@app.route('/pivot/<path:path>', methods=['GET'])
+def get_pivots(path):
+    return send_from_directory('pivotImages', path, as_attachment=True)
 
 @app.route('/layout/', methods=['POST'])
 def set_layout():
@@ -286,7 +305,7 @@ def set_layout():
         closest_flow_rankings.append(overall_rank)
 
     sorting_indices = np.argsort(closest_flow_rankings)[::-1]
-    closest_flows = np.array(closest_flows)[sorting_indices].tolist()[:50]
+    closest_flows = np.array(closest_flows)[sorting_indices].tolist()
     session['closest_flows'] = closest_flows
 
     # SVG string
@@ -309,11 +328,16 @@ def set_layout():
     session['svgs'] = svgs
     session['img_links'] = img_links
 
-    # print(session.get('canvas_dims')['width'])
-    # # Creating VIF flow images and saving in the frontend directory
-    # for i,flow in enumerate(session.get('closest_flows')):
-    #     image = get_vf_image(flow, session.get('canvas_dims')['height'], session.get('canvas_dims')['width'])
-    #     cv2.imwrite('../interface/public/flowImages/flow_'+str(i)+'.jpg', image)
+    print(session.get('canvas_dims')['width'])
+    # Creating VIF flow images and saving in flows directory
+    for j,flow in enumerate(session.get('closest_flows')[:50]):
+        height = session.get('canvas_dims')['height']
+        width = session.get('canvas_dims')['width']
+        black = np.zeros((height, width, 3), np.uint8)
+        
+        for i in range(len(flow) - 1):
+            cv2.line(black, (int(flow[i][0]), int(flow[i][1])), (int(flow[i + 1][0]), int(flow[i + 1][1])), (0, 0, 255), 30)
+        cv2.imwrite('./flowImages/flow'+str(j)+'.jpg', black)
 
     return json.dumps({
         'closestFlows': session.get('closest_flows'),
@@ -323,14 +347,14 @@ def set_layout():
     })
 
 
-@app.route('/layout/', methods=['GET'])
-def get_layout():
-    return json.dumps({
-        'closestFlows': session.get('closest_flows'),
-        'numVisGrps': session.get('num_vis_grps'),
-        'svgs': session.get('svgs'),
-        'imgLinks': session.get('img_links')
-    })
+# @app.route('/layout/', methods=['GET'])
+# def get_layout():
+#     return json.dumps({
+#         'closestFlows': session.get('closest_flows'),
+#         'numVisGrps': session.get('num_vis_grps'),
+#         'svgs': session.get('svgs'),
+#         'imgLinks': session.get('img_links')
+#     })
 
 
 if __name__ == '__main__':

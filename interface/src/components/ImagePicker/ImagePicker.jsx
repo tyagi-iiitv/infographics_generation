@@ -1,48 +1,45 @@
 import React, { Component } from 'react';
-import Gallery from 'react-grid-gallery';
+import ImagePicker from './react-image-picker';
+// import 'react-image-picker/dist/index.css';
 
 export default class ImageSelect extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            images: this.props.images,
-            selectedImages: [],
+            images: [],
         };
-        this.onClickThumbnail = this.onClickThumbnail.bind(this);
     }
 
-    onClickThumbnail(index, image) {
-        var images = this.state.images.slice();
-        var selectedImages = this.state.selectedImages;
-        var img = images[index];
-        if (img.hasOwnProperty('isSelected')) {
-            img.isSelected = !img.isSelected;
-            if (img.isSelected === true) {
-                selectedImages.push(img);
-            } else {
-                selectedImages = selectedImages.filter((obj) => obj !== img);
-            }
+    onPickImages(images) {
+        this.setState({ images });
+        if (images.length === 0) {
+            this.props.callbackFromChild({
+                selectedConns: null,
+                selectedLayouts: null,
+                selectedVGs: null,
+            });
+        } else if (this.props.id == 0) {
+            this.props.callbackFromChild({
+                selectedLayouts: this.props.curFlowIndex + images[0].value,
+            });
+        } else if (this.props.id == 1) {
+            this.props.callbackFromChild({ selectedVGs: images[0].value });
         } else {
-            img.isSelected = true;
-            selectedImages.push(img);
+            this.props.callbackFromChild({ selectedConns: images[0].src });
         }
-
-        this.setState({
-            images: images,
-            selectedImages: selectedImages,
-        });
     }
 
     render() {
+        // console.log(this.state);
         return (
-            <div
-                style={{ height: '33%', overflow: 'scroll', scrollBehavior: 'auto' }}
-            >
-                <Gallery
-                    images={this.state.images}
-                    enableLightbox={false}
-                    enableImageSelection={false}
-                    onClickThumbnail={this.onClickThumbnail}
+            <div>
+                <ImagePicker
+                    images={this.props.imgUrls.map((image, i) => ({
+                        src: image,
+                        value: i,
+                    }))}
+                    onPick={this.onPickImages.bind(this)}
+                    multiple
                 />
             </div>
         );
