@@ -8,7 +8,7 @@ source ./env/bin/activate
 ```
 - Install libraries
 ```
-pip install flask numpy pandas
+pip install flask numpy pandas opencv-python annoy scipy lxml
 ```
 - Run the Application `python app.py`
 - Add a proxy in the React app to direct the server requests to the flask app. To do this, add the line `"proxy": "http://localhost:5000",` inside the `package.json` file of React app. An example is shown below. 
