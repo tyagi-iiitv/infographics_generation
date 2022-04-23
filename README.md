@@ -12,7 +12,6 @@ Code
 ----
 Code for Infographics Wizard is available through this Github repo. 
 
-> The repository is currently private since we are waiting for the paper to be published. We'll make the link public in June'22.
 
 Supplementary Material, Dataset and Appendix Files
 --------------------------------------------------
